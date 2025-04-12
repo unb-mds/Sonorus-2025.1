@@ -7,7 +7,7 @@
 A **Integração Contínua** consiste em integrar alterações de código ao repositório principal de forma frequente — geralmente várias vezes ao dia. Cada integração dispara automaticamente uma série de testes, garantindo que o sistema continue funcional e estável.
 
 ### Benefícios da CI:
-- Identificação precoce de falhas
+- Identificação precoce de falhas e bugs
 - Menor risco de conflitos entre branches
 - Feedback rápido para desenvolvedores
 
@@ -29,7 +29,7 @@ Diversas ferramentas facilitam a implementação de pipelines de CI/CD. Algumas 
 - **CircleCI**
 - **Travis CI**
 - **Azure DevOps**
-- -**Docker**
+- **Docker**
 
 ## Por que adotar CI/CD?
 
@@ -37,13 +37,13 @@ Com CI/CD, o ciclo de entrega de software se torna mais ágil e eficiente. Isso 
 
 - Releases mais frequentes e confiáveis
 - Redução de erros em produção
-- Melhor colaboração entre times de desenvolvimento e operações
+- Melhor colaboração entre os times de desenvolvimento e operação
 
 ---
 
 ## 📺 Vídeo explicativo
 
-Quer ver isso tudo em ação? Confira o vídeo abaixo para uma explicação visual sobre CI/CD:
+Vídeo explicativo mais detalhado sobre o assunto(20 min)
 
 [![O que é CI/CD? | DevOps](https://img.youtube.com/vi/ZX0L6fHcBb4/0.jpg)](https://www.youtube.com/watch?v=ZX0L6fHcBb4)
 

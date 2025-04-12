@@ -29,6 +29,7 @@ Diversas ferramentas facilitam a implementação de pipelines de CI/CD. Algumas 
 - **CircleCI**
 - **Travis CI**
 - **Azure DevOps**
+- -**Docker**
 
 ## Por que adotar CI/CD?
 

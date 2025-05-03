@@ -3,7 +3,7 @@
 Este projeto implementa uma **API de reconhecimento biométrico por voz** em um modelo de login já existente utilizando **SpeechBrain** e **FastAPI**. A API permite que usuários registrem sua voz e, posteriormente, sejam autenticados com base em suas características vocais únicas.
 
 ## Figma - Projeto
-https://www.figma.com/board/gYHVP4382DvNEtxW1Bax4v/Projeto-MDS?node-id=32-28&t=l5HGDZdvzeAFyUw1-0
+https://www.figma.com/board/b3El7KviXHzQEFS7IuhGyo/Projeto-MDS--Copy-?node-id=0-1&t=bZuBbWs4QZgYPwbc-1
 
 ## Figma - Protótipo
 https://www.figma.com/proto/QTXFDiqQfiVNi7GRcvbs1q/Tela-de-login?node-id=1-2&t=HCUUayChkonQImLr-1&starting-point-node-id=1%3A2

@@ -1,3 +1,7 @@
+---
+title: Biometria Vocal
+---
+
 # 🔐 Voice Biometrics API
 
 Este projeto implementa uma **API de reconhecimento biométrico por voz** em um modelo de login já existente utilizando **SpeechBrain** e **FastAPI**. A API permite que usuários registrem sua voz e, posteriormente, sejam autenticados com base em suas características vocais únicas.

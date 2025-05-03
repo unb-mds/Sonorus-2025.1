@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Biometria Vocal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .fade-in {
+      animation: fadeIn 0.6s ease-out both;
+    }
+    .link {
+      color: #2b6cb0;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .link:hover {
+      text-decoration: underline;
+      color: #2c5282;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans leading-relaxed">
+
+  <!-- barra com título -->
+  <header class="bg-[#3182ce] shadow-lg py-6 fade-in">
+    <div class="max-w-4xl mx-auto px-4">
+      <h1 class="text-white text-3xl font-bold">🔐 Voice Biometrics API</h1>
+    </div>
+  </header>
+
+  <!-- navbar fixa -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex gap-4 text-sm font-semibold text-[#3182ce]">
+      <a href="#descricao" class="hover:underline">Descrição</a>
+      <a href="#tecnologias" class="hover:underline">Tecnologias</a>
+      <a href="#como-usar" class="hover:underline">Como Usar</a>
+      <a href="#contribuidores" class="hover:underline">Contribuidores</a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 mt-6">
+
+    <section id="descricao" class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">📄 Descrição</h2>
+      <p>
+        Este projeto implementa uma <strong>API de reconhecimento biométrico por voz</strong> em um modelo de login já existente utilizando <strong>SpeechBrain</strong> e <strong>FastAPI</strong>. A API permite que usuários registrem sua voz e, posteriormente, sejam autenticados com base em suas características vocais únicas.
+      </p>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h3 class="text-xl font-bold text-gray-700 mb-2">📐 Figma - Projeto</h3>
+      <a href="https://www.figma.com/board/gYHVP4382DvNEtxW1Bax4v/Projeto-MDS?node-id=32-28&t=l5HGDZdvzeAFyUw1Bax4v"
+         class="inline-block bg-[#3182ce] text-white font-semibold px-4 py-2 rounded shadow hover:bg-[#276bb0] transition">
+         Acessar Projeto no Figma
+      </a>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h3 class="text-xl font-bold text-gray-700 mb-2">🧪 Figma - Protótipo</h3>
+      <a href="https://www.figma.com/proto/QTXFDiqQfiVNi7GRcvbs1q/Tela-de-login?node-id=1-2&t=HCUUayChkonQImLr-1&starting-point-node-id=1%3A2"
+         class="inline-block bg-[#3182ce] text-white font-semibold px-4 py-2 rounded shadow hover:bg-[#276bb0] transition">
+         Acessar Protótipo no Figma
+      </a>
+    </section>
+
+    <section id="tecnologias" class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">🧠 Tecnologias Utilizadas</h2>
+      <ul class="list-disc list-inside">
+        <li><strong>Frontend:</strong> HTML, CSS, TailwindCSS, JavaScript, ReactJs</li>
+        <li><strong>Backend:</strong> Python, SpeechBrain, FastAPI</li>
+        <li><strong>Banco de dados:</strong> Oracle Database</li>
+      </ul>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">📁 Estrutura do Projeto</h2>
+      <pre class="bg-gray-100 p-4 rounded overflow-auto text-sm"><code>Biometria-Vocal-2025.1/
+├── backend/
+│   ├── api/
+│   ├── database/
+│   ├── models/
+│   ├── services/
+│   └── utils/
+├── frontend/
+│   ├── CSS/
+│   ├── HTML/
+│   └── JS/
+├── LICENSE
+├── README.md
+├── docs/
+│   ├── arquitetura_software/
+│   ├── atas/
+│   └── estudos/
+├── requirements.txt
+└── .gitignore
+</code></pre>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">🚀 Como Executar</h2>
+      <p>(Instruções a serem adicionadas)</p>
+    </section>
+
+    <section id="como-usar" class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">🔊 Como Usar</h2>
+      <h3 class="text-xl text-gray-700 mb-2">▶️ Registro</h3>
+      <p>(Instruções de registro por voz)</p>
+
+      <h3 class="text-xl text-gray-700 mt-4 mb-2">✅ Verificação</h3>
+      <p>(Instruções de verificação por voz)</p>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">🧪 Modelo Usado</h2>
+      <p><strong>ECAPA-TDNN</strong> do <code>speechbrain/spkrec-ecapa-voxceleb</code></p>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">📂 Armazenamento</h2>
+      <p>(Descrição do armazenamento dos embeddings vocais, se aplicável)</p>
+    </section>
+
+    <section id="contribuidores" class="bg-white rounded-xl shadow-md p-6 mb-12 fade-in">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">🤝 Contribuidores</h2>
+      <table class="table-auto w-full text-left border-t border-gray-200">
+        <thead>
+          <tr>
+            <th class="py-2">Nome</th>
+            <th class="py-2">GitHub</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Douglas Wilson</td><td><a class="link" href="https://github.com/Dodgelinhass">Dodgelinhass</a></td></tr>
+          <tr><td>Daniel Teles</td><td><a class="link" href="https://github.com/dtdanielteles">dtdanielteles</a></td></tr>
+          <tr><td>José Joaquim</td><td><a class="link" href="https://github.com/Joaquim-SNeto">Joaquim-SNeto</a></td></tr>
+          <tr><td>Luan Vinícius</td><td><a class="link" href="https://github.com/luannvi">luannvi</a></td></tr>
+          <tr><td>Matheus Lemes</td><td><a class="link" href="https://github.com/matheuslemesam">matheuslemesam</a></td></tr>
+          <tr><td>Paulo Henrique</td><td><a class="link" href="https://github.com/Pauloswimming">Pauloswimming</a></td></tr>
+          <tr><td>Paulo Nery</td><td><a class="link" href="https://github.com/Pnery2004">Pnery2004</a></td></tr>
+          <tr><td>Rafael Barbosa</td><td><a class="link" href="https://github.com/rafaelbdmelo117">rafaelbdmelo117</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</body>
+</html>

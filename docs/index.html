@@ -36,126 +36,261 @@
 <body class="bg-gray-100 font-sans leading-relaxed">
 
   <!-- barra com título -->
-  <header class="bg-[#3182ce] shadow-lg py-6 fade-in">
-    <div class="max-w-4xl mx-auto px-4">
-      <h1 class="text-white text-3xl font-bold">🔐 Voice Biometrics API</h1>
+  <header class="bg-[#3182ce] shadow-lg py-4 md:py-6 fade-in">
+    <div class="max-w-6xl mx-auto px-4 md:px-6">
+      <h1 class="text-white text-xl md:text-3xl font-bold">🔐 Voice Biometrics API</h1>
     </div>
   </header>
 
   <!-- navbar fixa -->
-  <nav class="bg-white shadow-md sticky top-0 z-50">
-    <div class="max-w-4xl mx-auto px-4 py-3 flex gap-4 text-sm font-semibold text-[#3182ce]">
-      <a href="#descricao" class="hover:underline">Descrição</a>
-      <a href="#tecnologias" class="hover:underline">Tecnologias</a>
-      <a href="#como-usar" class="hover:underline">Como Usar</a>
-      <a href="#contribuidores" class="hover:underline">Contribuidores</a>
+  <nav class="bg-white shadow-md sticky top-0 z-50 overflow-x-auto">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 py-2 md:py-3 flex gap-2 md:gap-4 text-xs md:text-sm font-semibold text-[#3182ce] whitespace-nowrap">
+      <a href="#descricao" class="hover:underline px-1">Projeto</a>
+      <a href="#tecnologias" class="hover:underline px-1">Tecnologias</a>
+      <a href="#grupo" class="hover:underline px-1">Grupo</a>
+      <a href="#ambiente" class="hover:underline px-1">Ambiente</a>
+      <a href="#arquitetura" class="hover:underline px-1">Arquitetura</a>
+      <a href="#documentacao" class="hover:underline px-1">Documentação</a>
+      <a href="#protótipo" class="hover:underline px-1">Protótipo</a>
+      <a href="#contribuidores" class="hover:underline px-1">Colaboradores</a>
     </div>
   </nav>
 
-  <main class="max-w-4xl mx-auto px-4 mt-6">
+  <main class="max-w-6xl mx-auto px-4 md:px-6 mt-4 md:mt-6">
 
-    <section id="descricao" class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">📄 Descrição</h2>
-      <p>
-        Este projeto implementa uma <strong>API de reconhecimento biométrico por voz</strong> em um modelo de login já existente utilizando <strong>SpeechBrain</strong> e <strong>FastAPI</strong>. A API permite que usuários registrem sua voz e, posteriormente, sejam autenticados com base em suas características vocais únicas.
-      </p>
+    <section id="descricao" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">📄 Sobre o projeto</h2>
+      <p class="text-sm md:text-base">
+        Este projeto consiste na implementação de uma API de reconhecimento biométrico por voz que se integra a um sistema de login já existente. Utilizando tecnologias modernas como <strong>SpeechBrain</strong> para o processamento de voz e <strong>FastAPI</strong> para a criação de endpoints rápidos e seguros, a solução permite que usuários cadastrem sua própria voz como uma forma única de identificação.</p>
     </section>
 
-    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h3 class="text-xl font-bold text-gray-700 mb-2">📐 Figma - Projeto</h3>
-      <a href="https://www.figma.com/board/gYHVP4382DvNEtxW1Bax4v/Projeto-MDS?node-id=32-28&t=l5HGDZdvzeAFyUw1Bax4v"
-         class="inline-block bg-[#3182ce] text-white font-semibold px-4 py-2 rounded shadow hover:bg-[#276bb0] transition">
-         Acessar Projeto no Figma
-      </a>
-    </section>
-
-    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h3 class="text-xl font-bold text-gray-700 mb-2">🧪 Figma - Protótipo</h3>
-      <a href="https://www.figma.com/proto/QTXFDiqQfiVNi7GRcvbs1q/Tela-de-login?node-id=1-2&t=HCUUayChkonQImLr-1&starting-point-node-id=1%3A2"
-         class="inline-block bg-[#3182ce] text-white font-semibold px-4 py-2 rounded shadow hover:bg-[#276bb0] transition">
-         Acessar Protótipo no Figma
-      </a>
-    </section>
-
-    <section id="tecnologias" class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">🧠 Tecnologias Utilizadas</h2>
-      <ul class="list-disc list-inside">
+    <section id="tecnologias" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">🧠 Tecnologias Utilizadas</h2>
+      <ul class="list-disc list-inside text-sm md:text-base">
         <li><strong>Frontend:</strong> HTML, CSS, TailwindCSS, JavaScript, ReactJs</li>
         <li><strong>Backend:</strong> Python, SpeechBrain, FastAPI</li>
         <li><strong>Banco de dados:</strong> Oracle Database</li>
       </ul>
     </section>
 
-    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">📁 Estrutura do Projeto</h2>
-      <pre class="bg-gray-100 p-4 rounded overflow-auto text-sm"><code>Biometria-Vocal-2025.1/
-├── backend/
-│   ├── api/
-│   ├── database/
-│   ├── models/
-│   ├── services/
-│   └── utils/
-├── frontend/
-│   ├── CSS/
-│   ├── HTML/
-│   └── JS/
-├── LICENSE
-├── README.md
-├── docs/
-│   ├── arquitetura_software/
-│   ├── atas/
-│   └── estudos/
-├── requirements.txt
-└── .gitignore
-</code></pre>
+    <section id="grupo" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">👥 Sobre o grupo</h2>
+      <p class="text-sm md:text-base">
+        O grupo faz parte do SQUAD 5 da disciplina de Métodos de Desenvolvimento de Software, ministrada pela professora Carla Rocha, composto por estudantes que aplicam conceitos e metodologias de desenvolvimento em projetos reais. O grupo foca na utilização de tecnologias de ponta e boas práticas de programação, visando entregar uma nova maneira do usuário se autenticar em sistemas, utilizando sua própria voz como chave de acesso. Através do projeto de reconhecimento biométrico por voz, os alunos têm a oportunidade de aplicar seus conhecimentos, desenvolvendo habilidades técnicas e colaborativas essenciais para o mercado de trabalho. 
+      </p>
     </section>
 
-    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">🚀 Como Executar</h2>
-      <p>(Instruções a serem adicionadas)</p>
+    <section id="ambiente" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
+        <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">🚀 Para Subir o Ambiente</h2>
+        <p class="text-sm md:text-base">(Instruções a serem adicionadas futuramente)</p>
+    </section>
+    
+    <section id="arquitetura" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">📐 Arquitetura </h2>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">Visão geral</h3>
+      <p class="text-sm md:text-base">A arquitetura do sistema de login com biometria por voz é composta por três camadas principais: apresentação, aplicação (lógica de negócios) e dados. A seguir, cada camada será detalhada com base no fluxo de autenticação e cadastro do sistema, incluindo diagramas ilustrativos para facilitar o entendimento.</p>
+      <br>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">Camada de Apresentação (Front-End)</h3>
+      <p class="text-sm md:text-base">
+        Esta camada é responsável pela interface com o usuário, tanto para o processo de login quanto de cadastro. Ela interage com a camada de aplicação por meio de APIs REST seguras (HTTPS).
+        <br><br>
+        <b>Funcionalidades:<br></b>
+        <li>Exibição de telas de login, cadastro e confirmação.</li> 
+        <li>Captura de dados do usuário (login, senha, e-mail, voz). </li> 
+        <li>Envio e recepção de dados via chamadas REST. </li>
+        <li>Gravação da voz do usuário para biometria. </li>
+        <br>
+        <b>Tecnologias utilizadas:<br></b>
+        <li>Frameworks web responsivos (HTML5/CSS/JavaScript/ReactJs).</li>
+        <li>Acesso ao microfone via Web API (WebRTC).</li>
+        <li>Comunicação com a API backend via HTTPS.</li>
+      </p>
+      <br>
+      <i>Fluxo de autenticação</i>
+      <img src="https://github.com/unb-mds/Biometria-Vocal-2025.1/blob/main/docs/arquitetura_software/Arquitetura-login.png?raw=true" class="w-full max-w-full h-auto">
+      <br><br>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">Camada de Aplicação (Lógica de Negócios / Back-End)</h3>
+      <p class="text-sm md:text-base">
+        Essa camada centraliza toda a lógica de negócio da autenticação e cadastro com biometria por voz. A aplicação será desenvolvida em <b>Python</b>, com integração de inteligência artificial para o reconhecimento de voz.
+        <br><br>
+        <b>Funções no Login:<br></b>
+        <li>Recebe login e senha do front-end via <b>/authenticate.</b></li>
+        <li>Valida as credenciais com o banco de dados.</li>
+        <li>Retorna a frase previamente cadastrada para validação de voz.</li>
+        <li>Recebe e processa o áudio via <b>/verify</b>, comparando com os dados biométricos.</li>
+        <li>Controla o número de tentativas e responde com sucesso ou falha.</li>
+        <br>  
+        <b>Funções no Cadastro:<br></b>
+        <li>Recebe os dados iniciais para criar o usuário.</li>
+        <li>Envia e valida o e-mail de confirmação.</li>
+        <li>Gera e aloca frase aleatória para biometria.</li>
+        <li>Recebe e armazena a amostra de voz.</li>
+        <li>Finaliza o cadastro com criptografia de senha e persistência dos dados.</li>
+        <br>  
+        <b>Integrações:</b>
+        <li>APIs REST para comunicação com o front-end.</li>
+        <li>Bibliotecas de IA/Reconhecimento de voz (ex: SpeechRecognition, WebRTC, pyttsx3).</li>
+        <li>Segurança com bcrypt e controle de tentativas.</li>
+      </p>
+      <br>
+      <i>Fluxo de cadastro</i>
+      <img src="https://github.com/unb-mds/Biometria-Vocal-2025.1/blob/main/docs/arquitetura_software/Arquitetura_Cadastro.png?raw=true" class="w-full max-w-full h-auto"> 
+      <br><br>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">Camada de Dados (Banco de Dados)</h3>
+      <p class="text-sm md:text-base">
+        A camada de dados é responsável pelo armazenamento seguro e estruturado das informações dos usuários e suas amostras biométricas.
+        <br><br>
+        <b>Estrutura Armazenada:</b>
+        <li>Dados cadastrais do usuário (nome, e-mail, senha com hash).</li>
+        <li>Frases de autenticação vocal geradas por IA.</li>
+        <li>Amostras de áudio biométrico processadas.</li>
+        <li>Histórico de tentativas de login biométrico.</li>
+        <br>
+        <b>Banco Utilizado:</b>
+        <li>Oracle Database.</li> 
+        <li>Dados organizados por tabelas de usuários, frases, amostras biométricas e auditoria.</li>
+        <br>
+        <b>Segurança:</b>
+        <li>Armazenamento de senhas com hash (bcrypt).</li>
+        <li>Dados biométricos protegidos contra acesso indevido.</li>
+        <li>Políticas de bloqueio após múltiplas tentativas de autenticação falha.</li>
+      </p>
     </section>
 
-    <section id="como-usar" class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">🔊 Como Usar</h2>
-      <h3 class="text-xl text-gray-700 mb-2">▶️ Registro</h3>
-      <p>(Instruções de registro por voz)</p>
-
-      <h3 class="text-xl text-gray-700 mt-4 mb-2">✅ Verificação</h3>
-      <p>(Instruções de verificação por voz)</p>
+    <section id="documentacao" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">📁 Documentação do Projeto</h2>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">1. Introdução</h3>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">1.1 Objetivo</h4>
+      <p class="text-sm md:text-base">Esse documento especifica os requisitos para o desenvolvimento do projeto de Biometria Vocal, parte da disciplina de Métodos de Desenvolvimento de Software 2025.1. O objetivo do projeto é permitir o login de um usuário em um determinado site/serviço através do sistema de reconhecimento biométrico por voz.</p>
+      <br>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">1.2 Escopo</h4>
+      <li class="text-sm md:text-base">Disponibilza uma forma de login/cadastro com email/senha antes do cadastro e autenticação da voz.</li>
+      <li class="text-sm md:text-base">O sistema deve ser capaz de reconhecer a voz do usuário e compará-la com a amostra armazenada.</li>
+      <li class="text-sm md:text-base">O sistema deve ser capaz de gerar uma frase aleatória para o usuário repetir durante o cadastro.</li>
+      <br>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">1.3 Tecnologias Utilizadas</h4>
+      <li class="text-sm md:text-base"><strong>Frontend:</strong> HTML, CSS, TailwindCSS, JavaScript, ReactJs</li>
+      <li class="text-sm md:text-base"><strong>Backend:</strong> Python, SpeechBrain</li>
+      <li class="text-sm md:text-base"><strong>API:</strong> FastAPI</li>
+      <li class="text-sm md:text-base"><strong>Banco de dados:</strong> Oracle Database</li>
+      <br><br>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">2. Descrição</h3>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">2.1 Visão geral do sistema</h4>
+      <p class="text-sm md:text-base">Na etapa de login, o usuário insere suas credenciais e, após validação inicial, recebe uma frase que deve ser repetida com a voz. Essa gravação é analisada por algoritmos de inteligência artificial que comparam a amostra vocal recebida com o modelo biométrico previamente armazenado. Já no processo de cadastro, o sistema gera uma frase aleatória que o usuário deve gravar, associando essa amostra ao seu perfil para uso futuro na autenticação. Essa arquitetura oferece uma autenticação em duas etapas mais robusta, sem depender exclusivamente de senhas, e reforça a segurança utilizando características únicas da voz de cada indivíduo.</p>
+      <br>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">2.2 Objetivos do Usuário</h4>
+      <li class="text-sm md:text-base">Realizar o cadastro de forma simples e segura, fornecendo dados básicos, confirmando seu e-mail e gravando uma frase para registro da biometria de voz.</li>  
+      <li class="text-sm md:text-base">Autenticar-se com maior segurança, combinando login e senha com verificação de identidade por meio da voz.</li>
+      <li class="text-sm md:text-base">Proteger seu acesso com uma camada biométrica única, difícil de ser reproduzida por terceiros, reduzindo riscos de invasão e fraude.</li>
+      <li class="text-sm md:text-base">Ter uma experiência fluida, com respostas rápidas do sistema, orientações claras e um fluxo intuitivo, tanto no cadastro quanto no login.</li>
+      <br><br>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">3. Requisitos Funcionais</h3>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">3.1 Épico – Cadastro e Autenticação por Voz</h4>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">Features:</h4>
+      <li class="text-sm md:text-base"><strong>Gravação de áudio via Front-end:</strong></li>
+      <p class="text-sm md:text-base">Captura da voz do usuário por microfone.</p>
+      <li class="text-sm md:text-base"><strong>Envio de áudio para o Backend:</strong></li>
+      <p class="text-sm md:text-base">Envio via API segura; suporte a formatos como .wav, .mp3.</p>
+      <li class="text-sm md:text-base"><strong>Extração de características vocais:</strong></li>
+      <p class="text-sm md:text-base">Processamento do áudio e geração de embeddings vocais.</p>
+      <li class="text-sm md:text-base"><strong>Armazenamento de dados biométricos:</strong></li>
+      <p class="text-sm md:text-base">Armazena os dados de voz e compara com padrão já registrado.</p>
+      <br><br>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">3.2 Épico – Interface do Usuário (Front-End Web)</h4>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">Features:</h4>
+      <li class="text-sm md:text-base"><strong>Tela de login/input de voz:</strong></li>
+      <p class="text-sm md:text-base">Exibição de interface com botão para gravação.</p>
+      <li class="text-sm md:text-base"><strong>Feedback visual:</strong></li>
+      <p class="text-sm md:text-base">Exibição do resultado (autenticado ou não).</p>
+      <li class="text-sm md:text-base"><strong>Interface responsiva:</strong></li>
+      <p class="text-sm md:text-base">Layout adaptado a diferentes dispositivos, simples e leve.</p>
+      <br><br>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">3.3 Épico – Infraestrutura e Integração</h4>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">Features:</h4>
+      <li class="text-sm md:text-base"><strong>API REST para comunicação:</strong></li>
+      <p class="text-sm md:text-base">Endpoints POST/GET para integração entre front e back.</p>
+      <li class="text-sm md:text-base"><strong>Banco de dados do backend:</strong></li>
+      <p class="text-sm md:text-base">CRUD básico com autenticação e armazenamento dos usuários.</p>
+      <li class="text-sm md:text-base"><strong>Execução local e isolada:</strong></li>
+      <p class="text-sm md:text-base">Backend executado de forma segura (por exemplo, via contêiner).</p>
+      <br><br>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">3.4 Épico – Segurança e Validação da Segurança</h4>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">Features:</h4>
+      <li class="text-sm md:text-base"><strong>Validação de voz:</strong></li>
+      <p class="text-sm md:text-base">Comparação entre áudio atual e padrão armazenado.</p>
+      <li class="text-sm md:text-base"><strong>Controle de erros:</strong></li>
+      <p class="text-sm md:text-base">Mensagens claras como "usuário não encontrado" ou "áudio inválido".</p>
+      <br><br>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">4. Requisitos Não-Funcionais</h3>
+      <li class="text-sm md:text-base"><b>Desempenho:</b> autenticação em poucos segundos.</li>
+      <li class="text-sm md:text-base"><b>Precisão:</b> reconhecimento com mais de 90% de acurácia.</li>
+      <li class="text-sm md:text-base"><b>Segurança dos dados:</b> uso de criptografia para proteger os dados biométricos.</li>
+      <li class="text-sm md:text-base"><b>Compatibilidade com navegadores:</b> funcionamento nos principais browsers.</li>
+      <li class="text-sm md:text-base"><b>Portabilidade/Acessibilidade:</b> suporte multiplataforma e recursos acessíveis.</li>
+      <li class="text-sm md:text-base"><b>Qualidade do áudio:</b> captação clara e limpa.</li>
+      <li class="text-sm md:text-base"><b>Modularidade:</b> sistema dividido em módulos independentes.</li>
+      <li class="text-sm md:text-base"><b>Licenciamento:</b> uso de bibliotecas open source com licença MIT, GPL, Apache, etc.</li>
+      <br>
+      <h4 class="text-md md:text-lg font-bold text-gray-700 mb-2">4.1 Usabilidade</h4>
+      <li class="text-sm md:text-base">Interface simples, intuitiva e responsiva</li>
+      <li class="text-sm md:text-base">Feedback visual e auditivo amigável</li>
+      <li class="text-sm md:text-base">Fluxo claro de login/autenticação com mensagens orientativas</li>
+      <br><br>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">5. Story Map do Usuário</h3>
+      <p class="text-sm md:text-base">O mapa abaixo divide os requisitos em épicos e features, com a previsão de histórias de usuários.</p>
+      <br>
+      <div class="overflow-x-auto">
+        <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://embed.figma.com/board/b3El7KviXHzQEFS7IuhGyo/Projeto-MDS?node-id=101-1149&embed-host=share" allowfullscreen></iframe>
+      </div>
     </section>
 
-    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">🧪 Modelo Usado</h2>
-      <p><strong>ECAPA-TDNN</strong> do <code>speechbrain/spkrec-ecapa-voxceleb</code></p>
+    <section id="protótipo" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">🧪 Protótipo</h2>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">Protótipo de baixa fidelidade</h3>
+      <p class="text-sm md:text-base">Protótipo de baixa fidelidade desenvolvido com o objetivo de apresentar a interface do sistema e as funcionalidades principais.</p>
+      <br>
+      <div class="overflow-x-auto">
+        <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://embed.figma.com/board/b3El7KviXHzQEFS7IuhGyo/Projeto-MDS?node-id=227-228&embed-host=share" allowfullscreen></iframe>
+      </div>
+      <br>
+      <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">Protótipo de alta fidelidade</h3>
+      <p class="text-sm md:text-base">Protótipo de alta fidelidade do sistema de reconhecimento biométrico por voz, feito no Figma.</p>
+      <br>
+      <div class="overflow-x-auto">
+        <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://embed.figma.com/proto/QTXFDiqQfiVNi7GRcvbs1q/Tela-de-login?node-id=1-2&starting-point-node-id=1%3A2&embed-host=share" allowfullscreen></iframe>
+      </div>
     </section>
 
-    <section class="bg-white rounded-xl shadow-md p-6 mb-6 fade-in">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">📂 Armazenamento</h2>
-      <p>(Descrição do armazenamento dos embeddings vocais, se aplicável)</p>
+    <section id="contribuidores" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-8 md:mb-12 fade-in">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4"> Colaboradores do Projeto</h2>
+      <div class="overflow-x-auto">
+        <table class="table-auto w-full text-left border-t border-gray-200 text-sm md:text-base">
+          <thead>
+            <tr>
+              <th class="py-2">Nome</th>
+              <th class="py-2">GitHub</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Douglas Wilson</td><td><a class="link" href="https://github.com/Dodgelinhass">Dodgelinhass</a></td></tr>
+            <tr><td>Daniel Teles</td><td><a class="link" href="https://github.com/dtdanielteles">dtdanielteles</a></td></tr>
+            <tr><td>José Joaquim</td><td><a class="link" href="https://github.com/Joaquim-SNeto">Joaquim-SNeto</a></td></tr>
+            <tr><td>Luan Vinícius</td><td><a class="link" href="https://github.com/luannvi">luannvi</a></td></tr>
+            <tr><td>Matheus Lemes</td><td><a class="link" href="https://github.com/matheuslemesam">matheuslemesam</a></td></tr>
+            <tr><td>Paulo Henrique</td><td><a class="link" href="https://github.com/Pauloswimming">Pauloswimming</a></td></tr>
+            <tr><td>Paulo Nery</td><td><a class="link" href="https://github.com/Pnery2004">Pnery2004</a></td></tr>
+            <tr><td>Rafael Barbosa</td><td><a class="link" href="https://github.com/rafaelbdmelo117">rafaelbdmelo117</a></td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
-
-    <section id="contribuidores" class="bg-white rounded-xl shadow-md p-6 mb-12 fade-in">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">🤝 Contribuidores</h2>
-      <table class="table-auto w-full text-left border-t border-gray-200">
-        <thead>
-          <tr>
-            <th class="py-2">Nome</th>
-            <th class="py-2">GitHub</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Douglas Wilson</td><td><a class="link" href="https://github.com/Dodgelinhass">Dodgelinhass</a></td></tr>
-          <tr><td>Daniel Teles</td><td><a class="link" href="https://github.com/dtdanielteles">dtdanielteles</a></td></tr>
-          <tr><td>José Joaquim</td><td><a class="link" href="https://github.com/Joaquim-SNeto">Joaquim-SNeto</a></td></tr>
-          <tr><td>Luan Vinícius</td><td><a class="link" href="https://github.com/luannvi">luannvi</a></td></tr>
-          <tr><td>Matheus Lemes</td><td><a class="link" href="https://github.com/matheuslemesam">matheuslemesam</a></td></tr>
-          <tr><td>Paulo Henrique</td><td><a class="link" href="https://github.com/Pauloswimming">Pauloswimming</a></td></tr>
-          <tr><td>Paulo Nery</td><td><a class="link" href="https://github.com/Pnery2004">Pnery2004</a></td></tr>
-          <tr><td>Rafael Barbosa</td><td><a class="link" href="https://github.com/rafaelbdmelo117">rafaelbdmelo117</a></td></tr>
-        </tbody>
-      </table>
-    </section>
-
   </main>
+
+  <footer class="bg-[#3182ce] text-white py-4 mt-6 fade-in">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 text-center text-sm md:text-base">
+      <p>&copy; Voice Biometrics API. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
 </body>
 </html>

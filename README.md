@@ -32,23 +32,25 @@ https://unb-mds.github.io/Biometria-Vocal-2025.1/
 
 ```
 Biometria-Vocal-2025.1/
-├── backend/
-    ├── api/
-    ├── database/
-    ├── models/
-    ├── services/
-    └── utils/
-├── frontend/
-    ├── CSS/
-    ├── HTML/
-    └── JS/
+├── src
+    ├── backend/
+        ├── api/
+        ├── database/
+        ├── models/
+        ├── services/
+        ├── utils/
+        ├── main.py
+        └── requirements.txt
+    ├── frontend/
+        ├── CSS/
+        ├── HTML/
+        └── JS/
 ├── LICENSE
 ├── README.md
 ├── docs/
     ├── arquitetura_software/
     ├── atas/
     └── estudos/
-├── requirements.txt
 └── .gitignore
 ```
 

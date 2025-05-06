@@ -30,7 +30,7 @@ Exemplos de comportamento inaceitável incluem:
 
 ## Aplicação
 
-Casos de comportamento abusivo, de assédio ou inaceitável podem ser reportados à equipe de manutenção do projeto. Todas as reclamações serão revisadas e investigadas com responsabilidade e confidencialidade.
+Casos de comportamento abusivo, de assédio ou inaceitável podem ser reportados à equipe de manutenção do projeto via e-mail **231012174@aluno.unb.br**. Todas as reclamações serão revisadas e investigadas com responsabilidade e confidencialidade.
 
 Todos os mantenedores têm a obrigação de respeitar a privacidade e segurança de quem reportar qualquer incidente.
 

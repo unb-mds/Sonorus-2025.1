@@ -6,7 +6,7 @@ Este projeto implementa uma **API de reconhecimento biométrico por voz** em um 
 
 - [Figma - Projeto (StoryMap)](https://www.figma.com/board/b3El7KviXHzQEFS7IuhGyo/Projeto-MDS--Copy-?node-id=0-1&t=bZuBbWs4QZgYPwbc-1)
 - [Figma - Protótipo](https://www.figma.com/proto/QTXFDiqQfiVNi7GRcvbs1q/Tela-de-login?node-id=1-2&t=HCUUayChkonQImLr-1&starting-point-node-id=1%3A2)
-- [GitHub Page](https://unb-mds.github.io/Biometria-Vocal-2025.1/)
+- [GitHub Page](https://unb-mds.github.io/Sonorus-2025.1/)
 - [Arquitetura](./docs/arquitetura_software/)
 - [Requisitos](./docs/requisitos.md)
 

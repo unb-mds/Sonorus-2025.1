@@ -1,4 +1,8 @@
 fastapi
 uvicorn
+speechbrain
+scipy
+numpy
+soundfile
 passlib[bcrypt]
 pyjwt

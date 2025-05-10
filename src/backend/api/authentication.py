@@ -1,19 +1,38 @@
-from fastapi import APIRouter, HTTPException, Depends
-from src.backend.services.business_logic import register_user, login_user
-from src.backend.models.models import UserLogin, UserRegister
+from fastapi import APIRouter, HTTPException, UploadFile, File
+from src.backend.models.ecapa_model import ECAPAWrapper
+import numpy as np
+import soundfile as sf
 
 auth_router = APIRouter()
+ecapa_model = ECAPAWrapper()
 
-@auth_router.post("/register")
-def register(user: UserRegister):
-    success = register_user(user)
-    if not success:
-        raise HTTPException(status_code=400, detail="User already exists")
-    return {"message": "User registered successfully"}
+# Simulação de um banco de dados de embeddings, substituir pelo banco real
+user_embeddings = {
+    "user1": np.random.rand(192),  # Substitua por embeddings reais
+}
 
-@auth_router.post("/login")
-def login(user: UserLogin):
-    token = login_user(user)
-    if not token:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-    return {"access_token": token, "token_type": "bearer"}
+@auth_router.post("/verify-voice")
+async def verify_voice(username: str, file: UploadFile = File(...)):
+    if username not in user_embeddings:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    # Salve o áudio temporariamente
+    audio_data, samplerate = sf.read(file.file)
+    temp_audio_path = f"temp_{username}.wav"
+    sf.write(temp_audio_path, audio_data, samplerate)
+
+    # Verifique a biometria
+    similarity_score = ecapa_model.verify_speaker(temp_audio_path, user_embeddings[username])
+    if similarity_score > 0.8:  # Defina um limiar adequado
+        return {"message": "Autenticação bem-sucedida", "score": similarity_score}
+    else:
+        raise HTTPException(status_code=401, detail="Autenticação falhou")
+    
+"""
+para testar o endpoint:
+    curl -X POST "http://127.0.0.1:8000/auth/verify-voice" \
+    -H "accept: application/json" \
+    -H "Content-Type: multipart/form-data" \
+    -F "username=user1" \
+    -F "file=@path_to_audio.wav"
+"""

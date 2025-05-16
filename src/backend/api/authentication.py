@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from src.backend.services.business_logic import register_user, login_user
 from src.backend.models.models import UserLogin, UserRegister
 from src.backend.models.ecapa_model import ECAPAWrapper
+from fastapi import Body
+
 import numpy as np
 import soundfile as sf
 
@@ -72,9 +74,22 @@ async def register(user: UserRegister):
     if not success:
         raise HTTPException(status_code=400, detail="Usuário já existe")
     return {"message": "Usuário registrado com sucesso"}
+    
+# Endpoint para login de usuário
+
+@auth_router.post("/login")
+async def login(user: UserLogin = Body(...)):
+    """
+    Autentica um usuário via e-mail e senha.
+    """
+    authenticated = login_user(user.email, user.password)
+    if authenticated:
+        return {"message": "Login realizado com sucesso"}
+    else:
+        raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
 
 
-# Endpoint para registro de usuário
+# Endpoint para Autenticação de usuário
 @auth_router.post("/verify-voice")
 async def verify_voice(email: str, file: UploadFile = File(...)):
     print(f"Recebendo solicitação para o usuário: {email}")

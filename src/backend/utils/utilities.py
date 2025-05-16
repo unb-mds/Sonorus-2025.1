@@ -12,7 +12,7 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
-def generate_token(username: str) -> str:
+def generate_token(email: str) -> str:
     expire = datetime.utcnow() + timedelta(hours=1)
-    payload = {"sub": username, "exp": expire}
+    payload = {"sub": email, "exp": expire}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)

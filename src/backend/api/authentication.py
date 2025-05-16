@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from src.backend.services.business_logic import register_user, login_user
 from src.backend.models.models import UserLogin, UserRegister
 from src.backend.models.ecapa_model import ECAPAWrapper
+from pydantic import EmailStr
 from fastapi import Body
 
 import numpy as np
@@ -91,7 +92,7 @@ async def login(user: UserLogin = Body(...)):
 
 # Endpoint para Autenticação de usuário
 @auth_router.post("/verify-voice")
-async def verify_voice(email: str, file: UploadFile = File(...)):
+async def verify_voice(email: EmailStr, file: UploadFile = File(...)):
     print(f"Recebendo solicitação para o usuário: {email}")
     if email not in user_embeddings:
         print("Usuário não encontrado")

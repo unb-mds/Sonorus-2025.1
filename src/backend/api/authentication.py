@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from src.backend.services.business_logic import register_user, login_user
 from src.backend.models.models import UserLogin, UserRegister
 from src.backend.models.ecapa_model import ECAPAWrapper
+from fastapi import Body
+
 import numpy as np
 import soundfile as sf
 
@@ -66,21 +68,43 @@ user_embeddings = {
 
 
 # Endpoint para registro de usuário
+@auth_router.post("/register")
+async def register(user: UserRegister):
+    success = register_user(user)
+    if not success:
+        raise HTTPException(status_code=400, detail="Usuário já existe")
+    return {"message": "Usuário registrado com sucesso"}
+    
+# Endpoint para login de usuário
+
+@auth_router.post("/login")
+async def login(user: UserLogin = Body(...)):
+    """
+    Autentica um usuário via e-mail e senha.
+    """
+    authenticated = login_user(user.email, user.password)
+    if authenticated:
+        return {"message": "Login realizado com sucesso"}
+    else:
+        raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
+
+
+# Endpoint para Autenticação de usuário
 @auth_router.post("/verify-voice")
-async def verify_voice(username: str, file: UploadFile = File(...)):
-    print(f"Recebendo solicitação para o usuário: {username}")
-    if username not in user_embeddings:
+async def verify_voice(email: str, file: UploadFile = File(...)):
+    print(f"Recebendo solicitação para o usuário: {email}")
+    if email not in user_embeddings:
         print("Usuário não encontrado")
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     try:
         audio_data, samplerate = sf.read(file.file)
         print(f"Áudio recebido com taxa de amostragem: {samplerate}")
-        temp_audio_path = f"temp_{username}.wav"
+        temp_audio_path = f"temp_{email}.wav"
         sf.write(temp_audio_path, audio_data, samplerate)
         print(f"Áudio salvo temporariamente em: {temp_audio_path}")
 
-        similarity_score = ecapa_model.verify_speaker(temp_audio_path, user_embeddings[username])
+        similarity_score = ecapa_model.verify_speaker(temp_audio_path, user_embeddings[email])
         print(f"Pontuação de similaridade: {similarity_score}")
     except Exception as e:
         print(f"Erro durante o processamento: {e}")
@@ -104,7 +128,7 @@ use o seguinte comando para testar o endpoint de verificação de voz:
 curl -X POST "http://127.0.0.1:8000/auth/verify-voice"
 -H "accept: application/json"
 -H "Content-Type: multipart/form-data"
--F "username=user1"
+-F "email=user1"
 -F "file=@path_to_audio.wav"
 
 ou 

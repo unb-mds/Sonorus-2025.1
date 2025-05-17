@@ -1,0 +1,24 @@
+.Wrapper{
+    position: relative;
+    width: 840px;
+    height: 480px;
+    background: #1F2634;
+    border-radius: 10px;
+    color: #FFFFFF;
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+    box-shadow: -4px 4px 20px 0px rgba(0,0,0,0.5);
+    background-color: rgba(31, 38, 52, 1);
+    border-radius: 50px;
+}
+
+.Wrapper .form-box{
+    width: 100%;
+    padding: 15%;
+}
+
+form h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+}

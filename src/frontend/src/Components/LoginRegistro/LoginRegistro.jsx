@@ -3,7 +3,7 @@ import './LoginRegistro.css';
 
 const LoginRegistro = () => {
     return (
-        <div className='BlocoPreto'>
+        <div className='blocoPreto'>
             <div className='form-box Entrar'>
                 <form action=''>
                     <h1>Entrar</h1>
@@ -13,8 +13,7 @@ const LoginRegistro = () => {
                         <div className="input-box">
                             <input type="password" placeholder='Senha' required />
                         </div>
-
-                        <div className="forgot">
+                        <div className="esqueceu">
                             <a href="#">Esqueceu sua senha?</a>
                         </div>
                         <button type="submit" className='btn'>LOGIN</button>

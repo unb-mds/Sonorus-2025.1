@@ -1,4 +1,4 @@
-.BlocoPreto{
+.blocoPreto{
     position: relative;
     width: 800px;
     height: 600px;
@@ -13,7 +13,7 @@
     border-radius: 50px;
 }
 
-.BlocoPreto .form-box{
+.blocoPreto .form-box{
     width: 100%;
     padding: 15%;
 }
@@ -52,7 +52,7 @@ form .input-box{
     font-size: 16px;
 }
 
-.forgot{
+.esqueceu{
     color: #FFFFFF;
     font-size: 15px;
     text-decoration: underline;

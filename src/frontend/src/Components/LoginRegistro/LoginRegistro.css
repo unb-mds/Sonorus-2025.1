@@ -1,7 +1,7 @@
-.Wrapper{
+.BlocoPreto{
     position: relative;
-    width: 840px;
-    height: 480px;
+    width: 800px;
+    height: 600px;
     background: #1F2634;
     border-radius: 10px;
     color: #FFFFFF;
@@ -13,12 +13,63 @@
     border-radius: 50px;
 }
 
-.Wrapper .form-box{
+.BlocoPreto .form-box{
     width: 100%;
     padding: 15%;
 }
 
 form h1 {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+    font-family: var(--font-family-inter);
+    font-weight: heavy;
     font-size: 40px;
-    margin-bottom: 20px;
+    line-height: 44px;
+    text-decoration: none;
+    text-transform: none;
+    color: var(--text-white);
+    padding-left: 13%;
+}
+
+form .input-box{
+    position: relative;
+    width: 47%;
+    height: 30%;
+    margin: 18px 0;
+    background: #1F2634;
+}
+
+.input-box input{
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    background: #1F2634;
+    border: 3px #ffffff;
+    border-radius: 10px;
+    outline: 3px solid #ffffff;
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+.forgot{
+    color: #FFFFFF;
+    font-size: 15px;
+    text-decoration: underline;
+    padding-left: 9%;
+}
+
+.btn{
+    position: relative;
+    width: 160px;
+    height: 48px;
+    background: #005CF7;
+    border-radius: 10px;
+    border: none;
+    color: #FFFFFF;
+    font-family: var(--font-family-inter);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
 }

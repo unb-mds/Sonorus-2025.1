@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.backend.api.authentication import auth_router
+from src.backend.api.autenticacao import roteador_autenticacao
 from src.backend.database.database import initialize_db
 
 app = FastAPI(title="Voice Biometrics API")
@@ -8,7 +8,7 @@ app = FastAPI(title="Voice Biometrics API")
 initialize_db()
 
 # Include authentication routes
-app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+app.include_router(roteador_autenticacao, prefix="/auth", tags=["Authentication"])
 
 @app.get("/")
 def root():

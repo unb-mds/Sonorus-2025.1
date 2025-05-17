@@ -1,21 +1,15 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
-from src.backend.services.business_logic import register_user, login_user
-from src.backend.models.models import UserLogin, UserRegister
-from src.backend.models.ecapa_model import ECAPAWrapper
-from pydantic import EmailStr
-from fastapi import Body
-
-import numpy as np
 import soundfile as sf
-
-auth_router = APIRouter()
+from fastapi import HTTPException
+from src.backend.models.modelo_ecapa import ModeloECAPA
+import numpy as np
+import os
 
 # Inicializa o modelo ECAPA
-ecapa_model = ECAPAWrapper()
+modelo_ecapa = ModeloECAPA()
 
 # Simulação de um banco de dados de embeddings, substituir pelo banco real depois
-user_embeddings = {
-    "lemes": np.array([
+embeddings_usuarios = {
+        "lemes": np.array([
           2.65768700e+01, 3.55227203e+01, -2.72377338e+01, -4.03870487e+00,
     -2.56373310e+01, 2.29106693e+01, -4.14702511e+00, 4.18712044e+01,
     9.10071182e+00, -1.32153015e+01, 5.75514717e+01, 1.01087656e+01,
@@ -67,74 +61,41 @@ user_embeddings = {
     ])
 }
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+AUDIOS_DIR = os.path.join(BASE_DIR, "audios")
 
-# Endpoint para registro de usuário
-@auth_router.post("/register")
-async def register(user: UserRegister):
-    success = register_user(user)
-    if not success:
-        raise HTTPException(status_code=400, detail="Usuário já existe")
-    return {"message": "Usuário registrado com sucesso"}
-    
-# Endpoint para login de usuário
+# Certifica-se de que o diretório "audios" existe
+os.makedirs(AUDIOS_DIR, exist_ok=True)
 
-@auth_router.post("/login")
-async def login(user: UserLogin = Body(...)):
+def processar_e_verificar_voz(login: str, arquivo) -> float:
     """
-    Autentica um usuário via e-mail e senha.
+    Processa o áudio recebido e retorna a pontuação de similaridade.
     """
-    authenticated = login_user(user.email, user.password)
-    if authenticated:
-        return {"message": "Login realizado com sucesso"}
-    else:
-        raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
-
-
-# Endpoint para Autenticação de usuário
-@auth_router.post("/verify-voice")
-async def verify_voice(email: EmailStr, file: UploadFile = File(...)):
-    print(f"Recebendo solicitação para o usuário: {email}")
-    if email not in user_embeddings:
-        print("Usuário não encontrado")
+    if login not in embeddings_usuarios:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     try:
-        audio_data, samplerate = sf.read(file.file)
-        print(f"Áudio recebido com taxa de amostragem: {samplerate}")
-        temp_audio_path = f"temp_{email}.wav"
-        sf.write(temp_audio_path, audio_data, samplerate)
-        print(f"Áudio salvo temporariamente em: {temp_audio_path}")
+        # Lê o arquivo de áudio enviado
+        dados_audio, taxa_amostragem = sf.read(arquivo.file)
+        print(f"Áudio recebido com taxa de amostragem: {taxa_amostragem}")
+        
+        # Define o caminho para salvar o áudio temporário
+        caminho_audio_temporario = os.path.join(AUDIOS_DIR, f"temp_{login}.wav")
+        sf.write(caminho_audio_temporario, dados_audio, taxa_amostragem)
+        print(f"Áudio salvo temporariamente em: {caminho_audio_temporario}")
 
-        similarity_score = ecapa_model.verify_speaker(temp_audio_path, user_embeddings[email])
-        print(f"Pontuação de similaridade: {similarity_score}")
+        # Calcula a pontuação de similaridade
+        pontuacao_similaridade = modelo_ecapa.verificar_falante(
+            caminho_audio_temporario, embeddings_usuarios[login]
+        )
+        print(f"Pontuação de similaridade: {pontuacao_similaridade}")
     except Exception as e:
         print(f"Erro durante o processamento: {e}")
         raise HTTPException(status_code=500, detail="Erro interno no servidor")
+    finally:
+        # Remove o arquivo temporário após o processamento
+        if os.path.exists(caminho_audio_temporario):
+            os.remove(caminho_audio_temporario)
+            print(f"Arquivo temporário removido: {caminho_audio_temporario}")
 
-    if similarity_score > 0.8:
-        return {"message": "Autenticação bem-sucedida", "score": similarity_score}
-    else:
-        raise HTTPException(status_code=401, detail="Autenticação falhou")
-
-"""
-para testar o endpoint:
-
-navegue até o repositório: cd /path/to/your/repo
-
-instale as dependências: pip install -r requirements.txt
-
-execute o servidor com o comando: uvicorn src.backend.main:app --reload
-
-use o seguinte comando para testar o endpoint de verificação de voz:
-curl -X POST "http://127.0.0.1:8000/auth/verify-voice"
--H "accept: application/json"
--H "Content-Type: multipart/form-data"
--F "email=user1"
--F "file=@path_to_audio.wav"
-
-ou 
-
-http://127.0.0.1:8000/docs
-try it out
-
-"""
+    return pontuacao_similaridade

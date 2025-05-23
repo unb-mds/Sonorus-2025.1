@@ -1,15 +1,18 @@
-from fastapi import FastAPI
-from src.backend.api.autenticacao import roteador_autenticacao
-from src.backend.database.database import initialize_db
+# src/backend/main.py
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+from database.db_connection import SessionLocal  # Importação atualizada!
 
-app = FastAPI(title="Voice Biometrics API")
+app = FastAPI()
 
-# Initialize database
-initialize_db()
+# Função para obter a sessão do banco
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-# Include authentication routes
-app.include_router(roteador_autenticacao, prefix="/auth", tags=["Authentication"])
-
-@app.get("/")
-def root():
-    return {"message": "Welcome to the Voice Biometrics API"}
+@app.get("/test-db")
+async def test_db(db: Session = Depends(get_db)):
+    return {"status": "Conectado ao PostgreSQL!"}

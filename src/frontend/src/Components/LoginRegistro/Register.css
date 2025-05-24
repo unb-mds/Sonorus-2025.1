@@ -48,6 +48,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: 0.3s;
+    font-family: 'Inter';
   }
   
   .btn-outline:hover {
@@ -91,6 +92,7 @@
     background-color: transparent;
     color: white;
     font-size: 15px;
+    font-family: 'Inter';
   }
   
   input::placeholder {
@@ -110,6 +112,7 @@
     flex-direction: column;
     justify-content: center;
     font-size: 16px;
+    font-family: 'Inter'
   }
   
   .btn-solid:hover {

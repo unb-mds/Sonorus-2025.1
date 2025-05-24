@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginRegistro from './Components/LoginRegistro/LoginRegistro';
+import Login from './Components/LoginRegistro/Login';
 import Register from './Components/LoginRegistro/Register';
 
 function App() {
@@ -7,8 +7,8 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<LoginRegistro />} />
-          <Route path="/login" element={<LoginRegistro />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
       </div>

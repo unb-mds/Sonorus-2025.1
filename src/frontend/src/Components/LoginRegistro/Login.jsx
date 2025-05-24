@@ -6,7 +6,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleCadastro = () => {
-        navigate('LoginRegisto/Register.jsx');
+        navigate('/register');
     };
 
     return (

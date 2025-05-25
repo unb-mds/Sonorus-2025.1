@@ -116,7 +116,7 @@
   }
   
   .btn-solid:hover {
-    background-color: #005cf7;
+    background-color: rgba(255, 255, 255, 0.2);
   }
   
   /* mensagem de erro */
@@ -140,11 +140,10 @@
 
   .btn-solid:disabled {
   background-color: #0066ff;
-  cursor: not-allowed;
   }
 
   .btn-solid:disabled:hover {
-  background-color: #005cf7;
+  background-color: rgba(255, 255, 255, 0.2);
   }
 
   .submit-error {

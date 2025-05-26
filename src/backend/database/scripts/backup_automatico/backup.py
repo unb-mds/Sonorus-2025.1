@@ -8,16 +8,16 @@ from googleapiclient.http import MediaFileUpload
 
 # Configurações
 DB_NAME = "biometria_vocal"
-DB_USER = "postgres"  # Ou seu usuário do PostgreSQL
+DB_USER = "postgres"
 BACKUP_DIR = os.path.join(os.path.dirname(__file__), "..", "backup_automatico")
 DRIVE_FOLDER_ID = "SEU_ID_DA_PASTA_NO_DRIVE"
-SERVICE_ACCOUNT_FILE = r"C:\caminho\para\credenciais.json"  # Caminho completo no Windows
+SERVICE_ACCOUNT_FILE = "/etc/backup_credentials/credenciais.json"  # Caminho Linux
 
 # Criar nome do arquivo com data
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 backup_file = os.path.join(BACKUP_DIR, f"backup_{timestamp}.dump")
 
-# Comando pg_dump para Windows
+# Comando pg_dump para Linux
 cmd = f'pg_dump -U {DB_USER} -d {DB_NAME} -F c -b -v -f "{backup_file}"'
 
 # Executar comando

@@ -14,6 +14,7 @@ DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DRIVE_FOLDER_ID = os.getenv("DRIVE_FOLDER_ID")
 SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE")
+BACKUP_DIR = os.getenv("BACKUP_DIR")
 
 # Criar nome do arquivo com data
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

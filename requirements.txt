@@ -7,3 +7,4 @@ soundfile
 passlib[bcrypt]
 pyjwt
 python-multipart
+python-dotenv

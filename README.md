@@ -53,6 +53,23 @@ Biometria-Vocal-2025.1/
 └── .gitignore
 ```
 
+## ⚙️ Variáveis de Ambiente
+
+O projeto utiliza variáveis de ambiente para armazenar configurações sensíveis e específicas do ambiente, como credenciais de banco de dados, chaves de API, diretórios de backup, entre outros.
+
+Antes de rodar o projeto, crie um arquivo `.env` na raiz do repositório com base no arquivo `env.example` fornecido. Preencha os valores conforme o seu ambiente.
+
+Exemplo de `env.example`:
+
+   DB_NAME=biometria_vocal
+   DB_USER=postgres
+   BACKUP_DIR=/caminho/para/backups
+   DRIVE_FOLDER_ID=SEU_ID_DA_PASTA_NO_DRIVE
+   SERVICE_ACCOUNT_FILE=/etc/backup_credentials/credenciais.json
+
+**Nunca suba seu arquivo `.env` para o repositório!**  
+O arquivo `.env` está listado no `.gitignore` para evitar o versionamento de informações sensíveis.
+
 ## 🚀 Como Executar
 1. **Clone o repositório:**
    ```bash
@@ -60,12 +77,16 @@ Biometria-Vocal-2025.1/
    cd Biometria-Vocal-2025.1
    ```
 
-2. **Navegue até o diretório do backend:**
+2. **Crie um .env na raiz do projeto**
+   touch .env
+   Edite o arquivo .env com suas configurações.
+
+3. **Navegue até o diretório do backend:**
    ```bash
    cd src/backend
    ```
 
-3. **Crie e ative um ambiente virtual (opcional, mas recomendado):**
+4. **Crie e ative um ambiente virtual (opcional, mas recomendado):**
    - No Windows:
      ```bash
      python -m venv venv
@@ -77,21 +98,21 @@ Biometria-Vocal-2025.1/
      source venv/bin/activate
      ```
 
-4. **Instale as dependências:**
+5. **Instale as dependências:**
    ```bash
    pip install -r requirements.txt
    ```
 
-5. **Inicie o servidor:**
+6. **Inicie o servidor:**
    ```bash
    uvicorn main:app --reload
    ```
 
-6. **Acesse a API:**
+7. **Acesse a API:**
    - Acesse a documentação interativa no navegador em: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
    - Ou veja a documentação alternativa em: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 
-7. **Encerrar o servidor:**
+8. **Encerrar o servidor:**
    - Pressione `Ctrl + C` no terminal para parar o servidor.
 
 

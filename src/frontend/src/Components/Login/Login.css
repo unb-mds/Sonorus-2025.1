@@ -1,0 +1,147 @@
+.blocoPreto{
+    display: flex;
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: #1F2634;
+    border-radius: 10px;
+    color: #FFFFFF;
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+    box-shadow: -4px 4px 20px 0px rgba(0,0,0,0.5);
+    background-color: rgba(31, 38, 52, 1);
+    border-radius: 50px;
+    overflow: hidden;;
+}
+
+.blocoPreto .form-box{
+    width: 50%;
+    height: 100%;
+    padding-left: 10%;
+    padding-top: 20%;
+}
+
+form h1 {
+    width: 115px;
+    font-family: var(--font-family-inter);
+    font-weight: 760;
+    font-size: 40px;
+    line-height: 40px;
+    color: #FFFFFF;
+    padding-left: 20%;
+}
+
+form .input-box{
+    position: relative;
+    width: 80%;
+    height: 30%;
+    margin: 10px 0;
+}
+
+.input-box input{
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    background: #1F2634;
+    border: 3px #FFFFFF;
+    border-radius: 10px;
+    outline: 3px solid rgba(255, 255, 255, 30%);
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+.esqueceu a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 15px;
+    display: flex;
+    margin: 0% 0 0 14%;
+}
+
+.esqueceu a:hover{
+    text-decoration: underline;
+}
+
+form button{
+    position: relative;
+    width: 150px;
+    height: 50px;
+    border: #FFFFFF;
+    border-radius: 10px;
+    background-color: #005CF7;
+    margin: 7% 0 0 14%;
+}
+
+.btn{
+    color: #FFFFFF;
+    font-family: var(--font-family-inter);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover{
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+  /* painel esquerdo com conteúdo centralizado */
+  .blocoAzul {
+    width: 65%;
+    height: 100%;
+    background: linear-gradient(180deg, #005cf7 0%, #003691 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-radius: 70% 10% 10% 70% / 60% 10% 10% 60%;
+  }
+
+  .blocoAzul h1 {
+    font-size: 40px;
+    font-weight: 760;
+    margin-bottom: 12px;
+    margin-left: 10%;
+    font-family: var(--font-family-inter);
+    color: #FFFFFF;
+  }
+
+  .blocoAzul p {
+    font-size: 16px;
+    font-weight: 450;
+    margin-left: 1px;
+    margin-bottom: 10px;
+  }
+
+  .secao.Registro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+  .btntransp-outline {
+    width: 150px;
+    height: 50px;
+    border: 2px solid #FFFFFF;
+    background: transparent;
+    color: #FFFFFF;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: var(--font-family-inter);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 125px;
+    transition: 0.3s;
+  }
+  
+  .btntransp-outline:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }

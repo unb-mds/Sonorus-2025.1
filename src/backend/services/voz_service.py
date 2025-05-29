@@ -81,9 +81,9 @@ def get_embedding_usuario_cache(usuario_id: int, db: Session):
     if embedding_cache:
         return np.array(json.loads(embedding_cache))
 
-    amostra = db.query(AmostraVoz).filter_by(usuario_id=usuario_id).order_by(AmostraVoz.id.desc()).first()
-    if amostra:
-        embedding = np.array(amostra.embedding)
+    usuario = db.query(Usuario).filter_by(id=usuario_id).first()
+    if usuario and usuario.embedding:
+        embedding = np.array(usuario.embedding)
         redis_client.setex(redis_key, 10800, json.dumps(embedding.tolist()))
         return embedding
     return None

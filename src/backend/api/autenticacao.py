@@ -16,14 +16,14 @@ async def registrar(usuario: UsuarioRegistro, db: Session = Depends(get_db)):
 
 @roteador_autenticacao.post("/login")
 async def login(
-    username: str = Form(...),
+    email: str = Form(...),
     password: str = Form(...),
     db: Session = Depends(get_db)
 ):
-    autenticado = autenticar_usuario(username, password, db)
+    autenticado = autenticar_usuario(email, password, db)
     if autenticado:
         from src.backend.services.business_logic import criar_token_acesso
-        token = criar_token_acesso({"sub": username})
+        token = criar_token_acesso({"sub": email})
         return {"access_token": token, "token_type": "bearer"}
     else:
         raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")

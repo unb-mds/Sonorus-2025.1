@@ -1,5 +1,5 @@
-users_db = {}
+# Apenas para testes locais
+usuarios_db = {}
 
 def initialize_db():
-    # Placeholder for initializing a real database
-    print("Database initialized")
+    print("Banco de dados simulado inicializado (apenas para testes)")

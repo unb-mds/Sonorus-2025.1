@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: sonorus-app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://biometria_user:senha_segura@db:5432/biometria_vocal
+    volumes:
+      - ./audios:/app/audios
+      - ./pretrained_models:/app/pretrained_models
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    container_name: sonorus-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=biometria_user
+      - POSTGRES_PASSWORD=senha_segura
+      - POSTGRES_DB=biometria_vocal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/backend/database/scripts:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

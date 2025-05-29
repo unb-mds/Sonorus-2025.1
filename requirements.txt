@@ -7,3 +7,5 @@ soundfile
 passlib[bcrypt]
 pyjwt
 python-multipart
+sqlalchemy
+psycopg2-binary

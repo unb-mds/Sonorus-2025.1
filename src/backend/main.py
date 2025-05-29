@@ -1,7 +1,7 @@
 # src/backend/main.py
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from database.db_connection import SessionLocal  # Importação atualizada!
+from backend.database.db_connection import SessionLocal  # Importação atualizada!
 
 app = FastAPI()
 

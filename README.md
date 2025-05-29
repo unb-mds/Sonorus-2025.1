@@ -134,7 +134,7 @@ ECAPA-TDNN do speechbrain/spkrec-ecapa-voxceleb
 
 | Nome                | GitHub        |
 |---------------------|-------------------------|
-|Douglas Wilson       | [Dodgelinhass](https://github.com/Dodgelinhass) |
+|Douglas Wilson       | [Dodeglinhass](https://github.com/Dodeglinhass) |
 |Daniel Teles         | [dtdanielteles](https://github.com/dtdanielteles) |
 |José Joaquim         | [Joaquim-SNeto](https://github.com/Joaquim-SNeto) |
 |Luan Vinícius        | [luannvi](https://github.com/luannvi) |

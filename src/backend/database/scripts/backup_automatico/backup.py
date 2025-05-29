@@ -5,13 +5,16 @@ from datetime import datetime
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Configurações
-DB_NAME = "biometria_vocal"
-DB_USER = "postgres"
-BACKUP_DIR = os.path.join(os.path.dirname(__file__), "..", "backup_automatico")
-DRIVE_FOLDER_ID = "SEU_ID_DA_PASTA_NO_DRIVE"
-SERVICE_ACCOUNT_FILE = "/etc/backup_credentials/credenciais.json"  # Caminho Linux
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DRIVE_FOLDER_ID = os.getenv("DRIVE_FOLDER_ID")
+SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE")
+BACKUP_DIR = os.getenv("BACKUP_DIR")
 
 # Criar nome do arquivo com data
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

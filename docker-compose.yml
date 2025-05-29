@@ -8,8 +8,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    environment:
-      - DATABASE_URL=postgresql://biometria_user:senha_segura@db:5432/biometria_vocal
+    env_file:
+      - .env
     volumes:
       - ./audios:/app/audios
       - ./pretrained_models:/app/pretrained_models
@@ -20,10 +20,8 @@ services:
     container_name: sonorus-db
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_USER=biometria_user
-      - POSTGRES_PASSWORD=senha_segura
-      - POSTGRES_DB=biometria_vocal
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./src/backend/database/scripts:/docker-entrypoint-initdb.d

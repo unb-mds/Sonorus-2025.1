@@ -8,3 +8,12 @@ passlib[bcrypt]
 pyjwt
 python-multipart
 python-dotenv
+sqlalchemy
+psycopg2-binary
+python-jose
+google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+redis
+redis-server

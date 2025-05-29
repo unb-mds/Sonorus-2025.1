@@ -67,6 +67,8 @@ Exemplo de `env.example`:
    DRIVE_FOLDER_ID=SEU_ID_DA_PASTA_NO_DRIVE
    SERVICE_ACCOUNT_FILE=/etc/backup_credentials/credenciais.json
 
+   DATABASE_URL=postgresql://postgres:sua_senha@localhost:5432/biometria_vocal
+
 **Nunca suba seu arquivo `.env` para o repositório!**  
 O arquivo `.env` está listado no `.gitignore` para evitar o versionamento de informações sensíveis.
 

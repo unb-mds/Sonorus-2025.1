@@ -1,75 +1,29 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File
-from pydantic import constr
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Form
+from sqlalchemy.orm import Session
+from src.backend.database.db_connection import get_db
 from src.backend.services.autenticacao_voz import processar_e_verificar_voz
-from src.backend.services.business_logic import register_user, login_user
+from src.backend.services.business_logic import registrar_usuario, autenticar_usuario
 from src.backend.models.modelos import UsuarioRegistro, UsuarioLogin
 
 roteador_autenticacao = APIRouter()
 
-# Endpoint para registro de usuário
 @roteador_autenticacao.post("/registrar")
-async def registrar(usuario: UsuarioRegistro):
-    sucesso = registrar_usuario(usuario)
+async def registrar(usuario: UsuarioRegistro, db: Session = Depends(get_db)):
+    sucesso = registrar_usuario(usuario, db)
     if not sucesso:
         raise HTTPException(status_code=400, detail="Usuário já existe")
     return {"mensagem": "Usuário registrado com sucesso"}
 
-# Endpoint para login de usuário
 @roteador_autenticacao.post("/login")
-async def login(usuario: UsuarioLogin):
-    autenticado = autenticar_usuario(usuario.email, usuario.senha)
+async def login(
+    username: str = Form(...),
+    password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    autenticado = autenticar_usuario(username, password, db)
     if autenticado:
-        return {"mensagem": "Login realizado com sucesso"}
+        from src.backend.services.business_logic import criar_token_acesso
+        token = criar_token_acesso({"sub": username})
+        return {"access_token": token, "token_type": "bearer"}
     else:
         raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
-
-# Endpoint para autenticação por voz
-@roteador_autenticacao.post("/verificar-voz")
-async def verificar_voz(login: str, arquivo: UploadFile = File(...)):
-    """
-    Endpoint para autenticação por voz.
-    """
-    try:
-        pontuacao_similaridade = processar_e_verificar_voz(login, arquivo)
-    except HTTPException as e:
-        raise e
-
-    # Verifica se a pontuação de similaridade é suficiente para autenticação
-    if pontuacao_similaridade > 0.8:
-        return {
-            "mensagem": "Autenticação bem-sucedida",
-            "pontuacao_similaridade": round(pontuacao_similaridade * 100, 2)
-        }
-    else:
-        # Retorna erro 401 se a pontuação for insuficiente
-        raise HTTPException(
-            status_code=401,
-            detail={
-                "mensagem": "Autenticação falhou",
-                "pontuacao_similaridade": round(pontuacao_similaridade * 100, 2)
-            }
-        )
-
-"""
-para testar o endpoint de autenticação por voz, siga os passos abaixo:
-
-navegue até o repositório: cd /path/to/your/repo
-
-instale as dependências: pip install -r requirements.txt
-
-execute o servidor com o comando: uvicorn src.backend.main:app --reload
-
-use o seguinte comando para testar o endpoint de verificação de voz:
-curl -X POST "http://127.0.0.1:8000/auth/verify-voice"
--H "accept: application/json"
--H "Content-Type: multipart/form-data"
--F "email=user1"
--F "file=@path_to_audio.wav"
-
-ou 
-
-http://127.0.0.1:8000/docs
-auth/verificar voz
-try it out
-
-"""

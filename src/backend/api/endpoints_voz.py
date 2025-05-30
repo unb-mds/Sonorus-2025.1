@@ -32,7 +32,7 @@ async def registrar_voz(
         logger.info(f"Voz registrada com sucesso para usuário: {usuario.email}")
         return {"mensagem": "Voz registrada com sucesso!", "embedding": embedding.tolist()}
     except Exception as e:
-        logger.error(f"Erro ao registrar voz para usuário {usuario.email}: {e}")
+        logger.exception(f"Erro ao registrar voz para usuário {usuario.email}: {e}")
         raise HTTPException(status_code=500, detail=f"Erro ao registrar voz: {e}")
 
 @roteador_autenticacao.post("/autenticar-voz")

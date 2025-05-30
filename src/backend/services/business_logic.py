@@ -81,7 +81,7 @@ def obter_usuario_atual(token: str = Depends(oauth2_scheme), db: Session = Depen
 def validar_token_temporario(token: str, acao_esperada: str, db: Session):
     """
     Valida um token JWT temporário e verifica se a ação esperada corresponde.
-    Retorna o usuário se válido, lança HTTPException caso contrário.
+    Retorna o usuário se válido, ou None caso contrário.
     """
     try:
         payload = jwt.decode(token, CHAVE_SECRETA, algorithms=[ALGORITMO])

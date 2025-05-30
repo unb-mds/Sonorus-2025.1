@@ -48,18 +48,6 @@ def criar_token_acesso(dados: dict):
     token_jwt = jwt.encode(dados_para_codificar, CHAVE_SECRETA, algorithm=ALGORITMO)
     return token_jwt
 
-def criar_token_temporario(dados: dict, minutos_expiracao: int = 10):
-    """
-    Cria um token JWT temporário, usado para registrar ou autenticar voz.
-    Por padrão, expira em 10 minutos.
-    """
-    from datetime import datetime, timedelta
-    dados_para_codificar = dados.copy()
-    expira = datetime.utcnow() + timedelta(minutes=minutos_expiracao)
-    dados_para_codificar.update({"exp": expira})
-    token_jwt = jwt.encode(dados_para_codificar, CHAVE_SECRETA, algorithm=ALGORITMO)
-    return token_jwt
-
 def obter_usuario_atual(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     excecao_credenciais = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -73,25 +61,7 @@ def obter_usuario_atual(token: str = Depends(oauth2_scheme), db: Session = Depen
             raise excecao_credenciais
     except JWTError:
         raise excecao_credenciais
-    usuario = db.query(Usuario).filter_by(email=email).first()
+    usuario = db.query(Usuario).filter_by(email=email).first()  # <-- corrigido aqui
     if usuario is None:
         raise excecao_credenciais
     return usuario
-
-def validar_token_temporario(token: str, acao_esperada: str, db: Session):
-    """
-    Valida um token JWT temporário e verifica se a ação esperada corresponde.
-    Retorna o usuário se válido, lança HTTPException caso contrário.
-    """
-    try:
-        payload = jwt.decode(token, CHAVE_SECRETA, algorithms=[ALGORITMO])
-        email = payload.get("sub")
-        acao = payload.get("acao")
-        if not email or acao != acao_esperada:
-            return None
-        usuario = db.query(Usuario).filter_by(email=email).first()
-        if not usuario:
-            return None
-        return usuario
-    except JWTError:
-        return None

@@ -58,15 +58,39 @@ Antes de rodar o projeto, crie um arquivo `.env` na raiz do repositório com bas
 Exemplo de `.env`:
 
 ```
-JWT_CHAVE_SECRETA=sua_chave
+DB_NAME=biometria_vocal
+DB_USER=postgres
+BACKUP_DIR=/caminho/para/backups
+DRIVE_FOLDER_ID=SEU_ID_DA_PASTA_NO_DRIVE
+SERVICE_ACCOUNT_FILE=/etc/backup_credentials/credenciais.json
+
+# testar o banco de dados
+DATABASE_URL=postgresql://biometria_user:senha_segura@db:5432/biometria_vocal
+
+#Para ambiente Docker, use 'db' como host:
+DATABASE_URL=postgresql://biometria_user:senha_segura@db:5432/biometria_vocal
+
+POSTGRES_USER=biometria_user
+POSTGRES_PASSWORD=senha_segura
+POSTGRES_DB=biometria_vocal
+
+JWT_CHAVE_SECRETA=sua_chave_secreta_super_segura
 JWT_ALGORITMO=HS256
-DATABASE_URL=postgresql://postgres:sua_senha@localhost:5432/sonorus
+
 REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_DB=0
+REDIS_PASSWORD=SENHA
+
 ```
 
 **Nunca suba seu arquivo `.env` para o repositório!**  
+
+## Pré-requisitos
+
+- Docker e Docker Compose instalados na máquina.
+  - [Guia oficial de instalação do Docker](https://docs.docker.com/engine/install/)
+  - [Guia oficial de instalação do Docker Compose](https://docs.docker.com/compose/install/)
 
 ## 🚀 Como Executar
 

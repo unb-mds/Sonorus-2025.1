@@ -1,4 +1,6 @@
-# 🔐 Voice Biometrics API
+# 🔐 Sonorus
+
+![Sonorus](src/frontend/public/sororus_menor.png)
 
 Este projeto implementa uma **API de reconhecimento biométrico por voz** integrada a um sistema de login tradicional, utilizando **SpeechBrain** e **FastAPI**. Agora, o fluxo está completo: o usuário pode se registrar, autenticar com senha e, em seguida, validar sua identidade por biometria de voz. O sistema utiliza **PostgreSQL** para persistência e **Redis** para cache de embeddings, garantindo performance e escalabilidade.
 

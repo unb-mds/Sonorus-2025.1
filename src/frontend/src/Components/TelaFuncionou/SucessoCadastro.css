@@ -1,0 +1,40 @@
+.sucesso-card {
+  width: 800px;
+  height: 600px;
+  background-color: #1d1f27;
+  border-radius: 10px;
+  padding: 40px 60px;
+  text-align: center;
+  box-shadow: -4px 4px 20px 0px rgba(0,0,0,0.5);
+  color: #FFFFFF;
+}
+
+.sucesso-title {
+  font-size: 40px;
+  font-weight: 750;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+.sucesso-icon .circle {
+  width: 250px;
+  height: 250px;
+  border: 6px solid #0076ff; 
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 50px auto 50px;
+}
+
+.check {
+  margin-bottom: 25px;
+  color: #0076ff; 
+  font-size: 200px;
+  line-height: 1;
+}
+
+.sucesso-message {
+  font-size: 20px;
+  color: #cccccc;
+}

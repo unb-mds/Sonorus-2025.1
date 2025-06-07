@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Components/Login/Login';
 import Register from './Components/Registro/Register';
 import ErroCadastro from './Components/TelaErro/ErroCadastro';
+import ErroLeitura from './Components/TelaErro/ErroLeitura';
 import SucessoCadastro from './Components/TelaFuncionou/SucessoCadastro';
 import VozCadastrada from './Components/TelaFuncionou/VozCadastrada';
 import VozCadastro from './Components/TelaLeituraVoz/VozCadastro';
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/erroCadastro" element={<ErroCadastro />} />
+          <Route path="/erroLeitura" element={<ErroLeitura />} />
           <Route path="/sucessocadastro" element={<SucessoCadastro />} />
           <Route path="/vozcadastrada" element={<VozCadastrada />} />
           <Route path="/cadastro-voz" element={<VozCadastro />} />

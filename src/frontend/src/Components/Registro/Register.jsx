@@ -127,7 +127,7 @@ const Register = () => {
       });
       } catch (error) {
         console.error('Erro no cadastro:', error);
-        navigate('/erroCadastro',);
+        navigate('/erroCadastro');
       } finally {
         setIsSubmitting(false);
       }

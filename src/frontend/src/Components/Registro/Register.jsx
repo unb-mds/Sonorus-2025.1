@@ -125,12 +125,12 @@ const Register = () => {
           userId: (await response.json()).user_id // supondo que a API retorne o ID
         } 
       });
-    } catch (error) {
-      console.error('Erro no cadastro:', error);
-      setSubmitError(error.message || 'Erro ao processar cadastro');
-    } finally {
-      setIsSubmitting(false);
-    }
+      } catch (error) {
+        console.error('Erro no cadastro:', error);
+        navigate('/erroCadastro');
+      } finally {
+        setIsSubmitting(false);
+      }
   };
 
   // navegação para a página de login

@@ -1,0 +1,132 @@
+/* Container geral */
+.containerr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 850px;
+  height: 600px;
+  background-color: #1f2634;
+  border-radius: 50px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  color: white;
+  font-family: 'Inter';
+  margin: auto;
+  padding: 20px;
+}
+
+/* Conteúdo centralizado */
+.conteudo {
+  text-align: center;
+  width: 100%;
+}
+
+/* Título */
+.titulo {
+  font-size: 38px;
+  font-weight: 900;
+  margin-bottom: 70px;
+}
+
+/* Instrução abaixo do botão */
+.instrucao {
+  font-size: 17px;
+  margin-top: 70px;
+  opacity: 0.9;
+}
+
+/* Botão e ondas */
+.mic-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+/* Botão de microfone */
+.mic-button {
+  width: 135px;
+  height: 135px;
+  background-color: #2563eb;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mic-button:disabled {
+  opacity: 0.6;
+}
+
+/* Ícone do microfone */
+.mic-icon {
+  width: 85%;
+  height: 85%;
+  color: white;
+}
+
+/* Ondas */
+.ondas {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  z-index: 0;
+}
+
+.lado-esquerdo {
+  flex-direction: row-reverse;
+}
+
+.lado-direito {
+  flex-direction: row;
+}
+
+.onda {
+  width: 4px;
+  background-color: #3b82f6;
+  animation: bounce 1s infinite ease-in-out;
+  border-radius: 2px;
+}
+
+/* Animação das ondas */
+@keyframes bounce {
+  0%, 100% {
+    transform: scaleY(0.6);
+  }
+  50% {
+    transform: scaleY(1.4);
+  }
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .containerr {
+    width: 100%;
+    height: auto;
+    padding: 2rem 1rem;
+    border-radius: 30px;
+    flex-direction: column;
+  }
+
+  .titulo {
+    font-size: 1.3rem;
+  }
+
+  .mic-wrapper {
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .instrucao {
+    font-size: 0.85rem;
+  }
+}

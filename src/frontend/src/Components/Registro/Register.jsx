@@ -17,10 +17,23 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  // validação do email
-  const validateEmail = (email) => {
+  // validação básica do formato do email
+  const validateEmailFormat = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
+  };
+
+  // verifica se o domínio do email existe e é válido
+  const validateEmailDomain = async (email) => {
+    try {
+      const domain = email.split('@')[1];
+      const response = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+      const data = await response.json();
+      return data.Answer && data.Answer.length > 0;
+    } catch (error) {
+      console.error('Erro ao verificar domínio:', error);
+      return false;
+    }
   };
 
   // verifica se o email já existe na API
@@ -65,8 +78,16 @@ const Register = () => {
       return;
     }
     
-    if (!validateEmail(email)) {
+    if (!validateEmailFormat(email)) {
       setEmailError('Insira um endereço de email válido');
+      setIsEmailValid(false);
+      return;
+    }
+
+    // Verifica se o domínio existe
+    const isDomainValid = await validateEmailDomain(email);
+    if (!isDomainValid) {
+      setEmailError('O domínio do email não existe ou não está configurado para receber emails');
       setIsEmailValid(false);
       return;
     }
@@ -125,12 +146,12 @@ const Register = () => {
           userId: (await response.json()).user_id // supondo que a API retorne o ID
         } 
       });
-      } catch (error) {
-        console.error('Erro no cadastro:', error);
-        navigate('/erroCadastro');
-      } finally {
-        setIsSubmitting(false);
-      }
+    } catch (error) {
+      console.error('Erro no cadastro:', error);
+      navigate('/erroCadastro');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // navegação para a página de login

@@ -2,7 +2,9 @@
 
 ![Sonorus](src/frontend/public/sororus_menor.png)
 
-Este projeto implementa uma **API de reconhecimento biométrico por voz** integrada a um sistema de login tradicional, utilizando **SpeechBrain** e **FastAPI**. Agora, o fluxo está completo: o usuário pode se registrar, autenticar com senha e, em seguida, validar sua identidade por biometria de voz. O sistema utiliza **PostgreSQL** para persistência e **Redis** para cache de embeddings, garantindo performance e escalabilidade.
+Sonorus é uma **API de reconhecimento biométrico por voz** integrada a um sistema de login tradicional, utilizando **SpeechBrain**, **FastAPI** e **PostgreSQL**. O usuário pode se registrar, autenticar com senha e validar sua identidade por biometria de voz. O sistema utiliza **Redis** para cache de embeddings, garantindo performance e escalabilidade.
+
+---
 
 ## 📎 Links Úteis
 
@@ -12,19 +14,17 @@ Este projeto implementa uma **API de reconhecimento biométrico por voz** integr
 - [Arquitetura](./docs/arquitetura_software/)
 - [Requisitos](./docs/requisitos.md)
 
+---
+
 ## 🧠 Tecnologias Utilizadas
 
-**Frontend**
-- HTML, CSS, TailwindCSS, JavaScript, ReactJs
+- **Backend:** FastAPI, SQLAlchemy, SpeechBrain, Redis, JWT, bcrypt
+- **Frontend:** ReactJS, CSS
+- **Banco de Dados:** PostgreSQL
+- **Cache:** Redis
+- **DevOps:** Docker, Docker Compose
 
-**Backend**
-- Python, FastAPI, SpeechBrain, SQLAlchemy
-
-**Banco de dados**
-- PostgreSQL
-
-**Cache**
-- Redis
+---
 
 ## 📁 Estrutura do Projeto
 
@@ -40,134 +40,165 @@ Biometria-Vocal-2025.1/
 │   │   ├── main.py
 │   │   └── requirements.txt
 │   ├── frontend/
-│   │   ├── CSS/
-│   │   ├── HTML/
-│   │   └── JS/
+│   │   ├── src/
+│   │   ├── public/
+│   │   └── package.json
 ├── README.md
 ├── docs/
 │   ├── arquitetura_software/
 │   ├── atas/
 │   └── estudos/
+├── .env.example
+├── Dockerfile
+├── docker-compose.yml
 └── .gitignore
 ```
 
+---
+
 ## ⚙️ Variáveis de Ambiente
 
-O projeto utiliza variáveis de ambiente para armazenar configurações sensíveis e específicas do ambiente, como credenciais de banco de dados, chaves de API, diretórios de backup, entre outros.
+Crie um arquivo `.env` na raiz do projeto com base no `.env.example` fornecido.  
+**Nunca suba seu arquivo `.env` para o repositório!**
 
-Antes de rodar o projeto, crie um arquivo `.env` na raiz do repositório com base no arquivo `env.example` fornecido. Preencha os valores conforme o seu ambiente.
-
-Exemplo de `.env`:
+Exemplo:
 
 ```
-DB_NAME=biometria_vocal
-DB_USER=postgres
-BACKUP_DIR=/caminho/para/backups
-DRIVE_FOLDER_ID=SEU_ID_DA_PASTA_NO_DRIVE
-SERVICE_ACCOUNT_FILE=/etc/backup_credentials/credenciais.json
-
-# testar o banco de dados
-DATABASE_URL=postgresql://biometria_user:senha_segura@db:5432/biometria_vocal
-
-#Para ambiente Docker, use 'db' como host:
-DATABASE_URL=postgresql://biometria_user:senha_segura@db:5432/biometria_vocal
-
-POSTGRES_USER=biometria_user
-POSTGRES_PASSWORD=senha_segura
-POSTGRES_DB=biometria_vocal
-
+# Backend
+DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/sonorus
 JWT_CHAVE_SECRETA=sua_chave_secreta_super_segura
 JWT_ALGORITMO=HS256
 
+# Redis (opcional)
 REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_DB=0
-REDIS_PASSWORD=SENHA
+REDIS_PASSWORD=
 
+# Frontend
+REACT_APP_API_URL=http://localhost:8000/api
 ```
 
-**Nunca suba seu arquivo `.env` para o repositório!**  
+---
 
-## Pré-requisitos
+## 🚀 Como Executar Localmente
 
-- Docker e Docker Compose instalados na máquina.
-  - [Guia oficial de instalação do Docker](https://docs.docker.com/engine/install/)
-  - [Guia oficial de instalação do Docker Compose](https://docs.docker.com/compose/install/)
+### 1. Clone o repositório
 
-## 🚀 Como Executar
+```bash
+git clone https://github.com/unb-mds/Biometria-Vocal-2025.1.git
+cd Biometria-Vocal-2025.1
+```
 
-1. **Clone o repositório:**
-   ```bash
-   git clone https://github.com/unb-mds/Biometria-Vocal-2025.1.git
-   cd Biometria-Vocal-2025.1
-   ```
+### 2. Configure o arquivo `.env`
 
-2. **Crie e configure o arquivo `.env` na raiz do projeto.**
+Copie `.env.example` para `.env` e ajuste as variáveis conforme seu ambiente.
 
-3. **Navegue até o diretório do backend:**
-   ```bash
-   cd src/backend
-   ```
+### 3. Suba o banco de dados PostgreSQL
 
-4. **Crie e ative um ambiente virtual:**
-   - No Linux/Mac:
-     ```bash
-     python3 -m venv venv
-     source venv/bin/activate
-     ```
-   - No Windows:
-     ```bash
-     python -m venv venv
-     venv\Scripts\activate
-     ```
+Se for usar localmente, instale o PostgreSQL e crie o banco:
 
-5. **Instale as dependências:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+sudo -u postgres psql
+CREATE DATABASE sonorus;
+\q
+psql -U postgres -d sonorus -f src/backend/database/scripts/create_tables.sql
+```
 
-6. **Inicie o Redis (se ainda não estiver rodando):**
-   ```bash
-   redis-server
-   ```
+### 4. (Opcional) Suba o Redis
 
-7. **Inicie o servidor:**
-   ```bash
-   uvicorn src.backend.main:app --reload
-   ```
+```bash
+redis-server
+```
 
-8. **Acesse a API:**
-   - Documentação Swagger: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-   - Documentação Redoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+### 5. Instale as dependências do backend
+
+```bash
+cd src/backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 6. Instale as dependências do frontend
+
+```bash
+cd ../../frontend
+npm install
+```
+
+### 7. Inicie o backend
+
+```bash
+cd ../backend
+uvicorn main:app --reload
+```
+Ou, se estiver na raiz do projeto:
+```bash
+uvicorn src.backend.main:app --reload
+```
+
+### 8. Inicie o frontend
+
+```bash
+cd ../frontend
+npm start
+```
+
+### 9. Acesse a aplicação
+
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
+- **Backend (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+## 🐳 Como Executar com Docker
+
+### 1. Build e up dos containers
+
+```bash
+docker-compose up --build
+```
+
+### 2. Serviços disponíveis
+
+- **Backend:** http://localhost:8000
+- **Frontend:** http://localhost:3000
+- **PostgreSQL:** localhost:5432 (usuário/senha conforme `.env`)
+- **Redis:** localhost:6379
+
+### 3. Parar os containers
+
+```bash
+docker-compose down
+```
+
+---
 
 ## 🔊 Como Usar
 
 ### ▶️ Registro de Usuário
 
-- Envie uma requisição para `/registrar` com nome, email e senha.
-
 ### ▶️ Login
-
-- Envie uma requisição para `/login` com email e senha para receber o token JWT.
 
 ### ▶️ Registro de Voz
 
-- Após login, envie um arquivo `.wav` (mono, 16kHz, 16 bits) para `/registrar-voz` com o token JWT no header.
-- Use o script `src/backend/utils/gravar_wav.py` para gravar o áudio no formato correto.
-
 ### ▶️ Autenticação por Voz
 
-- Envie um arquivo `.wav` para `/autenticar-voz` com o token JWT no header.
-- O sistema compara o embedding do áudio enviado com o embedding salvo.
+---
 
 ## 🧪 Modelo Usado
 
 - ECAPA-TDNN do speechbrain/spkrec-ecapa-voxceleb
 
+---
+
 ## 📂 Armazenamento
 
 - Embeddings de voz são armazenados no campo `embedding` da tabela `usuario` no PostgreSQL.
 - Embeddings recentes são cacheados no Redis para acelerar autenticações.
+
+---
 
 ## 🛠️ Scripts Úteis
 
@@ -211,3 +242,17 @@ Veja o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para saber como contribuir.
 |Paulo Henrique       | [Pauloswimming](https://github.com/Pauloswimming) |
 |Paulo Nery           | [Pnery2004](https://github.com/Pnery2004) |
 |Rafael Barbosa       | [rafaelbdmelo117](https://github.com/rafaelbdmelo117) |
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+## 📬 Contato
+
+Dúvidas ou sugestões? Abra uma issue ou entre em contato com os mantenedores do projeto.
+
+---

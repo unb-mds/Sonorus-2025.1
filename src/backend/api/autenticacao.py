@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 from src.backend.database.db_connection import get_db
 from src.backend.services.business_logic import registrar_usuario, autenticar_usuario, criar_token_temporario
 from src.backend.models.modelos import UsuarioRegistro
+from src.backend.models.modelos import Usuario
+from src.backend.services.business_logic import criar_token_acesso
+
 
 logger = logging.getLogger("autenticacao_api")
 
@@ -38,3 +41,13 @@ async def login(
         "mensagem": "Senha correta. Autentique-se por voz para concluir o login.",
         "pre_auth_token": pre_auth_token
     }
+    usuario = db.query(Usuario).filter(Usuario.email == email).first()
+    if not usuario or usuario.senha != password:
+        logger.info(f"Tentativa de login falhou para email: {email}")
+        raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
+    logger.info(f"Login de senha bem-sucedido para email: {email}")
+    access_token = criar_token_acesso({"sub": usuario.email})
+    return {
+        "mensagem": "Login realizado com sucesso",
+        "access_token": access_token
+        }

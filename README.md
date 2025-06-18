@@ -107,15 +107,15 @@ Copie `.env.example` para o seu `.env` e ajuste as variáveis conforme seu ambie
 após ativar seu ambiente virtual, navegue até a raiz do projeto e rode:
 
   #### Para o backend:
-    ```bash
-    pip install -r requirements.txt
-    ```
+  ```bash
+  pip install -r requirements.txt
+  ```
 
-  ### Para o frontend:
-    ```bash
-    cd ../../frontend
-    npm install
-    ```
+  #### Para o frontend:
+  ```bash
+  cd Sonorus-2025.1/src/frontend
+  npm install
+  ```
   
 
 ### 5. Suba o banco de dados PostgreSQL

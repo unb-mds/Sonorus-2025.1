@@ -33,13 +33,18 @@ const Register = () => {
         },
         body: JSON.stringify({ email }),
       });
-      if (!response.ok) return false;
-      const data = await response.json();
-      return data.exists;
-    } catch (error) {
+      if (!response.ok) {
+      console.error('Erro ao verificar email:', response.status);
       return false;
     }
-  };
+
+    const data = await response.json();
+    return data.exists;  // Supondo que o backend retorne { exists: true/false }
+  } catch (error) {
+    console.error('Erro na requisição checkEmailExists:', error);
+    return false;
+  }
+};
 
   const handleChange = (e) => {
     const { name, value } = e.target;

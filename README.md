@@ -86,17 +86,41 @@ REACT_APP_API_URL=http://localhost:8000/api
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/unb-mds/Biometria-Vocal-2025.1.git
-cd Biometria-Vocal-2025.1
+git clone github.com/unb-mds/Sonorus-2025.1
+cd Sonorus-2025.1
 ```
 
-### 2. Configure o arquivo `.env`
+### 2. Crie e ative um ambiente virtual
 
-Copie `.env.example` para `.env` e ajuste as variáveis conforme seu ambiente.
+```bash
+python3 -m venv venv (criar)
+source venv/bin/activate (ativar)
+```
 
-### 3. Suba o banco de dados PostgreSQL
+### 3. Crie e Configure o arquivo `.env` na raiz da pasta
 
-Se for usar localmente, instale o PostgreSQL e crie o banco:
+Crie um arquivo .env na raíz do projeto
+Copie `.env.example` para o seu `.env` e ajuste as variáveis conforme seu ambiente.
+
+### 4. Instale as dependências do projeto
+
+após ativar seu ambiente virtual, navegue até a raiz do projeto e rode:
+
+  #### Para o backend:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+  ### Para o frontend:
+    ```bash
+    cd ../../frontend
+    npm install
+    ```
+  
+
+### 5. Suba o banco de dados PostgreSQL
+
+Se for usar localmente, crie o banco:
 
 ```bash
 sudo -u postgres psql
@@ -105,43 +129,25 @@ CREATE DATABASE sonorus;
 psql -U postgres -d sonorus -f src/backend/database/scripts/create_tables.sql
 ```
 
-### 4. (Opcional) Suba o Redis
+### 6. (Opcional) Suba o Redis
 
 ```bash
 redis-server
 ```
 
-### 5. Instale as dependências do backend
-
-```bash
-cd src/backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### 6. Instale as dependências do frontend
-
-```bash
-cd ../../frontend
-npm install
-```
-
 ### 7. Inicie o backend
 
-```bash
-cd ../backend
-uvicorn main:app --reload
-```
-Ou, se estiver na raiz do projeto:
+Com o ambiente virtual ativo, navegue até a raiz do projeto:
 ```bash
 uvicorn src.backend.main:app --reload
 ```
 
 ### 8. Inicie o frontend
 
+Com o ambiente virtual ativo, navegue até a raiz do projeto:
+
 ```bash
-cd ../frontend
+cd src/frontend
 npm start
 ```
 

@@ -3,3 +3,5 @@ __pycache__
 .env
 .tmp.driveupload
 pretrained_models/
+SonorusVenv/
+package-lock.json

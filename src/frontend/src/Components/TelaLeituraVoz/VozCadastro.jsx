@@ -26,7 +26,7 @@ const LeituraVoz = () => {
       const formData = new FormData();
       formData.append('audio', audioBlob);
 
-      await fetch('http://localhost:8000/registrar-voz', {
+      await fetch('http://localhost:8000/enviar-audio', {
         method: 'POST',
         body: formData,
       });

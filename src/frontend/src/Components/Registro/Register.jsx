@@ -105,11 +105,12 @@ const Register = () => {
       navigate('/cadastro-voz', { 
         state: { email: formData.email }
       });
-    } catch (error) {
-      setSubmitError(error.message || 'Erro ao processar cadastro');
-    } finally {
-      setIsSubmitting(false);
-    }
+      } catch (error) {
+        console.error('Erro no cadastro:', error);
+        navigate('/erroCadastro');
+      } finally {
+        setIsSubmitting(false);
+      }
   };
 
   const handleLoginClick = () => {

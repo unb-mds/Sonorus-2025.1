@@ -82,3 +82,14 @@ def check_email(request: EmailRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Domínio de e-mail inválido")
     
     return {"mensagem": "E-mail válido e disponível"}
+
+        usuario = db.query(Usuario).filter(Usuario.email == email).first()
+    if not usuario or usuario.senha != password:
+        logger.info(f"Tentativa de login falhou para email: {email}")
+        raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
+    logger.info(f"Login de senha bem-sucedido para email: {email}")
+    access_token = criar_token_temporario({"sub": usuario.email})
+    return {
+        "mensagem": "Login realizado com sucesso",
+        "access_token": access_token
+        }

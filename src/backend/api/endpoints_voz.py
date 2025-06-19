@@ -53,8 +53,11 @@ async def autenticar_voz(
     if not usuario:
         logger.info("Token temporário inválido ou ação não permitida na autenticação de voz.")
         raise HTTPException(status_code=401, detail="Token temporário inválido ou ação não permitida")
+    
+    # Chama a função que compara o áudio recebido com o embedding salvo
     similaridade = autenticar_por_voz(usuario.id, arquivo, db)
-    if similaridade > 0.8:
+    LIMIAR = 0.9  # Defina o limiar de similaridade (ajuste conforme necessário)
+    if similaridade > LIMIAR:
         access_token = criar_token_acesso({"sub": usuario.email})
         logger.info(f"Autenticação por voz bem-sucedida para usuário: {usuario.email} (similaridade: {similaridade})")
         return {

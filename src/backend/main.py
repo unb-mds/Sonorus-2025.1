@@ -8,7 +8,7 @@ from src.backend.api.endpoints_banco import roteador_banco
 
 app = FastAPI()
 
-app.include_router(autenticacao_router, prefix="/api")
+app.include_router(autenticacao_router)
 
 app.include_router(wav_router)
 

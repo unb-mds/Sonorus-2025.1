@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
+
 const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -8,20 +9,14 @@ const Login = () => {
     const [mensagemErro, setMensagemErro] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Validação simples de e-mail
     const validarEmail = (email) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
-const armazenarToken = (token) => {
-    if (token) {
-        localStorage.setItem('access_token', token);
-    }
-};
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMensagemErro('');
 
-        // Validação frontend
         if (!email || !password) {
             setMensagemErro('Preencha todos os campos.');
             return;
@@ -42,13 +37,12 @@ const armazenarToken = (token) => {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 body: formData,
+                credentials: 'include', // ESSENCIAL para cookies HttpOnly
             });
 
             const data = await response.json();
 
-            if (response.ok && data.access_token) {
-                 armazenarToken(data.access_token);
-                // Redireciona para dashboard
+            if (response.ok) {
                 navigate('/dashboard');
             } else if (data.detail) {
                 setMensagemErro(data.detail);
@@ -72,7 +66,7 @@ const armazenarToken = (token) => {
                 <form onSubmit={handleSubmit}>
                     <h1>Entrar</h1>
                     <div className="input-box">
-                       <input
+                        <input
                             type="email"
                             placeholder='Email'
                             required

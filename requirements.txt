@@ -9,3 +9,7 @@ pyjwt
 python-multipart
 sqlalchemy
 psycopg2-binary
+dnspython
+python-dotenv
+redis
+python-jose

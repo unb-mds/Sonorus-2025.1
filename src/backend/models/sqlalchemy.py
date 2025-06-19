@@ -8,9 +8,10 @@ class Usuario(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String(50), nullable=False)
+    sobrenome = Column(String(50), nullable=False)  # <-- Adicionado
     email = Column(String(50), unique=True, nullable=False, index=True)
     senha = Column(Text, nullable=False)
-    embedding = Column(ARRAY(Float), nullable=False) 
+    embedding = Column(ARRAY(Float), nullable=False)
 
     def __repr__(self):
-        return f"<Usuario(nome={self.nome}, email={self.email})>"
+        return f"<Usuario(nome={self.nome}, sobrenome={self.sobrenome}, email={self.email})>"

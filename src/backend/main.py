@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from src.backend.database.db_connection import SessionLocal
 from src.backend.api.endpoints_voz import roteador_autenticacao as wav_router

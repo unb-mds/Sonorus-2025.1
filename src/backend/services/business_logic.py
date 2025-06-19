@@ -25,6 +25,7 @@ def registrar_usuario(usuario: UsuarioRegistro, db: Session):
         return False
     usuario_novo = Usuario(
         nome=usuario.nome,
+        sobrenome=usuario.sobrenome,
         email=usuario.email,
         senha=pwd_context.hash(usuario.senha),
         embedding=[0.0] 

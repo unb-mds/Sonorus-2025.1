@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './VozCadastro.css';
 
 const LeituraVoz = () => {

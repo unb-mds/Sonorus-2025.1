@@ -3,6 +3,9 @@ import dns.resolver
 from fastapi import APIRouter, HTTPException, Depends, Form
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta
+from jose import jwt
+
 from src.backend.database.db_connection import get_db
 from src.backend.models.sqlalchemy import Usuario
 from src.backend.services.business_logic import registrar_usuario, autenticar_usuario, criar_token_temporario
@@ -12,8 +15,19 @@ logger = logging.getLogger("autenticacao_api")
 
 roteador_autenticacao = APIRouter()
 
+# Configurações do JWT
+SECRET_KEY = "sua_chave_ultra_secreta"  # Troque para variável de ambiente em produção!
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
 class EmailRequest(BaseModel):
     email: str    
+
+def criar_jwt_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 @roteador_autenticacao.post("/registrar")
 async def registrar(usuario: UsuarioRegistro, db: Session = Depends(get_db)):
@@ -40,7 +54,6 @@ async def registrar(usuario: UsuarioRegistro, db: Session = Depends(get_db)):
         "pre_auth_token": pre_auth_token
     }
 
-
 @roteador_autenticacao.post("/login")
 async def login(
     email: str = Form(...),
@@ -52,10 +65,16 @@ async def login(
         logger.info(f"Tentativa de login falhou para email: {email}")
         raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")
     logger.info(f"Login de senha bem-sucedido para email: {email}")
+
+    # Geração do JWT após autenticação da senha
+    access_token = criar_jwt_token(data={"sub": email})
+    # Se quiser manter a autenticação por voz:
     pre_auth_token = criar_token_temporario({"sub": email, "acao": "autenticar_voz"})
     return {
         "mensagem": "Senha correta. Autentique-se por voz para concluir o login.",
-        "pre_auth_token": pre_auth_token
+        "pre_auth_token": pre_auth_token,
+        "access_token": access_token,
+        "token_type": "bearer"
     }
 
 def dominio_tem_mx(domain: str) -> bool:
@@ -82,4 +101,3 @@ def check_email(request: EmailRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Domínio de e-mail inválido")
     
     return {"mensagem": "E-mail válido e disponível"}
-        }

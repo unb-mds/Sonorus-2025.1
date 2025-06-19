@@ -38,7 +38,8 @@ const armazenarToken = (token) => {
         formData.append('password', password);
 
         try {
-            const response = await fetch('http://localhost:8000/login', {
+            const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+            const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 body: formData,
             });
@@ -71,8 +72,8 @@ const armazenarToken = (token) => {
                 <form onSubmit={handleSubmit}>
                     <h1>Entrar</h1>
                     <div className="input-box">
-                        <input
-                            type="text"
+                       <input
+                            type="email"
                             placeholder='Email'
                             required
                             value={email}

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from src.backend.models.modelo_ecapa import ModeloECAPA
 from src.backend.models.sqlalchemy import Usuario
 from src.backend.database.redis_conex import redis_client
+import librosa
 
 modelo_ecapa = ModeloECAPA()
 
@@ -33,7 +34,9 @@ def validar_e_normalizar_audio(caminho_audio):
         print("Convertido para mono.")
 
     if sr != 16000:
-        raise ValueError("O áudio deve ter taxa de amostragem de 16kHz.")
+        print(f"Convertendo taxa de amostragem de {sr} para 16000 Hz.")
+        dados = librosa.resample(dados, orig_sr=sr, target_sr=16000)
+        sr = 16000
 
     if dados.dtype != np.int16:
         if np.max(np.abs(dados)) <= 1.0:

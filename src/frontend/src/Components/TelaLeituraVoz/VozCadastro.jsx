@@ -1,14 +1,21 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import './VozCadastro.css';
 
 const LeituraVoz = () => {
   const [gravando, setGravando] = useState(false);
+  const [mensagem, setMensagem] = useState('');
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const navigate = useNavigate(); 
+
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+  const token = localStorage.getItem('token_temporario');
 
   const iniciarGravacao = async () => {
     if (gravando) return;
 
+    setMensagem('');
     setGravando(true);
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorderRef.current = new MediaRecorder(stream);
@@ -24,12 +31,29 @@ const LeituraVoz = () => {
       audioChunksRef.current = [];
 
       const formData = new FormData();
-      formData.append('audio', audioBlob);
+      formData.append('arquivo', audioBlob, 'voz.webm');
 
-      await fetch('http://localhost:8000/enviar-audio', {
-        method: 'POST',
-        body: formData,
-      });
+      try {
+        const response = await fetch(`${API_URL}/registrar-voz`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (response.ok) {
+          setMensagem('Voz registrada com sucesso!');
+          setTimeout(() => {
+            navigate('/login'); 
+          }, 1000);
+        } else {
+          const erro = await response.json();
+          setMensagem(erro.detail || 'Erro ao registrar voz.');
+        }
+      } catch (error) {
+        setMensagem('Erro de conexão com o servidor.');
+      }
 
       setGravando(false);
     };
@@ -38,59 +62,16 @@ const LeituraVoz = () => {
 
     setTimeout(() => {
       mediaRecorderRef.current.stop();
-    }, 4000); // grava por 4 segundos (ajuste conforme necessário)
+    }, 4000);
   };
 
   return (
     <div className="containerr">
-      <div className="conteudo">
-        <h2 className="titulo">Vamos cadastrar sua voz</h2>
-
-        <div className="mic-wrapper">
-          {gravando && (
-            <div className="ondas lado-esquerdo">
-              {Array.from({ length: 7 }).map((_, i) => (
-                <div
-                  key={`left-${i}`}
-                  className="onda"
-                  style={{
-                    animationDelay: `${i * 0.1}s`,
-                    height: `${10 + (i % 4) * 15}px`,
-                  }}
-                />
-              ))}
-            </div>
-          )}
-
-          <button
-            onClick={iniciarGravacao}
-            className={`mic-button ${gravando ? 'gravando' : ''}`}
-            disabled={gravando}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="mic-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 16a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v6a4 4 0 0 0 4 4z"/>
-              <path d="M19 12a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.83V21a1 1 0 1 0 2 0v-2.17A7 7 0 0 0 19 12z"/>
-            </svg>
-          </button>
-
-          {gravando && (
-            <div className="ondas lado-direito">
-              {Array.from({ length: 7 }).map((_, i) => (
-                <div
-                  key={`right-${i}`}
-                  className="onda"
-                  style={{
-                    animationDelay: `${i * 0.1}s`,
-                    height: `${10 + (i % 4) * 15}px`,
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <p className="instrucao">Diga "Esta é a minha voz"</p>
-      </div>
+      <h2>Cadastro de Voz</h2>
+      <button onClick={iniciarGravacao} disabled={gravando}>
+        {gravando ? 'Gravando...' : 'Iniciar Gravação'}
+      </button>
+      {mensagem && <p>{mensagem}</p>}
     </div>
   );
 };

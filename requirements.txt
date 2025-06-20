@@ -13,3 +13,4 @@ dnspython
 python-dotenv
 redis
 python-jose
+librosa

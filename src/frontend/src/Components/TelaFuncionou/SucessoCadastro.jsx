@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import './SucessoCadastro.css';
 
 const SucessoCadastro = () => {

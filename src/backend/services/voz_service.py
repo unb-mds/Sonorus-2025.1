@@ -14,19 +14,16 @@ import librosa
 modelo_ecapa = ModeloECAPA()
 
 def get_embedding(audio_path):
-    """
-    Extrai o embedding do áudio usando o modelo ECAPA.
-    """
     return modelo_ecapa.obter_embedding(audio_path)
 
 def comparar_embeddings(embedding1, embedding2):
-    """
-    Calcula a similaridade cosseno entre dois embeddings.
-    """
     return float(np.dot(embedding1, embedding2) / (np.linalg.norm(embedding1) * np.linalg.norm(embedding2)))
 
 def validar_e_normalizar_audio(caminho_audio):
     dados, sr = sf.read(caminho_audio)
+    duracao = len(dados) / sr
+    if duracao > 30:
+        raise ValueError("O áudio enviado tem mais de 30 segundos.")
     print(f"Formato recebido: shape={dados.shape}, sr={sr}")
 
     if len(dados.shape) > 1:
@@ -49,9 +46,6 @@ def validar_e_normalizar_audio(caminho_audio):
     print("Áudio normalizado e salvo.")
 
 def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session):
-    """
-    Atualiza o embedding do usuário na tabela usuario.
-    """
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
         shutil.copyfileobj(arquivo.file, temp_audio)
         temp_audio_path = temp_audio.name
@@ -67,8 +61,12 @@ def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session):
         if usuario is None:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
         usuario.embedding = embedding.tolist()
+        usuario.cadastro_completo = True  # Marca cadastro como completo!
         db.commit()
         return embedding
+    except ValueError as e:
+        db.rollback()
+        raise e
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao salvar embedding: {e}")
@@ -76,9 +74,6 @@ def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session):
         os.remove(temp_audio_path)
 
 def get_embedding_usuario_cache(usuario_id: int, db: Session):
-    """
-    Busca o embedding do usuário no Redis ou banco de dados.
-    """
     redis_key = f"embedding_cadastro:{usuario_id}"
     embedding_cache = redis_client.get(redis_key)
     if embedding_cache:
@@ -92,9 +87,6 @@ def get_embedding_usuario_cache(usuario_id: int, db: Session):
     return None
 
 def autenticar_por_voz(usuario_id: int, arquivo: UploadFile, db: Session):
-    """
-    Autentica o usuário comparando o embedding do áudio enviado com o embedding cadastrado.
-    """
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
         shutil.copyfileobj(arquivo.file, temp_audio)
         temp_audio_path = temp_audio.name

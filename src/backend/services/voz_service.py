@@ -54,19 +54,24 @@ def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session):
         validar_e_normalizar_audio(temp_audio_path)
         embedding = get_embedding(temp_audio_path)
 
-        redis_key = f"embedding_cadastro:{usuario_id}"
-        redis_client.setex(redis_key, 10800, json.dumps(embedding.tolist()))
-
         usuario = db.query(Usuario).filter_by(id=usuario_id).first()
         if usuario is None:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
         usuario.embedding = embedding.tolist()
         usuario.cadastro_completo = True  # Marca cadastro como completo!
         db.commit()
+
+        redis_key = f"embedding_cadastro:{usuario_id}"
+        redis_client.setex(redis_key, 10800, json.dumps(embedding.tolist()))
+
         return embedding
     except ValueError as e:
         db.rollback()
         raise e
+    except HTTPException:
+        db.rollback()
+        raise
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao salvar embedding: {e}")
@@ -100,6 +105,8 @@ def autenticar_por_voz(usuario_id: int, arquivo: UploadFile, db: Session):
         embedding_tentativa = get_embedding(temp_audio_path)
         similaridade = comparar_embeddings(embedding_cadastro, embedding_tentativa)
         return similaridade
+    except HTTPException:
+        raise  # Não converte HTTPException em 500!
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro na autenticação por voz: {e}")
     finally:

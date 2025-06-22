@@ -14,3 +14,5 @@ python-dotenv
 redis
 python-jose
 librosa
+pytest
+pytest-cov

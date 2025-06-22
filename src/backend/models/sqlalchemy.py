@@ -11,7 +11,7 @@ class Usuario(Base):
     sobrenome = Column(String(50), nullable=False)  # <-- Adicionado
     email = Column(String(50), unique=True, nullable=False, index=True)
     senha = Column(Text, nullable=False)
-    embedding = Column(ARRAY(Float), nullable=False)
+    embedding = Column(ARRAY(Float), nullable=True)
     cadastro_completo = Column(Boolean, default=False)
 
     def __repr__(self):

@@ -156,6 +156,24 @@
   font-weight: 500;
   }
 
+  .password-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input input {
+  width: 100%;
+  padding-right: 40px; /* Espaço pro ícone do olho */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color: #555;
+}
+
 
   /* parte responsiva */
   @media (max-width: 768px) {

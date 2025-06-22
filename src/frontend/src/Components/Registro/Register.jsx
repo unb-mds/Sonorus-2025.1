@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Register.css';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 const API_URL = (process.env.REACT_APP_API_URL || "http://localhost:8000/api").replace(/\/$/, "");
 
@@ -12,7 +13,10 @@ const Register = () => {
     senha: '',
     confirmacaoSenha: ''
   });
-  
+
+  const [showSenha, setShowSenha] = useState(false);
+  const [showConfirmacaoSenha, setShowConfirmacaoSenha] = useState(false);
+
   const [emailError, setEmailError] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -34,17 +38,16 @@ const Register = () => {
         body: JSON.stringify({ email }),
       });
       if (!response.ok) {
-      console.error('Erro ao verificar email:', response.status);
+        console.error('Erro ao verificar email:', response.status);
+        return false;
+      }
+      const data = await response.json();
+      return data.exists;
+    } catch (error) {
+      console.error('Erro na requisição checkEmailExists:', error);
       return false;
     }
-
-    const data = await response.json();
-    return data.exists;  // Supondo que o backend retorne { exists: true/false }
-  } catch (error) {
-    console.error('Erro na requisição checkEmailExists:', error);
-    return false;
-  }
-};
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,15 +105,13 @@ const Register = () => {
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Erro no cadastro');
       }
-      navigate('/cadastro-voz', { 
-        state: { email: formData.email }
-      });
-      } catch (error) {
-        console.error('Erro no cadastro:', error);
-        navigate('/erroCadastro');
-      } finally {
-        setIsSubmitting(false);
-      }
+      navigate('/cadastro-voz', { state: { email: formData.email } });
+    } catch (error) {
+      console.error('Erro no cadastro:', error);
+      navigate('/erroCadastro');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLoginClick = () => {
@@ -161,23 +162,44 @@ const Register = () => {
               />
               {emailError && <span className="error-message">{emailError}</span>}
             </div>
-            <input
-              type="password"
-              name="senha"
-              placeholder="Senha"
-              value={formData.senha}
-              onChange={handleChange}
-              required
-              minLength="6"
-            />
-            <input
-              type="password"
-              name="confirmacaoSenha"
-              placeholder="Confirme a senha"
-              value={formData.confirmacaoSenha}
-              onChange={handleChange}
-              required
-            />
+
+            {/* Campo Senha */}
+            <div className="password-input">
+              <input
+                type={showSenha ? 'text' : 'password'}
+                name="senha"
+                placeholder="Senha"
+                value={formData.senha}
+                onChange={handleChange}
+                required
+                minLength="6"
+              />
+              <span
+                className="password-toggle"
+                onClick={() => setShowSenha(!showSenha)}
+              >
+                {showSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+              </span>
+            </div>
+
+            {/* Campo Confirmação de Senha */}
+            <div className="password-input">
+              <input
+                type={showConfirmacaoSenha ? 'text' : 'password'}
+                name="confirmacaoSenha"
+                placeholder="Confirme a senha"
+                value={formData.confirmacaoSenha}
+                onChange={handleChange}
+                required
+              />
+              <span
+                className="password-toggle"
+                onClick={() => setShowConfirmacaoSenha(!showConfirmacaoSenha)}
+              >
+                {showConfirmacaoSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+              </span>
+            </div>
+
             <button
               type="submit"
               className="btn-solid"

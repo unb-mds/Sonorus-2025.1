@@ -89,69 +89,27 @@ REACT_APP_API_URL=http://localhost:8000/api
 git clone github.com/unb-mds/Sonorus-2025.1
 cd Sonorus-2025.1
 ```
-
-### 2. Crie e ative um ambiente virtual
-
-```bash
-python3 -m venv venv (criar)
-source venv/bin/activate (ativar)
-```
-
-### 3. Crie e Configure o arquivo `.env` na raiz da pasta
-
-Crie um arquivo .env na raíz do projeto
-Copie `.env.example` para o seu `.env` e ajuste as variáveis conforme seu ambiente.
-
-### 4. Instale as dependências do projeto
-
-após ativar seu ambiente virtual, navegue até a raiz do projeto e rode:
-
-  #### Para o backend:
-  ```bash
-  pip install -r requirements.txt
-  ```
-
-  #### Para o frontend:
-  ```bash
-  cd Sonorus-2025.1/src/frontend
-  npm install
-  ```
-  
-
-### 5. Suba o banco de dados PostgreSQL
-
-Se for usar localmente, crie o banco:
+### 2. Instale as dependências
 
 ```bash
-sudo -u postgres psql
-CREATE DATABASE sonorus;
-\q
-psql -U postgres -d sonorus -f src/backend/database/scripts/create_tables.sql
+chmod +x Build.sh
+./Build.sh
 ```
 
-### 6. (Opcional) Suba o Redis
+### 3. Inicie o projeto
+
+```bash
+chmod +x Main.sh
+./Main.sh
+```
+
+### 4. (Opcional) Suba o Redis
 
 ```bash
 redis-server
 ```
 
-### 7. Inicie o backend
-
-Com o ambiente virtual ativo, navegue até a raiz do projeto:
-```bash
-uvicorn src.backend.main:app --reload
-```
-
-### 8. Inicie o frontend
-
-Com o ambiente virtual ativo, navegue até a raiz do projeto:
-
-```bash
-cd src/frontend
-npm start
-```
-
-### 9. Acesse a aplicação
+### 5. Acesse a aplicação
 
 - **Frontend:** [http://localhost:3000](http://localhost:3000)
 - **Backend (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)

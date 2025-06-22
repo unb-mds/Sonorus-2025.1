@@ -4,6 +4,7 @@ CREATE TABLE usuario (
     sobrenome VARCHAR(50) NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     senha TEXT NOT NULL,
-    embedding REAL[] NOT NULL, 
+    embedding REAL[], 
+    cadastro_completo BOOLEAN DEFAULT FALSE,
     CONSTRAINT chk_embedding_not_empty CHECK (cardinality(embedding) > 0)
 );

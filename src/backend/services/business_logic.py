@@ -96,3 +96,6 @@ def validar_token_temporario(token: str, acao_esperada: str, db: Session):
         return usuario
     except JWTError:
         return None
+
+def hash_senha(senha: str) -> str:
+    return pwd_context.hash(senha)

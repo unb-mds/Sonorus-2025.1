@@ -32,7 +32,10 @@ const LeituraVoz = () => {
         setGravando(false);
         clearTimeout(timeoutRef.current);
 
-        // Se a gravação foi parada automaticamente pelo timeout, NÃO envia o áudio
+        if (mediaRecorderRef.current && mediaRecorderRef.current.stream) {
+        mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+        }
+
         if (timeoutAtingidoRef.current) {
           timeoutAtingidoRef.current = false;
           navigate('/erroLeitura');

@@ -145,3 +145,21 @@ form button{
   .btntransp-outline:hover {
     background-color: rgba(255, 255, 255, 0.2);
   }
+
+  .password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .password-input input {
+    width: 100%;
+    padding-right: 40px; /* Espaço pro ícone */
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #555;
+  }

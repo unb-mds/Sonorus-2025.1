@@ -1,7 +1,14 @@
 import React from 'react';
 import './SucessoCadastro.css';
+import { useNavigate } from 'react-router-dom';
 
 const SucessoCadastro = () => {
+  const navigate = useNavigate();
+
+  const handleVoltarLogin = () => {
+    navigate('/login'); 
+  };
+
   return (
     <div className="sucesso-card">
       <h1 className="sucesso-title">Autenticação realizada!</h1>
@@ -10,10 +17,14 @@ const SucessoCadastro = () => {
           <span className="check">✓</span>
         </div>
       </div>
-      <p className="sucesso-message">Bem-vindo!</p>
+      <button
+        className="botao-voltar-login"
+        onClick={handleVoltarLogin}
+      >
+        Voltar para o Login
+      </button>
     </div>
   );
 };
 
 export default SucessoCadastro;
-

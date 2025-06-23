@@ -34,7 +34,7 @@ const Login = () => {
 
         try {
             const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-            const response = await fetch(`${API_URL}/login`, {
+            const response = await fetch(`${API_URL}/api/login`, {
                 method: 'POST',
                 body: formData,
                 credentials: 'include', // ESSENCIAL para cookies HttpOnly
@@ -43,7 +43,7 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
-                navigate('/dashboard');
+                navigate('/login-voz');
             } else if (data.detail) {
                 setMensagemErro(data.detail);
             } else {
@@ -58,32 +58,6 @@ const Login = () => {
 
     const handleCadastro = () => {
         navigate('/register');
-    };
-
-    // Exemplo de função para enviar áudio no React usando variável de ambiente para a URL da API
-    const autenticarPorVoz = async (audioBlob) => {
-        const formData = new FormData();
-        formData.append('arquivo', audioBlob, 'voz.wav');
-
-        const preAuthToken = localStorage.getItem('pre_auth_token');
-        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-
-        const response = await fetch(`${API_URL}/autenticar-voz`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${preAuthToken}`,
-            },
-            body: formData,
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.access_token) {
-            localStorage.setItem('access_token', data.access_token);
-            navigate('/dashboard');
-        } else {
-            setMensagemErro(data.detail || 'Voz não reconhecida ou erro ao autenticar');
-        }
     };
 
     return (

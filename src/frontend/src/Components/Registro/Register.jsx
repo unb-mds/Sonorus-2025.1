@@ -12,7 +12,7 @@ const Register = () => {
     senha: '',
     confirmacaoSenha: ''
   });
-  
+
   const [emailError, setEmailError] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -33,23 +33,19 @@ const Register = () => {
         },
         body: JSON.stringify({ email }),
       });
-      if (!response.ok) {
-      console.error('Erro ao verificar email:', response.status);
-      return false;
+      if (response.ok) {
+        // E-mail disponível
+        return false;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Erro ao verificar email');
+      }
+    } catch (error) {
+      if (error.message === 'E-mail já cadastrado no sistema') {
+        return true;
+      }
+      return error.message;
     }
-
-    const data = await response.json();
-    return data.exists;  // Supondo que o backend retorne { exists: true/false }
-  } catch (error) {
-    console.error('Erro na requisição checkEmailExists:', error);
-    return false;
-  }
-};
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (name === 'email') handleEmailValidation(value);
   };
 
   const handleEmailValidation = async (email) => {
@@ -64,8 +60,11 @@ const Register = () => {
       return;
     }
     const emailExists = await checkEmailExists(email);
-    if (emailExists) {
+    if (emailExists === true) {
       setEmailError('Esse email já está sendo usado');
+      setIsEmailValid(false);
+    } else if (typeof emailExists === 'string') {
+      setEmailError(emailExists);
       setIsEmailValid(false);
     } else {
       setEmailError('');
@@ -73,53 +72,60 @@ const Register = () => {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (name === 'email') {
+      handleEmailValidation(value);
+    }
+  };
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setSubmitError('');
-  if (formData.senha !== formData.confirmacaoSenha) {
-    setSubmitError('As senhas não coincidem');
-    return;
-  }
-  if (!isEmailValid) {
-    setSubmitError('Por favor, corrija os erros no formulário');
-    return;
-  }
-  setIsSubmitting(true);
-  try {
-    const response = await fetch(`${API_URL}/registrar`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nome: formData.nome,
-        sobrenome: formData.sobrenome,
-        email: formData.email,
-        senha: formData.senha
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || 'Erro no cadastro');
+    e.preventDefault();
+    setSubmitError('');
+    if (formData.senha !== formData.confirmacaoSenha) {
+      setSubmitError('As senhas não coincidem');
+      return;
     }
-
-    // Aqui está a diferença: pegar o token temporário da resposta
-    const data = await response.json();
-    if (data.pre_auth_token) {
-      localStorage.setItem('token_temporario', data.pre_auth_token);
+    if (!isEmailValid) {
+      setSubmitError('Por favor, corrija os erros no formulário');
+      return;
     }
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${API_URL}/registrar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nome: formData.nome,
+          sobrenome: formData.sobrenome,
+          email: formData.email,
+          senha: formData.senha
+        }),
+        credentials: 'include'
+      });
 
-    navigate('/cadastro-voz', { 
-      state: { email: formData.email }
-    });
-  } catch (error) {
-    console.error('Erro no cadastro:', error);
-    navigate('/erroCadastro');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Erro no cadastro');
+      }
+
+      navigate('/cadastro-voz', { 
+        state: { email: formData.email }
+      });
+    } catch (error) {
+      console.error('Erro no cadastro:', error);
+      navigate('/erroCadastro');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleLoginClick = () => {
     navigate('/login');

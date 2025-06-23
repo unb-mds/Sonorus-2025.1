@@ -1,44 +1,90 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './VozLogin.css';
 
 const LeituraVoz = () => {
   const [gravando, setGravando] = useState(false);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const timeoutRef = useRef(null);
+  const API_URL = (process.env.REACT_APP_API_URL || "http://localhost:8000/api").replace(/\/$/, "");
+  const navigate = useNavigate();
 
   const iniciarGravacao = async () => {
-    if (gravando) return;
-
     setGravando(true);
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorderRef.current = new MediaRecorder(stream);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
 
-    mediaRecorderRef.current.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        audioChunksRef.current.push(event.data);
-      }
-    };
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
 
-    mediaRecorderRef.current.onstop = async () => {
-      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-      audioChunksRef.current = [];
+      mediaRecorderRef.current.onstop = async () => {
+        clearTimeout(timeoutRef.current);
+        setGravando(false);
 
-      const formData = new FormData();
-      formData.append('audio', audioBlob);
+        if (mediaRecorderRef.current && mediaRecorderRef.current.stream) {
+          mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+        }
 
-      await fetch('http://localhost:8000/enviar-audio', {
-        method: 'POST',
-        body: formData,
-      });
+        if (audioChunksRef.current.length === 0) {
+          navigate('/erroLeitura');
+          return;
+        }
 
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        audioChunksRef.current = [];
+
+        const formData = new FormData();
+        formData.append('arquivo', audioBlob, 'voz.webm');
+
+        try {
+          const response = await fetch(`${API_URL}/autenticar-voz`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+          });
+
+          if (response.ok) {
+            navigate('/sucessoCadastro');
+          } else {
+            navigate('/erroLeitura');
+          }
+        } catch (error) {
+          navigate('/erroLeitura');
+        }
+      };
+
+      mediaRecorderRef.current.start();
+
+      timeoutRef.current = setTimeout(() => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+          mediaRecorderRef.current.stop();
+          navigate('/erroLeitura');
+        }
+      }, 30000);
+
+    } catch (err) {
       setGravando(false);
-    };
+      navigate('/erroLeitura');
+    }
+  };
 
-    mediaRecorderRef.current.start();
-
-    setTimeout(() => {
+  const pararGravacao = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       mediaRecorderRef.current.stop();
-    }, 4000); // grava por 4 segundos (ajuste conforme necessário)
+    }
+  };
+
+  const handleMicClick = () => {
+    if (!gravando) {
+      iniciarGravacao();
+    } else {
+      pararGravacao();
+    }
   };
 
   return (
@@ -63,9 +109,9 @@ const LeituraVoz = () => {
           )}
 
           <button
-            onClick={iniciarGravacao}
+            onClick={handleMicClick}
             className={`mic-button2 ${gravando ? 'gravando' : ''}`}
-            disabled={gravando}
+            aria-label={gravando ? "Parar gravação" : "Iniciar gravação"}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="mic-icon2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 16a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v6a4 4 0 0 0 4 4z"/>

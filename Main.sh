@@ -2,6 +2,8 @@
 # verifique se deu as permissões de execução com: chmod +x Main.sh
 # Certifique-se de não estar na Área de trabalho ou em diretórios com espaço, pois o script pode não funcionar corretamente.
 
+sudo systemctl start redis-server
+
 if [ -d "./SonorusVenv" ]; then
   source ./SonorusVenv/bin/activate
 else

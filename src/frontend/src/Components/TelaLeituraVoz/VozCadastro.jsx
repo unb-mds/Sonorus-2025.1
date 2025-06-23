@@ -12,7 +12,6 @@ const LeituraVoz = () => {
   const navigate = useNavigate();
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
-  const token = localStorage.getItem('token_temporario');
 
   const iniciarGravacao = async () => {
     setMensagem('');
@@ -33,7 +32,7 @@ const LeituraVoz = () => {
         clearTimeout(timeoutRef.current);
 
         if (mediaRecorderRef.current && mediaRecorderRef.current.stream) {
-        mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+          mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
         }
 
         if (timeoutAtingidoRef.current) {
@@ -51,9 +50,7 @@ const LeituraVoz = () => {
         try {
           const response = await fetch(`${API_URL}/registrar-voz`, {
             method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
+            credentials: 'include',
             body: formData,
           });
 
@@ -72,7 +69,6 @@ const LeituraVoz = () => {
 
       mediaRecorderRef.current.start();
 
-      // Timeout de 30 segundos para parar automaticamente
       timeoutRef.current = setTimeout(() => {
         timeoutAtingidoRef.current = true;
         setMensagem('Tempo limite atingido');

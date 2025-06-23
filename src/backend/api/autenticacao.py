@@ -1,6 +1,6 @@
 import logging
 import dns.resolver
-from fastapi import APIRouter, HTTPException, Depends, Form, Response, Request, status
+from fastapi import APIRouter, HTTPException, Depends, Form, Response, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -39,7 +39,6 @@ async def registrar(usuario: UsuarioRegistro, db: Session = Depends(get_db)):
         logger.info(f"Registro com domínio de e-mail inválido: {usuario.email}")
         raise HTTPException(status_code=400, detail="Domínio de e-mail inexistente ou inválido")
         
-    # Cria novo usuário com cadastro_completo=False
     novo_usuario = Usuario(
         nome=usuario.nome,
         sobrenome=usuario.sobrenome,
@@ -53,10 +52,18 @@ async def registrar(usuario: UsuarioRegistro, db: Session = Depends(get_db)):
     
     logger.info(f"Usuário registrado com sucesso: {usuario.email}")
     pre_auth_token = criar_token_temporario({"sub": usuario.email, "acao": "registrar_voz"})
-    return {
-        "mensagem": "Usuário registrado. Cadastre sua voz para concluir o registro.",
-        "pre_auth_token": pre_auth_token
-    }
+    response = JSONResponse(content={
+        "mensagem": "Usuário registrado. Cadastre sua voz para concluir o registro."
+    })
+    response.set_cookie(
+        key="access_token",
+        value=pre_auth_token,
+        httponly=True,
+        samesite="lax",
+        max_age=600,
+        path="/"
+    )
+    return response
 
 @roteador_autenticacao.post("/login")
 async def login(
@@ -73,17 +80,15 @@ async def login(
         logger.info(f"Tentativa de login para cadastro incompleto: {email}")
         raise HTTPException(status_code=403, detail="Finalize o cadastro de voz para acessar o sistema")
     logger.info(f"Login de senha bem-sucedido para email: {email}")
-    # Gera o JWT real - ajuste conforme sua lógica
-    jwt_token = criar_token_temporario({"sub": email, "acao": "autenticar_voz"})
-    # Define o cookie HttpOnly
+    pre_auth_token = criar_token_temporario({"sub": email, "acao": "autenticar_voz"})
     response = JSONResponse(content={"mensagem": "Login realizado com sucesso."})
     response.set_cookie(
         key="access_token",
-        value=jwt_token,
+        value=pre_auth_token,
         httponly=True,
-        secure=False,  # True em produção (HTTPS)
+        secure=False, 
         samesite="lax",
-        max_age=60*60*24,
+        max_age=600,
         path="/"
     )
     return response
@@ -109,9 +114,6 @@ def check_email(request: EmailRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Domínio de e-mail inválido")
     return {"mensagem": "E-mail válido e disponível"}
 
-# Exemplo de proteção de rota
-from fastapi import Depends
-
 def get_jwt_from_cookie(request: Request):
     token = request.cookies.get("access_token")
     if not token:
@@ -122,4 +124,3 @@ def get_jwt_from_cookie(request: Request):
 def rota_protegida(token: str = Depends(get_jwt_from_cookie)):
     # Decodifique e valide o token normalmente aqui!
     return {"mensagem": "Acesso autorizado!"}
-    

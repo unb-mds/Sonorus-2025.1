@@ -36,7 +36,7 @@ form .input-box{
     position: relative;
     width: 80%;
     height: 30%;
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
 .input-box input{
@@ -70,7 +70,7 @@ form button{
     border: #FFFFFF;
     border-radius: 10px;
     background-color: #005CF7;
-    margin: 7% 0 0 14%;
+    margin: 5% 0 0 14%;
 }
 
 .btn{
@@ -87,7 +87,7 @@ form button{
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-  /* painel esquerdo com conteúdo centralizado */
+  /* painel direito com conteúdo centralizado */
   .blocoAzul {
     width: 65%;
     height: 100%;
@@ -138,7 +138,7 @@ form button{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 125px;
+    margin-top: 50px;
     transition: 0.3s;
   }
   
@@ -163,3 +163,13 @@ form button{
     cursor: pointer;
     color: #555;
   }
+
+  .left-panel-icon2 {
+    width: auto;
+    height: 70px; 
+    position: relative;
+    flex-direction: column;
+    margin-top: -135px;
+    margin-bottom: 60px;
+  }
+

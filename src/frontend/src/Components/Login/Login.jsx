@@ -43,6 +43,7 @@ const Login = () => {
             </div>
             <div className='blocoAzul'>
                 <div className='secao Registro'>
+                    <img src="/sonorus_ed.png" alt="Logo Sonorus" className="left-panel-icon2" />
                     <h1>Bem-vindo</h1>
                     <p>Primeira vez? Faça seu cadastro!</p>
                     <button className='btntransp-outline' onClick={handleCadastro}>

@@ -160,20 +160,28 @@
   position: relative;
   display: flex;
   align-items: center;
-}
+  }
 
-.password-input input {
-  width: 100%;
-  padding-right: 40px; /* Espaço pro ícone do olho */
-}
+  .password-input input {
+    width: 100%;
+    padding-right: 40px; /* Espaço pro ícone do olho */
+  }
 
-.password-toggle {
-  position: absolute;
-  right: 10px;
-  cursor: pointer;
-  color: #555;
-}
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #555;
+  }
 
+  .left-panel-icon {
+    width: auto;
+    height: 70px; 
+    position: relative;
+    flex-direction: column;
+    margin-top: -160px;
+    margin-bottom: 70px;
+  }
 
   /* parte responsiva */
   @media (max-width: 768px) {
@@ -193,12 +201,12 @@
       width: 100%;
       height: auto;
       border-radius: 0 0 60% 60% / 0 0 50% 50%;
-      padding: 30px 40px;
+      padding: 100px 45px;
     }
   
     .input-row {
       gap: 9px;
       display: flex;
       flex-direction: column;
-    }
+    } 
   }

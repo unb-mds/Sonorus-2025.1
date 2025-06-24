@@ -122,6 +122,7 @@ const Register = () => {
     <div className="register-container">
       <div className="container">
         <div className="left-panel">
+          <img src="/sonorus_ed.png" alt="Logo Sonorus" className="left-panel-icon" />
           <h2>Olá!</h2>
           <p>Já tem cadastro? Entre agora!</p>
           <button className="btn-outline" onClick={handleLoginClick}>

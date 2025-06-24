@@ -38,3 +38,20 @@
   font-size: 20px;
   color: #cccccc;
 }
+
+.botao-voltar-login {
+  background-color: #0076ff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-top: 30px;
+}
+
+.botao-voltar-login:hover {
+  background-color: #005bb7;
+}

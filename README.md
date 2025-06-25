@@ -2,6 +2,8 @@
 
 ![Sonorus](src/frontend/public/sororus_menor.png)
 
+![CI](https://github.com/unb-mds/Sonorus-2025.1/actions/workflows/ci.yml/badge.svg)
+
 Sonorus é uma **API de reconhecimento biométrico por voz** integrada a um sistema de login tradicional, utilizando **SpeechBrain**, **FastAPI** e **PostgreSQL**. O usuário pode se registrar, autenticar com senha e validar sua identidade por biometria de voz. O sistema utiliza **Redis** para cache de embeddings, garantindo performance e escalabilidade.
 
 ---

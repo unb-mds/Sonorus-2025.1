@@ -9,11 +9,8 @@ from sqlalchemy.orm import Session
 from src.backend.models.modelo_ecapa import ModeloECAPA
 from src.backend.models.sqlalchemy import Usuario
 from src.backend.database.redis_conex import redis_client
-import librosa
 import uuid
-from pydub import AudioSegment
 import logging
-
 from scipy.signal import butter, lfilter
 import webrtcvad
 import noisereduce as nr
@@ -69,49 +66,38 @@ def comparar_embeddings(embedding1, embedding2):
     return float(np.dot(embedding1, embedding2) / (np.linalg.norm(embedding1) * np.linalg.norm(embedding2)))
 
 def tratar_audio(caminho_audio):
+    import soundfile as sf
+    import numpy as np
+    import noisereduce as nr
+
     dados, sr = sf.read(caminho_audio)
-    duracao = len(dados) / sr
-    if duracao > 30:
-        raise ValueError("O áudio enviado tem mais de 30 segundos.")
     print(f"Formato recebido: shape={dados.shape}, sr={sr}")
 
     if len(dados.shape) > 1:
         dados = np.mean(dados, axis=1)
-        print("Convertido para mono.")
+        print("Convertido para mono (precaução).")
 
-    if sr != 16000:
-        print(f"Convertendo taxa de amostragem de {sr} para 16000 Hz.")
-        dados = librosa.resample(dados, orig_sr=sr, target_sr=16000)
-        sr = 16000
-
-    dados = bandpass_filter(dados, 80, 4000, sr)
-    print("Filtro passa-banda aplicado.")
-
-    dados = apply_vad(dados, sr)
-    print("VAD aplicado.")
-
-    dados = spectral_gate(dados, sr)
+    noise_clip = dados[:int(sr*0.5)]
+    dados = nr.reduce_noise(y=dados, sr=sr, y_noise=noise_clip, prop_decrease=1.0)
     print("Spectral gating aplicado.")
 
-    if dados.dtype != np.int16:
-        if np.max(np.abs(dados)) <= 1.0:
-            dados = (dados * 32767).astype(np.int16)
-        else:
-            dados = dados.astype(np.int16)
-        print("Convertido para int16.")
+    if np.max(np.abs(dados)) > 0:
+        dados = dados / np.max(np.abs(dados))
+        print("Normalização de volume aplicada.")
 
-    sf.write(caminho_audio, dados, 16000, subtype='PCM_16')
+    sf.write(caminho_audio, dados, sr, subtype='PCM_16')
     print("Áudio tratado e salvo.")
 
 def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session) -> np.ndarray:
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_webm:
-        shutil.copyfileobj(arquivo.file, temp_webm)
-        temp_webm_path = temp_webm.name
+    import tempfile
+    import os
 
-    print(f"Tamanho do arquivo recebido: {os.path.getsize(temp_webm_path)} bytes")
-    temp_wav_path = tempfile.mktemp(suffix=".wav")
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav:
+        temp_wav.write(arquivo.file.read())
+        temp_wav_path = temp_wav.name
+
+    print(f"Tamanho do arquivo recebido: {os.path.getsize(temp_wav_path)} bytes")
     try:
-        converter_webm_para_wav(temp_webm_path, temp_wav_path)
         tratar_audio(temp_wav_path)
         embedding = get_embedding(temp_wav_path)
 
@@ -139,8 +125,6 @@ def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session) -
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao salvar embedding: {e}")
     finally:
-        if os.path.exists(temp_webm_path):
-            os.remove(temp_webm_path)
         if os.path.exists(temp_wav_path):
             os.remove(temp_wav_path)
 

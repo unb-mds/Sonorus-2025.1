@@ -45,4 +45,6 @@ rm -rf node_modules package-lock.json
 
 npm install
 
+npm install wav-encoder
+
 npm install react-scripts@5.0.1 --save

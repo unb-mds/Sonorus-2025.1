@@ -6,7 +6,7 @@ import json
 import numpy as np
 from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
-from src.backend.models.modelo_ecapa import ModeloECAPA
+from src.backend.models.modelo_resemblyzer import ModeloResemblyzer
 from src.backend.models.sqlalchemy import Usuario
 from src.backend.database.redis_conex import redis_client
 import librosa
@@ -20,7 +20,7 @@ import noisereduce as nr
 
 logger = logging.getLogger("voz_service")
 
-modelo_ecapa = ModeloECAPA()
+modelo_resemblyzer = ModeloResemblyzer()
 
 def butter_bandpass(lowcut, highcut, fs, order=4):
     nyq = 0.5 * fs
@@ -63,7 +63,7 @@ def converter_webm_para_wav(caminho_entrada, caminho_saida):
         raise
 
 def get_embedding(audio_path):
-    return modelo_ecapa.obter_embedding(audio_path)
+    return modelo_resemblyzer.obter_embedding(audio_path)
 
 def comparar_embeddings(embedding1, embedding2):
     return float(np.dot(embedding1, embedding2) / (np.linalg.norm(embedding1) * np.linalg.norm(embedding2)))

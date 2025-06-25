@@ -35,9 +35,9 @@ cmd = [
 try:
     # ATENÇÃO: subprocess pode ser perigoso se receber dados não confiáveis.
     subprocess.run(cmd, check=True)
-    print(f"Backup criado: {backup_file}")
+    logging.info(f"Backup criado: {backup_file}")
 except subprocess.CalledProcessError as e:
-    print(f"Erro no backup: {e}")
+    logging.error(f"Erro no backup: {e}")
     exit(1)
 
 # Upload para Google Drive

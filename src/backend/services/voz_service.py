@@ -56,7 +56,7 @@ def spectral_gate(audio, sr):
 def converter_webm_para_wav(caminho_entrada, caminho_saida):
     try:
         audio = AudioSegment.from_file(caminho_entrada)
-        audio = audio.set_channels(1).set_frame_rate(16000)
+        audio = audio.set_channels(1)
         audio.export(caminho_saida, format="wav")
     except Exception as e:
         print(f"Erro ao converter áudio: {e}")
@@ -79,11 +79,6 @@ def tratar_audio(caminho_audio):
         dados = np.mean(dados, axis=1)
         print("Convertido para mono.")
 
-    if sr != 16000:
-        print(f"Convertendo taxa de amostragem de {sr} para 16000 Hz.")
-        dados = librosa.resample(dados, orig_sr=sr, target_sr=16000)
-        sr = 16000
-
     dados = bandpass_filter(dados, 80, 4000, sr)
     print("Filtro passa-banda aplicado.")
 
@@ -100,18 +95,21 @@ def tratar_audio(caminho_audio):
             dados = dados.astype(np.int16)
         print("Convertido para int16.")
 
-    sf.write(caminho_audio, dados, 16000, subtype='PCM_16')
+    sf.write(caminho_audio, dados, sr, subtype='PCM_16')
     print("Áudio tratado e salvo.")
 
 def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session) -> np.ndarray:
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_webm:
-        shutil.copyfileobj(arquivo.file, temp_webm)
-        temp_webm_path = temp_webm.name
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_in:
+        shutil.copyfileobj(arquivo.file, temp_in)
+        temp_in_path = temp_in.name
 
-    print(f"Tamanho do arquivo recebido: {os.path.getsize(temp_webm_path)} bytes")
     temp_wav_path = tempfile.mktemp(suffix=".wav")
     try:
-        converter_webm_para_wav(temp_webm_path, temp_wav_path)
+        if temp_in_path.endswith(".wav"):
+            shutil.copy(temp_in_path, temp_wav_path)
+        else:
+            converter_webm_para_wav(temp_in_path, temp_wav_path)
+
         tratar_audio(temp_wav_path)
         embedding = get_embedding(temp_wav_path)
 
@@ -139,8 +137,8 @@ def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session) -
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao salvar embedding: {e}")
     finally:
-        if os.path.exists(temp_webm_path):
-            os.remove(temp_webm_path)
+        if os.path.exists(temp_in_path):
+            os.remove(temp_in_path)
         if os.path.exists(temp_wav_path):
             os.remove(temp_wav_path)
 
@@ -158,13 +156,17 @@ def get_embedding_usuario_cache(usuario_id: int, db: Session):
     return None
 
 def autenticar_por_voz(usuario_id: int, arquivo: UploadFile, db: Session):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_webm:
-        shutil.copyfileobj(arquivo.file, temp_webm)
-        temp_webm_path = temp_webm.name
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_in:
+        shutil.copyfileobj(arquivo.file, temp_in)
+        temp_in_path = temp_in.name
 
     temp_wav_path = tempfile.mktemp(suffix=".wav")
     try:
-        converter_webm_para_wav(temp_webm_path, temp_wav_path)
+        if temp_in_path.endswith(".wav"):
+            shutil.copy(temp_in_path, temp_wav_path)
+        else:
+            converter_webm_para_wav(temp_in_path, temp_wav_path)
+
         tratar_audio(temp_wav_path)
         embedding_cadastro = get_embedding_usuario_cache(usuario_id, db)
         if embedding_cadastro is None:
@@ -178,7 +180,7 @@ def autenticar_por_voz(usuario_id: int, arquivo: UploadFile, db: Session):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro na autenticação por voz: {e}")
     finally:
-        if os.path.exists(temp_webm_path):
-            os.remove(temp_webm_path)
+        if os.path.exists(temp_in_path):
+            os.remove(temp_in_path)
         if os.path.exists(temp_wav_path):
             os.remove(temp_wav_path)

@@ -19,4 +19,4 @@ pydub
 scipy
 webrtcvad
 noisereduce
-Resemblyzer
+resemblyzer

@@ -29,7 +29,7 @@ def butter_bandpass(lowcut, highcut, fs, order=4):
     b, a = butter(order, [low, high], btype='band')
     return b, a
 
-def bandpass_filter(data, lowcut=80, highcut=4000, fs=16000, order=4):
+def bandpass_filter(data, lowcut=100, highcut=3800, fs=44000, order=4):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = lfilter(b, a, data)
     return y
@@ -50,14 +50,15 @@ def apply_vad(audio, sr, aggressiveness=2):
 
 def spectral_gate(audio, sr):
     noise_clip = audio[:int(sr*0.5)]
-    reduced_audio = nr.reduce_noise(y=audio, sr=sr, y_noise=noise_clip, prop_decrease=1.0)
+    reduced_audio = nr.reduce_noise(y=audio, sr=sr, y_noise=noise_clip, prop_decrease=0.8)
     return reduced_audio
 
-def converter_webm_para_wav(caminho_entrada, caminho_saida):
+def converter_webm_para_wav(caminho_entrada, caminho_saida, sample_rate=48000):
     try:
         audio = AudioSegment.from_file(caminho_entrada)
         audio = audio.set_channels(1)
-        audio.export(caminho_saida, format="wav")
+        audio = audio.set_frame_rate(sample_rate)
+        audio.export(caminho_saida, format="wav", codec="pcm_s16le")
     except Exception as e:
         print(f"Erro ao converter áudio: {e}")
         raise
@@ -79,7 +80,7 @@ def tratar_audio(caminho_audio):
         dados = np.mean(dados, axis=1)
         print("Convertido para mono.")
 
-    dados = bandpass_filter(dados, 80, 4000, sr)
+    dados = bandpass_filter(dados, 100, 3800, sr)
     print("Filtro passa-banda aplicado.")
 
     dados = apply_vad(dados, sr)
@@ -88,15 +89,23 @@ def tratar_audio(caminho_audio):
     dados = spectral_gate(dados, sr)
     print("Spectral gating aplicado.")
 
+    energia = np.sqrt(np.mean(dados ** 2))
+    print(f"Energia RMS do áudio tratado: {energia:.6f}")
+    if energia < 0.01 or duracao < 1.0:
+        sf.write("debug_audio_vazio.wav", dados, sr)
+        raise ValueError("O áudio tratado está vazio, muito silencioso ou muito curto. Grave novamente.")
+
     if dados.dtype != np.int16:
-        if np.max(np.abs(dados)) <= 1.0:
-            dados = (dados * 32767).astype(np.int16)
-        else:
-            dados = dados.astype(np.int16)
+        max_abs = np.max(np.abs(dados))
+        if max_abs > 1.0:
+            dados = dados / max_abs  
+        dados = (dados * 32767).astype(np.int16)
         print("Convertido para int16.")
 
-    sf.write(caminho_audio, dados, sr, subtype='PCM_16')
+    sf.write("debug_audio.wav", dados, sr, subtype='PCM_16')
     print("Áudio tratado e salvo.")
+
+    sf.write(caminho_audio, dados, sr, subtype='PCM_16')
 
 def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session) -> np.ndarray:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_in:

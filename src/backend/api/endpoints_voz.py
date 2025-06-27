@@ -57,7 +57,7 @@ async def autenticar_voz(
     similaridade = autenticar_por_voz(usuario.id, arquivo, db)
     logger.info(f"Similaridade calculada: {similaridade}")
     print(f"Similaridade calculada: {similaridade}")
-    LIMIAR = 0.6  # Defina o limiar de similaridade (ajuste conforme necessário)
+    LIMIAR = 0.8  # Defina o limiar de similaridade (ajuste conforme necessário)
     if similaridade > LIMIAR:
         access_token = criar_token_acesso({"sub": usuario.email})
         logger.info(f"Autenticação por voz bem-sucedida para usuário: {usuario.email} (similaridade: {similaridade})")

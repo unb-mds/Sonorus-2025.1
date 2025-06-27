@@ -60,12 +60,20 @@ const LeituraVoz = () => {
               navigate('/login');
             }, 1000);
           } else {
-            navigate('/erroLeitura');
+             const errorData = await response.json();
+            if (
+              errorData.detail &&
+              errorData.detail.includes('muito curto')
+            ) {
+              navigate('/erroLeitura');
+            } else {
+              navigate('/erroLeitura');
+            }
           }
         } catch (error) {
           navigate('/erroLeitura');
         }
-      };
+      }
 
       mediaRecorderRef.current.start();
 
@@ -146,7 +154,7 @@ const LeituraVoz = () => {
           )}
         </div>
 
-        <p className="instrucao">Diga "Esta é a minha voz"</p>
+        <p className="instrucao">Diga seu nome completo calmamente!</p>
         {mensagem && <p style={{ marginTop: 30, fontWeight: 600 }}>{mensagem}</p>}
       </div>
     </div>

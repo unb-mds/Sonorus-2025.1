@@ -135,7 +135,7 @@ const LeituraVoz = () => {
           )}
         </div>
 
-        <p className="instrucao2">Diga "Esta é a minha voz"</p>
+        <p className="instrucao2">Diga seu nome completo calmamente!</p>
       </div>
     </div>
   );

@@ -183,30 +183,48 @@
     margin-bottom: 70px;
   }
 
-  /* parte responsiva */
-  @media (max-width: 768px) {
+/* parte responsiva ATUALIZADA */
+@media (max-width: 768px) {
     
-    .container {
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-      padding: auto;
-      overflow-y: auto;
-      border-radius: 50px;
-      box-shadow: -4px 4px 20px 0px rgba(0,0,0,0.5);
-    }
-  
-    .left-panel,
-    .right-panel {
-      width: 100%;
-      height: auto;
-      border-radius: 0 0 60% 60% / 0 0 50% 50%;
-      padding: 100px 45px;
-    }
-  
-    .input-row {
-      gap: 9px;
-      display: flex;
-      flex-direction: column;
-    } 
+  .container {
+    flex-direction: column;
+    width: 100%;
+    /* Usa a altura da viewport para garantir que o container ocupe a tela toda. */
+    min-height: 100vh; 
+    height: auto; /* Permite que o container cresça se o conteúdo for maior */
+    overflow-y: auto;
+    border-radius: 50px;
   }
+  
+  /* Estilo do painel azul (cabeçalho) */
+  .left-panel {
+    width: 100%;
+    height: auto;
+    /* Mantém a curva apenas no painel azul, que fica no topo. */
+    border-radius: 0 0 60% 60% / 0 0 50% 50%;
+    /* Padding vertical reduzido para melhor visualização em telas pequenas. */
+    padding: 60px 45px;
+    text-align: center; /* Centraliza o texto para um melhor look mobile. */
+  }
+
+  /* Estilo do painel do formulário */
+  .right-panel {
+    width: 100%;
+    height: auto;
+    /* Remove a borda curvada do painel do formulário. */
+    border-radius: 0; 
+    padding: 50px 45px; /* Padding ajustado para o formulário. */
+  }
+
+  .input-row {
+    /* Apenas a direção precisa ser alterada, pois o display:flex já existe. */
+    flex-direction: column;
+    gap: 9px;
+  } 
+
+  .left-panel-icon {
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
+
+}

@@ -1,45 +1,112 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './VozLogin.css';
 
 const LeituraVoz = () => {
   const [gravando, setGravando] = useState(false);
+  const [waveHeights, setWaveHeights] = useState(Array(7).fill(10)); // Estado para alturas das ondas
+
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+
+  // Refs para a Web Audio API
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animationFrameIdRef = useRef(null);
+  const streamRef = useRef(null);
 
   const iniciarGravacao = async () => {
     if (gravando) return;
 
-    setGravando(true);
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorderRef.current = new MediaRecorder(stream);
+    try {
+      setGravando(true);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      
+      // --- Início da lógica da Web Audio API ---
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      const source = audioContextRef.current.createMediaStreamSource(stream);
+      
+      source.connect(analyserRef.current);
+      analyserRef.current.fftSize = 256;
+      const bufferLength = analyserRef.current.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      // --- Fim da lógica da Web Audio API ---
 
-    mediaRecorderRef.current.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        audioChunksRef.current.push(event.data);
+      // --- Início da função de animação ---
+      const animateWaves = () => {
+        if (!analyserRef.current) return;
+        analyserRef.current.getByteFrequencyData(dataArray);
+        
+        const newWaveHeights = [];
+        const step = Math.floor(bufferLength / 7);
+        for (let i = 0; i < 7; i++) {
+          const value = dataArray[i * step];
+          // Mapeia o valor de 0-255 para uma altura de 10px a 60px
+          const height = 10 + (value / 255) * 50;
+          newWaveHeights.push(height);
+        }
+        setWaveHeights(newWaveHeights);
+        animationFrameIdRef.current = requestAnimationFrame(animateWaves);
+      };
+      animateWaves();
+      // --- Fim da função de animação ---
+
+      mediaRecorderRef.current = new MediaRecorder(stream);
+
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorderRef.current.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        audioChunksRef.current = [];
+
+        const formData = new FormData();
+        formData.append('audio', audioBlob);
+
+        await fetch('http://localhost:8000/enviar-audio', {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Limpeza após parar
+        cancelAnimationFrame(animationFrameIdRef.current);
+        if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+          audioContextRef.current.close();
+        }
+        streamRef.current.getTracks().forEach(track => track.stop()); // Para o microfone
+        setWaveHeights(Array(7).fill(10)); // Reseta as ondas
+        setGravando(false);
+      };
+
+      mediaRecorderRef.current.start();
+
+      setTimeout(() => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+            mediaRecorderRef.current.stop();
+        }
+      }, 4000);
+    } catch (error) {
+        console.error("Erro ao acessar o microfone:", error);
+        setGravando(false);
+    }
+  };
+
+  // Efeito para limpar recursos caso o componente seja desmontado
+  useEffect(() => {
+    return () => {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close();
+      }
+      if(streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-
-    mediaRecorderRef.current.onstop = async () => {
-      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-      audioChunksRef.current = [];
-
-      const formData = new FormData();
-      formData.append('audio', audioBlob);
-
-      await fetch('http://localhost:8000/enviar-audio', {
-        method: 'POST',
-        body: formData,
-      });
-
-      setGravando(false);
-    };
-
-    mediaRecorderRef.current.start();
-
-    setTimeout(() => {
-      mediaRecorderRef.current.stop();
-    }, 4000); // grava por 4 segundos (ajuste conforme necessário)
-  };
+  }, []);
 
   return (
     <div className="containerr2">
@@ -49,14 +116,11 @@ const LeituraVoz = () => {
         <div className="mic-wrapper2">
           {gravando && (
             <div className="ondas2 lado-esquerdo2">
-              {Array.from({ length: 7 }).map((_, i) => (
+              {waveHeights.map((height, i) => (
                 <div
                   key={`left-${i}`}
                   className="onda2"
-                  style={{
-                    animationDelay: `${i * 0.1}s`,
-                    height: `${10 + (i % 4) * 15}px`,
-                  }}
+                  style={{ height: `${height}px` }}
                 />
               ))}
             </div>
@@ -75,14 +139,11 @@ const LeituraVoz = () => {
 
           {gravando && (
             <div className="ondas2 lado-direito2">
-              {Array.from({ length: 7 }).map((_, i) => (
+              {waveHeights.map((height, i) => (
                 <div
                   key={`right-${i}`}
                   className="onda2"
-                  style={{
-                    animationDelay: `${i * 0.1}s`,
-                    height: `${10 + (i % 4) * 15}px`,
-                  }}
+                  style={{ height: `${height}px` }}
                 />
               ))}
             </div>

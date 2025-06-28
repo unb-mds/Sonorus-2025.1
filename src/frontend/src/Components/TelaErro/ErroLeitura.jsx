@@ -10,15 +10,15 @@ const ErroLeitura = () => {
   };
 
   return (
-    <div className="erro-card">
-      <h1 className="erro-title">Algo deu errado.</h1>
-      <div className="erro-icon">
-        <div className="circle">
-          <span className="cruz">×</span>
+    <div className="erro-card2">
+      <h1 className="erro-title2">Algo deu errado.</h1>
+      <div className="erro-icon2">
+        <div className="circle2">
+          <span className="cruz2">×</span>
         </div>
       </div>
       <button
-        className="botao-voltar-login"
+        className="botao-voltar-login2"
         onClick={handleVoltarLogin}
       >
         Voltar para o Login

@@ -1,22 +1,22 @@
-.erro-card {
-  width: 800px;
+.erro-card2 {
+  width: 850px;
   height: 600px;
   background-color: #1d1f27;
-  border-radius: 10px;
+  border-radius: 50px;
   padding: 40px 60px;
   text-align: center;
   box-shadow: -4px 4px 20px 0px rgba(0,0,0,0.5);
   color: #FFFFFF;
 }
 
-.erro-title {
+.erro-title2 {
   font-size: 40px;
   font-weight: 750;
   margin-bottom: 30px;
   margin-top: 30px;
 }
 
-.erro-icon .circle {
+.erro-icon2 .circle2 {
   width: 250px;
   height: 250px;
   border: 6px solid #0076ff;
@@ -27,31 +27,72 @@
   margin: 50px auto 50px;
 }
 
-.cruz {
+.cruz2 {
   margin-bottom: 25px;
   color: #0076ff;
   font-size: 200px;
   line-height: 1;
 }
 
-.erro-message {
+.erro-message2 {
   font-size: 20px;
   color: #cccccc;
 }
 
-.botao-voltar-login {
-  background-color: #0076ff;
+.botao-voltar-login2 {
+  margin-top: 25px;
+  background-color: #0066ff;
   color: white;
-  padding: 10px 20px;
+  font-weight: 700;
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
   cursor: pointer;
+  transition: background 0.3s;  
   font-size: 16px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-  margin-top: 30px;
+  font-family: 'Inter';
+  padding: 11px 20px;
 }
 
-.botao-voltar-login:hover {
+.botao-voltar-login2:hover {
   background-color: #005bb7;
+}
+
+/* --- PARTE RESPONSIVA --- */
+@media (max-width: 768px) {
+
+  .erro-card2 {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 90px;
+    border-radius: 50px;
+  }
+
+  .erro-icon2 .circle2 {
+    width: 180px;
+    height: 180px;
+    border-width: 5px; 
+    margin: 30px auto; 
+  }
+
+  .cruz2 {
+    font-size: 140px;
+    margin-bottom: 15px;  
+  }
+
+  .erro-title2 {
+    font-size: 32px;
+    margin-top: 0; 
+    margin-bottom: 20px;
+  }
+
+  .erro-message2 {
+    font-size: 18px;
+  }
+
+  .botao-voltar-login2 {
+    margin-top: 35px;
+  }
 }

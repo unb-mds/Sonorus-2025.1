@@ -176,30 +176,26 @@ form button{
   /* parte responsiva */
 @media (max-width: 768px) {
 
-  /* 1. O container principal agora empilha os blocos verticalmente */
   .blocoPreto {
     flex-direction: column;
     width: 100%;
     height: 100%;
-    overflow-y: auto; /* Permite rolar se o conteúdo for maior que a tela */
+    overflow-y: auto; 
     border-radius: 50px;
   }
 
-  /* 2. O painel azul e o formulário ocupam 100% da largura */
   .blocoAzul,
   .blocoPreto .form-box {
     width: 100%;
-    height: auto; /* Altura se ajusta ao conteúdo */
+    height: auto; 
   }
 
-  /* 3. Ajusta o painel azul para ter a curva na parte de baixo */
   .blocoAzul {
     border-radius: 0 0 60% 60% / 0 0 50% 50%;
-    padding: 60px 45px; /* Ajusta o espaçamento interno para telas menores */
-    order: -1; /* Garante que o bloco azul apareça primeiro (em cima) */
+    padding: 60px 45px; 
+    order: -1; 
   }
   
-  /* 4. Centraliza o conteúdo do painel azul */
   .blocoAzul h1,
   .blocoAzul p {
     text-align: center;
@@ -207,7 +203,6 @@ form button{
     margin-right: 0;
   }
   
-  /* 5. Centraliza o conteúdo dentro do formulário */
   .blocoPreto .form-box {
     padding: 50px 40px;
   }
@@ -219,10 +214,9 @@ form button{
   }
   
   form .input-box {
-    width: 100%; /* Inputs ocupam a largura total do seu container */
+    width: 100%; 
   }
 
-  /* 6. Centraliza o link "Esqueceu a senha?" e o botão de login */
   .esqueceu a {
     margin: 15px auto;
     display: block;
@@ -231,10 +225,9 @@ form button{
 
   form button {
     margin: 20px auto 0;
-    display: block; /* Necessário para que a margem automática centralize o botão */
+    display: block; 
   }
   
-  /* 7. Ajusta a posição do ícone no topo */
   .left-panel-icon2 {
     margin-top: 0;
     margin-bottom: 30px;

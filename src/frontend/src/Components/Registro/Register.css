@@ -189,35 +189,28 @@
   .container {
     flex-direction: column;
     width: 100%;
-    /* Usa a altura da viewport para garantir que o container ocupe a tela toda. */
     min-height: 100vh; 
     height: auto; /* Permite que o container cresça se o conteúdo for maior */
     overflow-y: auto;
     border-radius: 50px;
   }
   
-  /* Estilo do painel azul (cabeçalho) */
   .left-panel {
     width: 100%;
     height: auto;
-    /* Mantém a curva apenas no painel azul, que fica no topo. */
     border-radius: 0 0 60% 60% / 0 0 50% 50%;
-    /* Padding vertical reduzido para melhor visualização em telas pequenas. */
     padding: 60px 45px;
     text-align: center; /* Centraliza o texto para um melhor look mobile. */
   }
 
-  /* Estilo do painel do formulário */
   .right-panel {
     width: 100%;
     height: auto;
-    /* Remove a borda curvada do painel do formulário. */
     border-radius: 0; 
     padding: 50px 45px; /* Padding ajustado para o formulário. */
   }
 
   .input-row {
-    /* Apenas a direção precisa ser alterada, pois o display:flex já existe. */
     flex-direction: column;
     gap: 9px;
   } 

@@ -95,7 +95,7 @@ const LeituraVoz = () => {
         limparRecursos(); // Usa a função de limpeza centralizada
 
         if (timeoutAtingidoRef.current) {
-          navigate('/erroLeitura');
+          navigate('/erroCadastro');
           return;
         }
 
@@ -114,10 +114,10 @@ const LeituraVoz = () => {
             setMensagem('Voz registrada com sucesso!');
             setTimeout(() => navigate('/login'), 1000);
           } else {
-            navigate('/erroLeitura');
+            navigate('/erroCadastro');
           }
         } catch (error) {
-          navigate('/erroLeitura');
+          navigate('/erroCadastro');
         }
       };
 

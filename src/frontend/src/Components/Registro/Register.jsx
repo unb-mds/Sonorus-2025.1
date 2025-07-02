@@ -48,12 +48,6 @@ const Register = () => {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (name === 'email') handleEmailValidation(value);
-  };
-
   const handleEmailValidation = async (email) => {
     if (email === '') {
       setEmailError('');
@@ -80,14 +74,8 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    if (name === 'email') {
-      handleEmailValidation(value);
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'email') handleEmailValidation(value);
   };
 
   const handleSubmit = async (e) => {

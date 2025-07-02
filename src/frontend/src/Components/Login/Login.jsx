@@ -90,16 +90,6 @@ const Login = () => {
                         >
                             {showSenha ? <EyeOff size={18} /> : <Eye size={18} />}
                         </span>
-
-                    <div className="input-box">
-                        <input
-                            type="password"
-                            placeholder='Senha'
-                            required
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                        />
-
                     </div>
 
                     <div className="esqueceu">

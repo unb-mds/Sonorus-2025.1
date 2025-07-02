@@ -20,3 +20,6 @@ pydub
 scipy
 webrtcvad
 noisereduce
+httpx
+pydub
+webrtcvad

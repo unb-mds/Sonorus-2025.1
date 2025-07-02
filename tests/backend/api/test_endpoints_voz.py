@@ -23,7 +23,7 @@ def test_registrar_voz_sucesso(mock_registrar_embedding, mock_validar_token, cli
     
     # Fazer requisição
     response = client.post(
-        "/registrar-voz",
+        "/api/registrar-voz",
         files={"arquivo": ("test.wav", test_file, "audio/wav")},
         headers={"Authorization": "Bearer token_teste"}
     )
@@ -48,7 +48,7 @@ def test_registrar_voz_sem_token(mock_validar_token, client):
     
     # Fazer requisição sem token
     response = client.post(
-        "/registrar-voz",
+        "/api/registrar-voz",
         files={"arquivo": ("test.wav", test_file, "audio/wav")}
     )
     
@@ -72,7 +72,7 @@ def test_registrar_voz_token_invalido(mock_validar_token, client):
     
     # Fazer requisição
     response = client.post(
-        "/registrar-voz",
+        "/api/registrar-voz",
         files={"arquivo": ("test.wav", test_file, "audio/wav")},
         headers={"Authorization": "Bearer token_invalido"}
     )
@@ -104,7 +104,7 @@ def test_registrar_voz_erro_processamento(mock_registrar_embedding, mock_validar
     
     # Fazer requisição
     response = client.post(
-        "/registrar-voz",
+        "/api/registrar-voz",
         files={"arquivo": ("test.wav", test_file, "audio/wav")},
         headers={"Authorization": "Bearer token_teste"}
     )
@@ -139,7 +139,7 @@ def test_autenticar_voz_sucesso(mock_criar_token, mock_autenticar, mock_validar_
     
     # Fazer requisição
     response = client.post(
-        "/autenticar-voz",
+        "/api/autenticar-voz",
         files={"arquivo": ("test.wav", test_file, "audio/wav")},
         headers={"Authorization": "Bearer token_teste"}
     )
@@ -177,7 +177,7 @@ def test_autenticar_voz_falha_similaridade(mock_autenticar, mock_validar_token, 
     
     # Fazer requisição
     response = client.post(
-        "/autenticar-voz",
+        "/api/autenticar-voz",
         files={"arquivo": ("test.wav", test_file, "audio/wav")},
         headers={"Authorization": "Bearer token_teste"}
     )
@@ -206,7 +206,7 @@ def test_autenticar_voz_token_invalido(mock_validar_token, client):
     
     # Fazer requisição
     response = client.post(
-        "/autenticar-voz",
+        "/api/autenticar-voz",
         files={"arquivo": ("test.wav", test_file, "audio/wav")},
         headers={"Authorization": "Bearer token_invalido"}
     )

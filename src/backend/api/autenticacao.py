@@ -81,7 +81,10 @@ async def login(
         raise HTTPException(status_code=403, detail="Finalize o cadastro de voz para acessar o sistema")
     logger.info(f"Login de senha bem-sucedido para email: {email}")
     pre_auth_token = criar_token_temporario({"sub": email, "acao": "autenticar_voz"})
-    response = JSONResponse(content={"mensagem": "Login realizado com sucesso."})
+    response = JSONResponse(content={
+        "mensagem": "Login realizado com sucesso.",
+        "pre_auth_token": pre_auth_token
+    })
     response.set_cookie(
         key="access_token",
         value=pre_auth_token,

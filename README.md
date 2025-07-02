@@ -1,8 +1,12 @@
-# 🔐 Voice Biometrics API
+# 🔐 Sonorus
 
-Este projeto implementa uma **API de reconhecimento biométrico por voz** em um modelo de login já existente utilizando **SpeechBrain** e **FastAPI**. A API permite que usuários registrem sua voz e, posteriormente, sejam autenticados com base em suas características vocais únicas.
+![Sonorus](src/frontend/public/sororus_menor.png)
 
-## 📎Links Úteis
+Sonorus é uma **API de reconhecimento biométrico por voz** integrada a um sistema de login tradicional, utilizando **SpeechBrain**, **FastAPI** e **PostgreSQL**. O usuário pode se registrar, autenticar com senha e validar sua identidade por biometria de voz. O sistema utiliza **Redis** para cache de embeddings, garantindo performance e escalabilidade.
+
+---
+
+## 📎 Links Úteis
 
 - [Figma - Projeto (StoryMap)](https://www.figma.com/board/b3El7KviXHzQEFS7IuhGyo/Projeto-MDS--Copy-?node-id=0-1&t=bZuBbWs4QZgYPwbc-1)
 - [Figma - Protótipo](https://www.figma.com/proto/QTXFDiqQfiVNi7GRcvbs1q/Tela-de-login?node-id=1-2&t=HCUUayChkonQImLr-1&starting-point-node-id=1%3A2)
@@ -10,110 +14,191 @@ Este projeto implementa uma **API de reconhecimento biométrico por voz** em um 
 - [Arquitetura](./docs/arquitetura_software/)
 - [Requisitos](./docs/requisitos.md)
 
+---
+
 ## 🧠 Tecnologias Utilizadas
 
-**Frontend**
-    - HTML
-    - CSS
-    - TailwindCSS
-    - JavaScript
-    - ReactJs
+- **Backend:** FastAPI, SQLAlchemy, SpeechBrain, Redis, JWT, bcrypt
+- **Frontend:** ReactJS, CSS
+- **Banco de Dados:** PostgreSQL
+- **Cache:** Redis
+- **DevOps:** Docker, Docker Compose
 
-**Backend**
-    - Python
-    - SpeechBrain
-    - FastAPI
-
-**Banco de dados**
-    - Oracle Database
+---
 
 ## 📁 Estrutura do Projeto
 
 ```
 Biometria-Vocal-2025.1/
 ├── src
-    ├── backend/
-        ├── api/
-        ├── database/
-        ├── models/
-        ├── services/
-        ├── utils/
-        ├── main.py
-        └── requirements.txt
-    ├── frontend/
-        ├── CSS/
-        ├── HTML/
-        └── JS/
-├── LICENSE
+│   ├── backend/
+│   │   ├── api/
+│   │   ├── database/
+│   │   ├── models/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   ├── frontend/
+│   │   ├── src/
+│   │   ├── public/
+│   │   └── package.json
 ├── README.md
 ├── docs/
-    ├── arquitetura_software/
-    ├── atas/
-    └── estudos/
+│   ├── arquitetura_software/
+│   ├── atas/
+│   └── estudos/
+├── .env.example
+├── Dockerfile
+├── docker-compose.yml
 └── .gitignore
 ```
 
-## 🚀 Como Executar
-1. **Clone o repositório:**
-   ```bash
-   git clone https://github.com/unb-mds/Biometria-Vocal-2025.1.git
-   cd Biometria-Vocal-2025.1
-   ```
+---
 
-2. **Navegue até o diretório do backend:**
-   ```bash
-   cd src/backend
-   ```
+## ⚙️ Variáveis de Ambiente
 
-3. **Crie e ative um ambiente virtual (opcional, mas recomendado):**
-   - No Windows:
-     ```bash
-     python -m venv venv
-     venv\Scripts\activate
-     ```
-   - No Linux/Mac:
-     ```bash
-     python3 -m venv venv
-     source venv/bin/activate
-     ```
+Crie um arquivo `.env` na raiz do projeto com base no `.env.example` fornecido.  
+**Nunca suba seu arquivo `.env` para o repositório!**
 
-4. **Instale as dependências:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+Exemplo:
 
-5. **Inicie o servidor:**
-   ```bash
-   uvicorn main:app --reload
-   ```
+```
+# Backend
+DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/sonorus
+JWT_CHAVE_SECRETA=sua_chave_secreta_super_segura
+JWT_ALGORITMO=HS256
 
-6. **Acesse a API:**
-   - Acesse a documentação interativa no navegador em: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-   - Ou veja a documentação alternativa em: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+# Redis (opcional)
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_PASSWORD=
 
-7. **Encerrar o servidor:**
-   - Pressione `Ctrl + C` no terminal para parar o servidor.
+# Frontend
+REACT_APP_API_URL=http://localhost:8000/api
+```
 
+---
+
+## 🚀 Como Executar Localmente
+
+### 1. Clone o repositório
+
+```bash
+git clone github.com/unb-mds/Sonorus-2025.1
+cd Sonorus-2025.1
+```
+### 2. Instale as dependências
+
+```bash
+chmod +x Build.sh
+./Build.sh
+```
+
+### 3. Inicie o projeto
+
+```bash
+chmod +x Main.sh
+./Main.sh
+```
+
+### 4. (Opcional) Suba o Redis
+
+```bash
+redis-server
+```
+
+### 5. Acesse a aplicação
+
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
+- **Backend (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+## 🐳 Como Executar com Docker
+
+### 1. Build e up dos containers
+
+```bash
+docker-compose up --build
+```
+
+### 2. Serviços disponíveis
+
+- **Backend:** http://localhost:8000
+- **Frontend:** http://localhost:3000
+- **PostgreSQL:** localhost:5432 (usuário/senha conforme `.env`)
+- **Redis:** localhost:6379
+
+### 3. Parar os containers
+
+```bash
+docker-compose down
+```
+
+---
 
 ## 🔊 Como Usar
 
+### ▶️ Registro de Usuário
 
-### ▶️ Registro
+### ▶️ Login
 
+### ▶️ Registro de Voz
 
-### ✅ Verificação
+### ▶️ Autenticação por Voz
 
+---
 
 ## 🧪 Modelo Usado
-ECAPA-TDNN do speechbrain/spkrec-ecapa-voxceleb
+
+- ECAPA-TDNN do speechbrain/spkrec-ecapa-voxceleb
+
+---
 
 ## 📂 Armazenamento
 
-## Contribuidores
+- Embeddings de voz são armazenados no campo `embedding` da tabela `usuario` no PostgreSQL.
+- Embeddings recentes são cacheados no Redis para acelerar autenticações.
+
+---
+
+## 🛠️ Scripts Úteis
+
+- **Gravação de áudio:**  
+  Use o script `src/backend/utils/gravar_wav.py` para gravar áudios compatíveis com o modelo.
+
+---
+
+## 📚 Documentação Complementar
+
+- [docs/arquitetura_software/Fluxo-Login.md](docs/arquitetura_software/Fluxo-Login.md): Detalha o fluxo de autenticação biométrica.
+- [docs/arquitetura_software/Fluxograma-Cadastro.md](docs/arquitetura_software/Fluxograma-Cadastro.md): Explica o fluxo de cadastro com biometria de voz.
+- [docs/Database/import.md](docs/Database/import.md): Estrutura do banco de dados e tabelas utilizadas.
+- [docs/requisitos.md](docs/requisitos.md): Requisitos funcionais e não funcionais do sistema.
+
+---
+
+## 🧑‍💻 Contribuição
+
+Veja o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para saber como contribuir.
+
+---
+
+## 🛡️ Segurança
+
+- Senhas são armazenadas com hash (bcrypt).
+- Dados biométricos são protegidos e nunca expostos diretamente.
+- Políticas de bloqueio após múltiplas tentativas de autenticação falha.
+
+---
+
+## 👥 Contribuidores
 
 | Nome                | GitHub        |
 |---------------------|-------------------------|
-|Douglas Wilson       | [Dodgelinhass](https://github.com/Dodgelinhass) |
+|Douglas Wilson       | [Dodeglinhass](https://github.com/Dodeglinhass) |
 |Daniel Teles         | [dtdanielteles](https://github.com/dtdanielteles) |
 |José Joaquim         | [Joaquim-SNeto](https://github.com/Joaquim-SNeto) |
 |Luan Vinícius        | [luannvi](https://github.com/luannvi) |
@@ -121,3 +206,17 @@ ECAPA-TDNN do speechbrain/spkrec-ecapa-voxceleb
 |Paulo Henrique       | [Pauloswimming](https://github.com/Pauloswimming) |
 |Paulo Nery           | [Pnery2004](https://github.com/Pnery2004) |
 |Rafael Barbosa       | [rafaelbdmelo117](https://github.com/rafaelbdmelo117) |
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+## 📬 Contato
+
+Dúvidas ou sugestões? Abra uma issue ou entre em contato com os mantenedores do projeto.
+
+---

@@ -1,9 +1,60 @@
-import React from 'react';
+import { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [mensagemErro, setMensagemErro] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const validarEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setMensagemErro('');
+
+        if (!email || !password) {
+            setMensagemErro('Preencha todos os campos.');
+            return;
+        }
+        if (!validarEmail(email)) {
+            setMensagemErro('Formato de e-mail inválido.');
+            return;
+        }
+
+        setLoading(true);
+
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+
+        try {
+            const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+            const response = await fetch(`${API_URL}/api/login`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include', // ESSENCIAL para cookies HttpOnly
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                navigate('/login-voz');
+            } else if (data.detail) {
+                setMensagemErro(data.detail);
+            } else {
+                setMensagemErro('Erro ao fazer login');
+            }
+        } catch (error) {
+            setMensagemErro('Erro de conexão com o servidor');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleCadastro = () => {
         navigate('/register');
@@ -12,18 +63,33 @@ const Login = () => {
     return (
         <div className='blocoPreto'>
             <div className='form-box Entrar'>
-                <form action=''>
+                <form onSubmit={handleSubmit}>
                     <h1>Entrar</h1>
                     <div className="input-box">
-                        <input type="text" placeholder='Email' required />
+                        <input
+                            type="email"
+                            placeholder='Email'
+                            required
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                        />
                     </div>
                     <div className="input-box">
-                        <input type="password" placeholder='Senha' required />
+                        <input
+                            type="password"
+                            placeholder='Senha'
+                            required
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                        />
                     </div>
                     <div className="esqueceu">
                         <a href="#">Esqueceu sua senha?</a>
                     </div>
-                    <button type="submit" className='btn'>LOGIN</button>
+                    {mensagemErro && <div className="erro">{mensagemErro}</div>}
+                    <button type="submit" className='btn' disabled={loading}>
+                        {loading ? 'Entrando...' : 'LOGIN'}
+                    </button>
                 </form>
             </div>
             <div className='blocoAzul'>

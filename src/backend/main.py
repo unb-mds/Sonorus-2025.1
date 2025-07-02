@@ -1,15 +1,28 @@
-from fastapi import FastAPI
-from src.backend.api.authentication import auth_router
-from src.backend.database.database import initialize_db
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from src.backend.database.db_connection import SessionLocal
+from src.backend.api.endpoints_voz import roteador_autenticacao as wav_router
+from src.backend.api.autenticacao import roteador_autenticacao as autenticacao_router
+from src.backend.api.endpoints_banco import roteador_banco
 
-app = FastAPI(title="Voice Biometrics API")
+app = FastAPI()
 
-# Initialize database
-initialize_db()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"], 
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"],
+)
 
-# Include authentication routes
-app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+app.include_router(autenticacao_router, prefix="/api")
+app.include_router(wav_router, prefix="/api")
+app.include_router(roteador_banco, prefix="/api")
 
-@app.get("/")
-def root():
-    return {"message": "Welcome to the Voice Biometrics API"}
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

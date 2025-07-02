@@ -1,3 +1,7 @@
 .github
 __pycache__
-lemes.md
+.env
+.tmp.driveupload
+pretrained_models/
+SonorusVenv/
+package-lock.json

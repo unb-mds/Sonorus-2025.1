@@ -1,28 +1,52 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './VozLogin.css';
 
 const LeituraVoz = () => {
+  // --- Estados e Refs combinados de ambas as branches ---
   const [gravando, setGravando] = useState(false);
-  const [waveHeights, setWaveHeights] = useState(Array(7).fill(10)); // Estado para alturas das ondas
+  const [waveHeights, setWaveHeights] = useState(Array(7).fill(10));
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-
-  // Refs para a Web Audio API
+  const timeoutRef = useRef(null);
+  
+  // Refs para a Web Audio API da 'melhorias-na-UI'
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameIdRef = useRef(null);
   const streamRef = useRef(null);
+  
+  const navigate = useNavigate();
+  // Usando a definição mais robusta de API_URL que remove a barra final
+  const API_URL = (process.env.REACT_APP_API_URL || "http://localhost:8000/api").replace(/\/$/, "");
+
+  // --- Função de Limpeza Centralizada ---
+  // Combina a lógica de limpeza das duas branches para evitar repetição
+  const limparRecursos = () => {
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+    setWaveHeights(Array(7).fill(10));
+  };
+
+  // --- Funções de Controle da Gravação ---
 
   const iniciarGravacao = async () => {
-    if (gravando) return;
+    setGravando(true);
+    audioChunksRef.current = [];
 
     try {
-      setGravando(true);
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      
-      // --- Início da lógica da Web Audio API ---
+
+      // Início da lógica de visualização de áudio ('melhorias-na-UI')
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       analyserRef.current = audioContextRef.current.createAnalyser();
       const source = audioContextRef.current.createMediaStreamSource(stream);
@@ -31,9 +55,7 @@ const LeituraVoz = () => {
       analyserRef.current.fftSize = 256;
       const bufferLength = analyserRef.current.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-      // --- Fim da lógica da Web Audio API ---
 
-      // --- Início da função de animação ---
       const animateWaves = () => {
         if (!analyserRef.current) return;
         analyserRef.current.getByteFrequencyData(dataArray);
@@ -42,7 +64,6 @@ const LeituraVoz = () => {
         const step = Math.floor(bufferLength / 7);
         for (let i = 0; i < 7; i++) {
           const value = dataArray[i * step];
-          // Mapeia o valor de 0-255 para uma altura de 10px a 60px
           const height = 10 + (value / 255) * 50;
           newWaveHeights.push(height);
         }
@@ -50,8 +71,9 @@ const LeituraVoz = () => {
         animationFrameIdRef.current = requestAnimationFrame(animateWaves);
       };
       animateWaves();
-      // --- Fim da função de animação ---
+      // Fim da lógica de visualização
 
+      // Lógica do MediaRecorder
       mediaRecorderRef.current = new MediaRecorder(stream);
 
       mediaRecorderRef.current.ondataavailable = (event) => {
@@ -61,49 +83,72 @@ const LeituraVoz = () => {
       };
 
       mediaRecorderRef.current.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        audioChunksRef.current = [];
-
-        const formData = new FormData();
-        formData.append('audio', audioBlob);
-
-        await fetch('http://localhost:8000/enviar-audio', {
-          method: 'POST',
-          body: formData,
-        });
-
-        // Limpeza após parar
-        cancelAnimationFrame(animationFrameIdRef.current);
-        if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-          audioContextRef.current.close();
-        }
-        streamRef.current.getTracks().forEach(track => track.stop()); // Para o microfone
-        setWaveHeights(Array(7).fill(10)); // Reseta as ondas
+        clearTimeout(timeoutRef.current);
         setGravando(false);
+        limparRecursos(); // Usa a função de limpeza
+
+        if (audioChunksRef.current.length === 0) {
+          navigate('/erroLeitura');
+          return;
+        }
+
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const formData = new FormData();
+        // Lógica de envio da 'main', que é mais robusta
+        formData.append('arquivo', audioBlob, 'voz.webm');
+
+        try {
+          const response = await fetch(`${API_URL}/autenticar-voz`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+          });
+
+          if (response.ok) {
+            navigate('/sucessoCadastro');
+          } else {
+            navigate('/erroLeitura');
+          }
+        } catch (error) {
+          navigate('/erroLeitura');
+        }
       };
 
       mediaRecorderRef.current.start();
 
-      setTimeout(() => {
+      // Lógica de timeout da 'main'
+      timeoutRef.current = setTimeout(() => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-            mediaRecorderRef.current.stop();
+          mediaRecorderRef.current.stop();
         }
-      }, 4000);
-    } catch (error) {
-        console.error("Erro ao acessar o microfone:", error);
-        setGravando(false);
+      }, 30000); // Timeout de 30 segundos
+
+    } catch (err) {
+      setGravando(false);
+      navigate('/erroLeitura'); // Tratamento de erro da 'main'
     }
   };
 
-  // Efeito para limpar recursos caso o componente seja desmontado
+  const pararGravacao = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+    }
+  };
+
+  const handleMicClick = () => {
+    if (!gravando) {
+      iniciarGravacao();
+    } else {
+      pararGravacao();
+    }
+  };
+
+  // Efeito para limpar tudo caso o componente seja desmontado
   useEffect(() => {
     return () => {
-      cancelAnimationFrame(animationFrameIdRef.current);
-      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-        audioContextRef.current.close();
-      }
-      if(streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+      limparRecursos();
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
     };
   }, []);
@@ -127,9 +172,9 @@ const LeituraVoz = () => {
           )}
 
           <button
-            onClick={iniciarGravacao}
+            onClick={handleMicClick}
             className={`mic-button2 ${gravando ? 'gravando' : ''}`}
-            disabled={gravando}
+            aria-label={gravando ? "Parar gravação" : "Iniciar gravação"}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="mic-icon2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 16a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v6a4 4 0 0 0 4 4z"/>

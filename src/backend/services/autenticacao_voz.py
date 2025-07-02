@@ -74,13 +74,14 @@ def processar_e_verificar_voz(login: str, arquivo) -> float:
     if login not in embeddings_usuarios:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
+    caminho_audio_temporario = os.path.join(AUDIOS_DIR, f"temp_{login}.wav")  # Definido antes do try
+
     try:
         # Lê o arquivo de áudio enviado
         dados_audio, taxa_amostragem = sf.read(arquivo.file)
         print(f"Áudio recebido com taxa de amostragem: {taxa_amostragem}")
         
         # Define o caminho para salvar o áudio temporário
-        caminho_audio_temporario = os.path.join(AUDIOS_DIR, f"temp_{login}.wav")
         sf.write(caminho_audio_temporario, dados_audio, taxa_amostragem)
         print(f"Áudio salvo temporariamente em: {caminho_audio_temporario}")
 

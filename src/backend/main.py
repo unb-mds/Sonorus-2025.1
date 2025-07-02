@@ -8,11 +8,17 @@ from src.backend.api.endpoints_banco import roteador_banco
 
 app = FastAPI()
 
-app.include_router(autenticacao_router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"], 
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"],
+)
 
-app.include_router(wav_router)
-
-app.include_router(roteador_banco)
+app.include_router(autenticacao_router, prefix="/api")
+app.include_router(wav_router, prefix="/api")
+app.include_router(roteador_banco, prefix="/api")
 
 def get_db():
     db = SessionLocal()

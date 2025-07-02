@@ -1,6 +1,6 @@
 # models/ecapa_model.py
 
-from speechbrain.pretrained import SpeakerRecognition
+from speechbrain.inference import SpeakerRecognition
 from speechbrain.dataio.dataio import read_audio
 import torch
 import numpy as np

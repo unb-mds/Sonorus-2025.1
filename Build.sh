@@ -7,11 +7,22 @@ source SonorusVenv/bin/activate
 
 pip install -r requirements.txt
 
+sudo mkdir -p pretrained_models/ecapa
+sudo chown $USER:$USER pretrained_models/ecapa
+
 sudo apt install -y postgresql postgresql-contrib
+
+sudo apt-get install ffmpeg
+
+sudo apt-get install -y redis-server
+
+sudo systemctl enable redis-server
 
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'MDS';" # troque MDS pela senha que você deseja
 
 sudo -u postgres psql -c "CREATE DATABASE sonorus OWNER postgres;" # troque sonorus pelo nome do banco de dados que você deseja
+
+sudo -u postgres psql -d sonorus -f src/backend/database/scripts/create_tables.sql
 
 cat > .env <<EOF
 DATABASE_URL=postgresql://postgres:MDS@localhost:5432/sonorus #troque MDS pela senha que você definiu e sonorus pelo nome do banco de dados que você criou

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './Register.css';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
@@ -16,7 +16,6 @@ const Register = () => {
 
   const [showSenha, setShowSenha] = useState(false);
   const [showConfirmacaoSenha, setShowConfirmacaoSenha] = useState(false);
-
   const [emailError, setEmailError] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -67,12 +66,27 @@ const Register = () => {
       return;
     }
     const emailExists = await checkEmailExists(email);
-    if (emailExists) {
+    if (emailExists === true) {
       setEmailError('Esse email já está sendo usado');
+      setIsEmailValid(false);
+    } else if (typeof emailExists === 'string') {
+      setEmailError(emailExists);
       setIsEmailValid(false);
     } else {
       setEmailError('');
       setIsEmailValid(true);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (name === 'email') {
+      handleEmailValidation(value);
     }
   };
 
@@ -100,11 +114,14 @@ const Register = () => {
           email: formData.email,
           senha: formData.senha
         }),
+        credentials: 'include'
       });
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Erro no cadastro');
       }
+
       navigate('/cadastro-voz', { state: { email: formData.email } });
     } catch (error) {
       console.error('Erro no cadastro:', error);

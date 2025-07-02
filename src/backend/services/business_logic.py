@@ -1,5 +1,5 @@
 import os
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from dotenv import load_dotenv
@@ -96,3 +96,18 @@ def validar_token_temporario(token: str, acao_esperada: str, db: Session):
         return usuario
     except JWTError:
         return None
+
+def hash_senha(senha: str) -> str:
+    return pwd_context.hash(senha)
+
+def get_jwt_from_cookie(request: Request):
+    # Primeiro tenta pegar do cookie
+    token = request.cookies.get("access_token")
+    # Se não achar, tenta pegar do header Authorization
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ", 1)[1]
+    if not token:
+        return None
+    return token

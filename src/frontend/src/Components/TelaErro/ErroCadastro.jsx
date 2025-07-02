@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import './ErroCadastro.css';
 import { useNavigate } from 'react-router-dom';
 

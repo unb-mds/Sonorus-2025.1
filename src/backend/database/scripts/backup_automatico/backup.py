@@ -1,6 +1,6 @@
 # backup_automatico/backup.py
 import os
-import subprocess
+import subprocess  # ATENÇÃO: O uso do módulo subprocess pode trazer riscos de segurança. Evite executar comandos externos com dados não confiáveis.
 from datetime import datetime
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -20,15 +20,24 @@ BACKUP_DIR = os.getenv("BACKUP_DIR")
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 backup_file = os.path.join(BACKUP_DIR, f"backup_{timestamp}.dump")
 
-# Comando pg_dump para Linux
-cmd = f'pg_dump -U {DB_USER} -d {DB_NAME} -F c -b -v -f "{backup_file}"'
+# Comando pg_dump para Linux (evite shell=True, passe argumentos como lista)
+cmd = [
+    "pg_dump",
+    "-U", DB_USER,
+    "-d", DB_NAME,
+    "-F", "c",
+    "-b",
+    "-v",
+    "-f", backup_file
+]
 
-# Executar comando
+# Executar comando de forma segura (sem shell=True)
 try:
-    subprocess.run(cmd, shell=True, check=True)
-    print(f"Backup criado: {backup_file}")
+    # ATENÇÃO: subprocess pode ser perigoso se receber dados não confiáveis.
+    subprocess.run(cmd, check=True)
+    logging.info(f"Backup criado: {backup_file}")
 except subprocess.CalledProcessError as e:
-    print(f"Erro no backup: {e}")
+    logging.error(f"Erro no backup: {e}")
     exit(1)
 
 # Upload para Google Drive

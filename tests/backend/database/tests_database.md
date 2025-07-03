@@ -1,6 +1,6 @@
 # Validação do Banco de Dados
 
-#Objetivo: garantir que os scripts de criação, migração e backup funcionam corretamente.
+# Objetivo: garantir que os scripts de criação, migração e backup funcionam corretamente.
 
 #Testes Realizados
 

@@ -125,6 +125,7 @@ const LeituraVoz = () => {
 
     } catch (err) {
       setGravando(false);
+      limparRecursos(); // Garantir que recursos sejam limpos antes de navegar
       navigate('/erroLeitura'); // Tratamento de erro da 'main'
     }
   };

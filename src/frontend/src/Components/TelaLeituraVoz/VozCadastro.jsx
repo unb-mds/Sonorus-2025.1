@@ -130,7 +130,7 @@ const LeituraVoz = () => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
           mediaRecorderRef.current.stop();
         }
-      }, 30000); // 30 segundos
+      }, 30000);
 
     } catch (err) {
       setMensagem('Permissão do microfone negada ou erro ao acessar o microfone.');

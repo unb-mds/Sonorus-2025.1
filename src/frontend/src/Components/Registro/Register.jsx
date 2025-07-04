@@ -38,7 +38,7 @@ const Register = () => {
       });
       if (!response.ok) {
         console.error('Erro ao verificar email:', response.status);
-        return false;
+        return null;
       }
       const data = await response.json();
       return data.exists;

@@ -34,11 +34,6 @@
   line-height: 1;
 }
 
-.sucesso-message1 {
-  font-size: 20px;
-  color: #cccccc;
-}
-
 .botao-voltar-login1 {
   margin-top: 25px;
   background-color: #0066ff;
@@ -84,10 +79,6 @@
     font-size: 32px;
     margin-top: 0; 
     margin-bottom: 20px;
-  }
-
-  .sucesso-message1 {
-    font-size: 18px;
   }
 
   .botao-voltar-login1 {

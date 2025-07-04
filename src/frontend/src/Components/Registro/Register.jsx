@@ -29,8 +29,8 @@ const Register = () => {
   const validateEmailDomain = async (email) => {
     try {
       const domain = email.split('@')[1];
-      // Adicionamos 'https://' para garantir que o fetch funcione corretamente
-      const response = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+      const DNS_API_URL = process.env.REACT_APP_DNS_API_URL;
+      const response = await fetch(`${DNS_API_URL}?name=${domain}&type=MX`);
       const data = await response.json();
       return data.Answer && data.Answer.length > 0;
     } catch (error) {

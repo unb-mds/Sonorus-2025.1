@@ -133,6 +133,7 @@ const LeituraVoz = () => {
       }, 30000);
 
     } catch (err) {
+      limparRecursos();
       setMensagem('Permissão do microfone negada ou erro ao acessar o microfone.');
       setGravando(false);
     }

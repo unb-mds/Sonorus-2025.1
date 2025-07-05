@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './SucessoCadastro.css';
 
 const SucessoCadastro = () => {

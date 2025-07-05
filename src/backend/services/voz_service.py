@@ -13,8 +13,7 @@ import librosa
 import uuid
 from pydub import AudioSegment
 import logging
-
-from scipy.signal import butter, lfilter
+from scipy.signal import butter, lfilter, iirnotch
 import webrtcvad
 import noisereduce as nr
 
@@ -33,6 +32,29 @@ def bandpass_filter(data, lowcut=80, highcut=4000, fs=16000, order=4):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = lfilter(b, a, data)
     return y
+
+def notch_filter(data, freq=60.0, fs=16000, Q=30):
+    """
+    Aplica filtro notch para remover interferência de frequência específica (60Hz).
+    
+    Args:
+        data: Dados de áudio
+        freq: Frequência a ser removida (Hz) - padrão 60Hz (rede elétrica)
+        fs: Taxa de amostragem
+        Q: Fator de qualidade (maior = filtro mais estreito)
+    
+    Returns:
+        Dados filtrados
+    """
+    # Calcula a frequência normalizada (0 a 1, onde 1 = Nyquist)
+    w0 = freq / (fs / 2)
+    
+    # Cria o filtro notch IIR
+    b, a = iirnotch(w0, Q)
+    
+    # Aplica o filtro
+    filtered_data = lfilter(b, a, data)
+    return filtered_data
 
 def apply_vad(audio, sr, aggressiveness=2):
     vad = webrtcvad.Vad(aggressiveness)
@@ -86,6 +108,9 @@ def tratar_audio(caminho_audio):
 
     dados = bandpass_filter(dados, 80, 4000, sr)
     print("Filtro passa-banda aplicado.")
+
+    dados = notch_filter(dados, 60.0, sr)
+    print("Filtro notch 60Hz aplicado.")
 
     dados = apply_vad(dados, sr)
     print("VAD aplicado.")

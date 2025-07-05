@@ -34,11 +34,6 @@
   line-height: 1;
 }
 
-.erro-message1 {
-  font-size: 20px;
-  color: #cccccc;
-}
-
 .botao-voltar-login1 {
   margin-top: 25px;
   background-color: #0066ff;
@@ -55,41 +50,6 @@
 
 .botao-voltar-login1:hover {
   background-color: #005bb7;
-}
-
-  /* parte responsiva */
-@media (max-width: 768px) {
-  .erro-card1 {
-    width: 100%;
-    height: auto;
-    padding: 20px 40px;
-    border-radius: 30px;
-    flex-direction: column;
-  }
-
-  .erro-title1 {
-    font-size: 30px;
-    margin-bottom: 20px;
-  }
-
-  .erro-icon1 .circle1 {
-    width: 200px;
-    height: 200px;
-  }
-
-  .cruz1 {
-    font-size: 150px;
-  }
-
-  .erro-message1 {
-    font-size: 18px;
-  }
-
-  .botao-voltar-login1 {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-  }
 }
 
 /* --- PARTE RESPONSIVA --- */
@@ -121,10 +81,6 @@
     font-size: 32px;
     margin-top: 0; 
     margin-bottom: 20px;
-  }
-
-  .erro-message1 {
-    font-size: 18px;
   }
 
   .botao-voltar-login1 {

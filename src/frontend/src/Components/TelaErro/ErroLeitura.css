@@ -34,11 +34,6 @@
   line-height: 1;
 }
 
-.erro-message2 {
-  font-size: 20px;
-  color: #cccccc;
-}
-
 .botao-voltar-login2 {
   margin-top: 25px;
   background-color: #0066ff;
@@ -86,10 +81,6 @@
     font-size: 32px;
     margin-top: 0; 
     margin-bottom: 20px;
-  }
-
-  .erro-message2 {
-    font-size: 18px;
   }
 
   .botao-voltar-login2 {

@@ -160,3 +160,9 @@ form button{
 .link-button:hover {
     color: #FFFFFF;
 }
+
+.link-button:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    color: #FFFFFF;
+}

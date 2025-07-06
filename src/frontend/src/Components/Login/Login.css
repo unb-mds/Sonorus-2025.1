@@ -145,3 +145,24 @@ form button{
   .btntransp-outline:hover {
     background-color: rgba(255, 255, 255, 0.2);
   }
+
+.link-button {
+    background: none;
+    border: none;
+    color: #A3A3A3;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+}
+
+.link-button:hover {
+    color: #FFFFFF;
+}
+
+.link-button:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    color: #FFFFFF;
+}

@@ -13,8 +13,7 @@ import librosa
 import uuid
 from pydub import AudioSegment
 import logging
-
-from scipy.signal import butter, lfilter
+from scipy.signal import butter, lfilter, iirnotch
 import webrtcvad
 import noisereduce as nr
 
@@ -33,6 +32,29 @@ def bandpass_filter(data, lowcut=80, highcut=4000, fs=16000, order=4):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = lfilter(b, a, data)
     return y
+
+def notch_filter(data, freq=60.0, fs=16000, Q=30):
+    """
+    Aplica filtro notch para remover interferência de frequência específica (60Hz).
+    
+    Args:
+        data: Dados de áudio
+        freq: Frequência a ser removida (Hz) - padrão 60Hz (rede elétrica)
+        fs: Taxa de amostragem
+        Q: Fator de qualidade (maior = filtro mais estreito)
+    
+    Returns:
+        Dados filtrados
+    """
+    # Calcula a frequência normalizada (0 a 1, onde 1 = Nyquist)
+    w0 = freq / (fs / 2)
+    
+    # Cria o filtro notch IIR
+    b, a = iirnotch(w0, Q)
+    
+    # Aplica o filtro
+    filtered_data = lfilter(b, a, data)
+    return filtered_data
 
 def apply_vad(audio, sr, aggressiveness=2):
     vad = webrtcvad.Vad(aggressiveness)
@@ -59,7 +81,7 @@ def converter_webm_para_wav(caminho_entrada, caminho_saida):
         audio = audio.set_channels(1).set_frame_rate(16000)
         audio.export(caminho_saida, format="wav")
     except Exception as e:
-        print(f"Erro ao converter áudio: {e}")
+        logger.error(f"Erro ao converter áudio: {e}")
         raise
 
 def get_embedding(audio_path):
@@ -73,42 +95,45 @@ def tratar_audio(caminho_audio):
     duracao = len(dados) / sr
     if duracao > 30:
         raise ValueError("O áudio enviado tem mais de 30 segundos.")
-    print(f"Formato recebido: shape={dados.shape}, sr={sr}")
+    logger.info(f"Formato recebido: shape={dados.shape}, sr={sr}")
 
     if len(dados.shape) > 1:
         dados = np.mean(dados, axis=1)
-        print("Convertido para mono.")
+        logger.info("Convertido para mono.")
 
     if sr != 16000:
-        print(f"Convertendo taxa de amostragem de {sr} para 16000 Hz.")
+        logger.info(f"Convertendo taxa de amostragem de {sr} para 16000 Hz.")
         dados = librosa.resample(dados, orig_sr=sr, target_sr=16000)
         sr = 16000
 
     dados = bandpass_filter(dados, 80, 4000, sr)
-    print("Filtro passa-banda aplicado.")
+    logger.info("Filtro passa-banda aplicado.")
+
+    dados = notch_filter(dados, 60.0, sr)
+    logger.info("Filtro notch 60Hz aplicado.")
 
     dados = apply_vad(dados, sr)
-    print("VAD aplicado.")
+    logger.info("VAD aplicado.")
 
     dados = spectral_gate(dados, sr)
-    print("Spectral gating aplicado.")
+    logger.info("Spectral gating aplicado.")
 
     if dados.dtype != np.int16:
         if np.max(np.abs(dados)) <= 1.0:
             dados = (dados * 32767).astype(np.int16)
         else:
             dados = dados.astype(np.int16)
-        print("Convertido para int16.")
+        logger.info("Convertido para int16.")
 
     sf.write(caminho_audio, dados, 16000, subtype='PCM_16')
-    print("Áudio tratado e salvo.")
+    logger.info("Áudio tratado e salvo.")
 
 def registrar_embedding_voz(usuario_id: int, arquivo: UploadFile, db: Session) -> np.ndarray:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_webm:
         shutil.copyfileobj(arquivo.file, temp_webm)
         temp_webm_path = temp_webm.name
 
-    print(f"Tamanho do arquivo recebido: {os.path.getsize(temp_webm_path)} bytes")
+    logger.info(f"Tamanho do arquivo recebido: {os.path.getsize(temp_webm_path)} bytes")
     temp_wav_path = tempfile.mktemp(suffix=".wav")
     try:
         converter_webm_para_wav(temp_webm_path, temp_wav_path)

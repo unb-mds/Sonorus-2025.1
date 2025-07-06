@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './SucessoCadastro.css';
 import { useNavigate } from 'react-router-dom';
 

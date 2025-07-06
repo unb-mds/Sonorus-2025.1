@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './ErroLeitura.css';
 import { useNavigate } from 'react-router-dom';
 

@@ -93,7 +93,13 @@ const Login = () => {
                     </div>
 
                     <div className="esqueceu">
-                        <a href="#">Esqueceu sua senha?</a>
+                        <button 
+                            type="button" 
+                            className="link-button"
+                            onClick={() => setMensagemErro('Funcionalidade em desenvolvimento')}
+                        >
+                            Esqueceu sua senha?
+                        </button>
                     </div>
                     {mensagemErro && <div className="erro">{mensagemErro}</div>}
                     <button type="submit" className='btn' disabled={loading}>

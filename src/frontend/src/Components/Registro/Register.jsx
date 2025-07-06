@@ -180,14 +180,12 @@ const Register = () => {
                 required
                 minLength="6"
               />
-              <button
-                type="button"
+              <span
                 className="password-toggle"
                 onClick={() => setShowSenha(!showSenha)}
-                aria-label={showSenha ? "Ocultar senha" : "Mostrar senha"}
               >
                 {showSenha ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+              </span>
             </div>
 
             {/* Campo Confirmação de Senha */}

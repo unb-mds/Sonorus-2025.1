@@ -91,16 +91,7 @@ const Login = () => {
                             {showSenha ? <EyeOff size={18} /> : <Eye size={18} />}
                         </span>
                     </div>
-
-                    <div className="esqueceu">
-                        <button 
-                            type="button" 
-                            className="link-button"
-                            onClick={() => setMensagemErro('Funcionalidade em desenvolvimento')}
-                        >
-                            Esqueceu sua senha?
-                        </button>
-                    </div>
+                    
                     {mensagemErro && <div className="erro">{mensagemErro}</div>}
                     <button type="submit" className='btn' disabled={loading}>
                         {loading ? 'Entrando...' : 'LOGIN'}

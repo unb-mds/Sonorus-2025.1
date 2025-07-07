@@ -5,3 +5,4 @@ __pycache__
 pretrained_models/
 SonorusVenv/
 package-lock.json
+.vscode/settings.json

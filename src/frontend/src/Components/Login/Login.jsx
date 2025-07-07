@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
     const navigate = useNavigate();
+    const [showSenha, setShowSenha] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [mensagemErro, setMensagemErro] = useState('');
@@ -74,24 +76,24 @@ const Login = () => {
                             onChange={e => setEmail(e.target.value)}
                         />
                     </div>
-                    <div className="input-box">
+
+                    {/* Campo de Senha com olho */}
+                    <div className="input-box password-input">
                         <input
-                            type="password"
+                            type={showSenha ? 'text' : 'password'}
                             placeholder='Senha'
                             required
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                         />
-                    </div>
-                    <div className="esqueceu">
-                        <button 
-                            type="button" 
-                            className="link-button"
-                            onClick={() => setMensagemErro('Funcionalidade em desenvolvimento')}
+                        <span
+                            className="password-toggle"
+                            onClick={() => setShowSenha(!showSenha)}
                         >
-                            Esqueceu sua senha?
-                        </button>
+                            {showSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </span>
                     </div>
+                    
                     {mensagemErro && <div className="erro">{mensagemErro}</div>}
                     <button type="submit" className='btn' disabled={loading}>
                         {loading ? 'Entrando...' : 'LOGIN'}
@@ -100,6 +102,7 @@ const Login = () => {
             </div>
             <div className='blocoAzul'>
                 <div className='secao Registro'>
+                    <img src="/sonorus_ed.png" alt="Logo Sonorus" className="left-panel-icon2" />
                     <h1>Bem-vindo</h1>
                     <p>Primeira vez? Faça seu cadastro!</p>
                     <button className='btntransp-outline' onClick={handleCadastro}>

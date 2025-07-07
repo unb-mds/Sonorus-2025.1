@@ -29,7 +29,7 @@
 
 /* Instrução abaixo do botão */
 .instrucao {
-  font-size: 17px;
+  font-size: 19px;
   margin-top: 70px;
   opacity: 0.9;
 }
@@ -42,6 +42,7 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
   position: relative;
+  height: 135px; /* Adicionado para estabilizar o layout */
 }
 
 /* Botão de microfone */
@@ -90,19 +91,12 @@
 .onda {
   width: 4px;
   background-color: #3b82f6;
-  animation: bounce 1s infinite ease-in-out;
   border-radius: 2px;
+  transition: height 0.1s ease-out; /* Adicionado para suavizar a animação */
 }
 
-/* Animação das ondas */
-@keyframes bounce {
-  0%, 100% {
-    transform: scaleY(0.6);
-  }
-  50% {
-    transform: scaleY(1.4);
-  }
-}
+/* Animação das ondas foi removida */
+/* @keyframes bounce ... */
 
 /* RESPONSIVIDADE */
 @media (max-width: 768px) {

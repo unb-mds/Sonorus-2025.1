@@ -1,24 +1,87 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './VozCadastro.css';
 
 const LeituraVoz = () => {
+  // --- Estados e Refs combinados de ambas as branches ---
   const [gravando, setGravando] = useState(false);
   const [mensagem, setMensagem] = useState('');
+  const [waveHeights, setWaveHeights] = useState(Array(7).fill(10)); // Estado para as ondas
+
+  // Refs para a gravação e lógica da 'main'
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const timeoutRef = useRef(null);
   const timeoutAtingidoRef = useRef(false);
-  const navigate = useNavigate();
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+  // Refs para a visualização de áudio da 'melhorias-na-UI'
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animationFrameIdRef = useRef(null);
+  const streamRef = useRef(null); // Ref unificada para a stream
+
+  const navigate = useNavigate();
+  const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000/api').replace(/\/$/, '');
+
+  // --- Função para limpar todos os recursos de áudio e visualização ---
+  // Unifica a lógica de limpeza que estava espalhada
+  const limparRecursos = () => {
+    // Limpeza da visualização de áudio
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
+    }
+    // Para as tracks do microfone
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+    // Reseta o estado visual
+    setWaveHeights(Array(7).fill(10));
+  };
+
+
+  // --- Funções de controle da gravação (Estrutura da 'main' com funcionalidades da 'melhorias-na-UI') ---
 
   const iniciarGravacao = async () => {
     setMensagem('');
     setGravando(true);
+    timeoutAtingidoRef.current = false;
+    audioChunksRef.current = [];
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
+      // Início da lógica de visualização de áudio ('melhorias-na-UI')
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      const source = audioContextRef.current.createMediaStreamSource(stream);
+      
+      source.connect(analyserRef.current);
+      analyserRef.current.fftSize = 256;
+      const bufferLength = analyserRef.current.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      const animateWaves = () => {
+        if (!analyserRef.current) return;
+        analyserRef.current.getByteFrequencyData(dataArray);
+        
+        const newWaveHeights = [];
+        const step = Math.floor(bufferLength / 7);
+        for (let i = 0; i < 7; i++) {
+          const value = dataArray[i * step];
+          const height = 10 + (value / 255) * 50;
+          newWaveHeights.push(height);
+        }
+        setWaveHeights(newWaveHeights);
+        animationFrameIdRef.current = requestAnimationFrame(animateWaves);
+      };
+      animateWaves();
+      // Fim da lógica de visualização
+
+      // Início da lógica do MediaRecorder
       mediaRecorderRef.current = new MediaRecorder(stream);
 
       mediaRecorderRef.current.ondataavailable = (event) => {
@@ -27,23 +90,16 @@ const LeituraVoz = () => {
         }
       };
 
+      // onstop agora contém a lógica de envio de áudio robusta da 'main'
       mediaRecorderRef.current.onstop = async () => {
-        setGravando(false);
-        clearTimeout(timeoutRef.current);
-
-        if (mediaRecorderRef.current && mediaRecorderRef.current.stream) {
-          mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
-        }
+        limparRecursos(); // Usa a função de limpeza centralizada
 
         if (timeoutAtingidoRef.current) {
-          timeoutAtingidoRef.current = false;
-          navigate('/erroLeitura');
+          navigate('/erroCadastro');
           return;
         }
 
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        audioChunksRef.current = [];
-
         const formData = new FormData();
         formData.append('arquivo', audioBlob, 'voz.webm');
 
@@ -56,19 +112,18 @@ const LeituraVoz = () => {
 
           if (response.ok) {
             setMensagem('Voz registrada com sucesso!');
-            setTimeout(() => {
-              navigate('/login');
-            }, 1000);
+            setTimeout(() => navigate('/login'), 1000);
           } else {
-            navigate('/erroLeitura');
+            navigate('/erroCadastro');
           }
         } catch (error) {
-          navigate('/erroLeitura');
+          navigate('/erroCadastro');
         }
       };
 
       mediaRecorderRef.current.start();
 
+      // Lógica de timeout da 'main', mais robusta
       timeoutRef.current = setTimeout(() => {
         timeoutAtingidoRef.current = true;
         setMensagem('Tempo limite atingido');
@@ -78,6 +133,7 @@ const LeituraVoz = () => {
       }, 30000);
 
     } catch (err) {
+      limparRecursos();
       setMensagem('Permissão do microfone negada ou erro ao acessar o microfone.');
       setGravando(false);
     }
@@ -98,6 +154,17 @@ const LeituraVoz = () => {
     }
   };
 
+  // Efeito para limpar recursos caso o componente seja desmontado
+  useEffect(() => {
+    return () => {
+      limparRecursos();
+      if(timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+
   return (
     <div className="containerr">
       <div className="conteudo">
@@ -106,14 +173,11 @@ const LeituraVoz = () => {
         <div className="mic-wrapper">
           {gravando && (
             <div className="ondas lado-esquerdo">
-              {Array.from({ length: 7 }).map((_, i) => (
+              {waveHeights.map((height, i) => (
                 <div
                   key={`left-${i}`}
                   className="onda"
-                  style={{
-                    animationDelay: `${i * 0.1}s`,
-                    height: `${10 + (i % 4) * 15}px`,
-                  }}
+                  style={{ height: `${height}px` }}
                 />
               ))}
             </div>
@@ -132,14 +196,11 @@ const LeituraVoz = () => {
 
           {gravando && (
             <div className="ondas lado-direito">
-              {Array.from({ length: 7 }).map((_, i) => (
+              {waveHeights.map((height, i) => (
                 <div
                   key={`right-${i}`}
                   className="onda"
-                  style={{
-                    animationDelay: `${i * 0.1}s`,
-                    height: `${10 + (i % 4) * 15}px`,
-                  }}
+                  style={{ height: `${height}px` }}
                 />
               ))}
             </div>

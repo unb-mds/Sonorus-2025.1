@@ -1,7 +1,7 @@
 .blocoPreto{
     display: flex;
     position: relative;
-    width: 800px;
+    width: 850px;
     height: 600px;
     background: #1F2634;
     border-radius: 10px;
@@ -36,7 +36,7 @@ form .input-box{
     position: relative;
     width: 80%;
     height: 30%;
-    margin: 10px 0;
+    margin: 4px 0;
 }
 
 .input-box input{
@@ -68,9 +68,9 @@ form button{
     width: 150px;
     height: 50px;
     border: #FFFFFF;
-    border-radius: 10px;
+    border-radius: 15px;
     background-color: #005CF7;
-    margin: 7% 0 0 14%;
+    margin: 5% 0 0 14%;
 }
 
 .btn{
@@ -87,7 +87,7 @@ form button{
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-  /* painel esquerdo com conteúdo centralizado */
+  /* painel direito com conteúdo centralizado */
   .blocoAzul {
     width: 65%;
     height: 100%;
@@ -97,7 +97,7 @@ form button{
     justify-content: center;
     align-items: center;
     position: relative;
-    border-radius: 70% 10% 10% 70% / 60% 10% 10% 60%;
+    border-radius: 60% 10% 10% 60% / 60% 10% 10% 60%;
   }
 
   .blocoAzul h1 {
@@ -128,7 +128,7 @@ form button{
     border: 2px solid #FFFFFF;
     background: transparent;
     color: #FFFFFF;
-    border-radius: 10px;
+    border-radius: 15px;
     font-weight: 600;
     font-size: 16px;
     text-transform: uppercase;
@@ -138,7 +138,7 @@ form button{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 125px;
+    margin-top: 50px;
     transition: 0.3s;
   }
   
@@ -146,23 +146,90 @@ form button{
     background-color: rgba(255, 255, 255, 0.2);
   }
 
-.link-button {
-    background: none;
-    border: none;
-    color: #A3A3A3;
-    text-decoration: underline;
+  .password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .password-input input {
+    width: 100%;
+    padding-right: 40px; /* Espaço pro ícone */
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 10px;
     cursor: pointer;
-    font-family: inherit;
-    font-size: inherit;
-    padding: 0;
-}
+    color: #555;
+  }
 
-.link-button:hover {
-    color: #FFFFFF;
-}
+  .left-panel-icon2 {
+    width: auto;
+    height: 70px; 
+    position: relative;
+    flex-direction: column;
+    margin-top: -135px;
+    margin-bottom: 60px;
+  }
 
-.link-button:focus {
-    outline: 2px solid #007bff;
-    outline-offset: 2px;
-    color: #FFFFFF;
+  /* parte responsiva */
+@media (max-width: 768px) {
+
+  .blocoPreto {
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; 
+    border-radius: 50px;
+  }
+
+  .blocoAzul,
+  .blocoPreto .form-box {
+    width: 100%;
+    height: auto; 
+  }
+
+  .blocoAzul {
+    border-radius: 0 0 60% 60% / 0 0 50% 50%;
+    padding: 60px 45px; 
+    order: -1; 
+  }
+  
+  .blocoAzul h1,
+  .blocoAzul p {
+    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .blocoPreto .form-box {
+    padding: 50px 40px;
+  }
+
+  form h1 {
+    text-align: center;
+    padding-left: 0;
+    width: auto;
+  }
+  
+  form .input-box {
+    width: 100%; 
+  }
+
+  .esqueceu a {
+    margin: 15px auto;
+    display: block;
+    text-align: center;
+  }
+
+  form button {
+    margin: 20px auto 0;
+    display: block; 
+  }
+  
+  .left-panel-icon2 {
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
 }

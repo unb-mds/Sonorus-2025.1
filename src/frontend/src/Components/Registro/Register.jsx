@@ -21,7 +21,7 @@ const Register = () => {
 
 // Validação do formato do email (vinda da Alteração de Entrada)
   const validateEmail = (email) => {
-    const re = /[^@\s]+@[^@\s]+/;
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 

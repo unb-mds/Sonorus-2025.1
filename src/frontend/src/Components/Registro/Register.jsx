@@ -22,11 +22,27 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
+// Validação do formato do email (vinda da Alteração de Entrada)
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
+// Verifica se o domínio do email existe e é válido (vinda da sua Alteração Atual)
+  const validateEmailDomain = async (email) => {
+    try {
+      const domain = email.split('@')[1];
+      const DNS_API_URL = process.env.REACT_APP_DNS_API_URL;
+      const response = await fetch(`${DNS_API_URL}?name=${domain}&type=MX`);
+      const data = await response.json();
+      return data.Answer && data.Answer.length > 0;
+    } catch (error) {
+      console.error('Erro ao verificar domínio:', error);
+      return false;
+    }
+  };
+
+// verifica se o email já existe na API
   const checkEmailExists = async (email) => {
     try {
       const response = await fetch(`${API_URL}/check-email`, {
@@ -54,11 +70,22 @@ const Register = () => {
       setIsEmailValid(false);
       return;
     }
+
+    // Primeiro, valida o formato do email
     if (!validateEmail(email)) {
       setEmailError('Insira um endereço de email válido');
       setIsEmailValid(false);
       return;
     }
+
+// Se o formato for válido, verifica o domínio (sua nova funcionalidade)
+    const isDomainValid = await validateEmailDomain(email);
+    if (!isDomainValid) {
+      setEmailError('O domínio do email não existe ou não está configurado para receber emails');
+      setIsEmailValid(false);
+      return;
+    }
+    
     const emailExists = await checkEmailExists(email);
     if (emailExists === true) {
       setEmailError('Esse email já está sendo usado');

@@ -83,6 +83,8 @@ const Login = () => {
                             type={showSenha ? 'text' : 'password'}
                             placeholder='Senha'
                             required
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
                         />
                         <span
                             className="password-toggle"

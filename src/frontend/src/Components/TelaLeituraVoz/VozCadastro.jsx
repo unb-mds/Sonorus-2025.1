@@ -21,7 +21,7 @@ const LeituraVoz = () => {
   const streamRef = useRef(null); // Ref unificada para a stream
 
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+  const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000/api').replace(/\/$/, '');
 
   // --- Função para limpar todos os recursos de áudio e visualização ---
   // Unifica a lógica de limpeza que estava espalhada

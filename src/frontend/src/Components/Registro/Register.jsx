@@ -22,27 +22,33 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-// Validação do formato do email (vinda da Alteração de Entrada)
+  // Validação do formato do email
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
-// Verifica se o domínio do email existe e é válido (vinda da sua Alteração Atual)
+  // Validação de domínio usando Cloudflare DNS (com CORS habilitado)
   const validateEmailDomain = async (email) => {
     try {
       const domain = email.split('@')[1];
       const DNS_API_URL = process.env.REACT_APP_DNS_API_URL;
-      const response = await fetch(`${DNS_API_URL}?name=${domain}&type=MX`);
+      const response = await fetch(`${DNS_API_URL}?name=${domain}&type=MX`, {
+        headers: {
+          'Accept': 'application/dns-json'
+        }
+      });
       const data = await response.json();
       return data.Answer && data.Answer.length > 0;
     } catch (error) {
       console.error('Erro ao verificar domínio:', error);
-      return false;
+      // Em caso de erro na validação DNS, permite o email passar
+      // para que seja validado pelo backend
+      return true;
     }
   };
 
-// verifica se o email já existe na API
+  // Verifica se o email já existe na API
   const checkEmailExists = async (email) => {
     try {
       const response = await fetch(`${API_URL}/check-email`, {
@@ -52,15 +58,17 @@ const Register = () => {
         },
         body: JSON.stringify({ email }),
       });
-      if (!response.ok) {
-        console.error('Erro ao verificar email:', response.status);
-        return false;
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.exists || false;
+      } else {
+        const errorData = await response.json();
+        return errorData.detail || 'Erro ao verificar email';
       }
-      const data = await response.json();
-      return data.exists;
     } catch (error) {
       console.error('Erro na requisição checkEmailExists:', error);
-      return false;
+      return 'Erro de conexão ao verificar email';
     }
   };
 
@@ -78,20 +86,22 @@ const Register = () => {
       return;
     }
 
-// Se o formato for válido, verifica o domínio (sua nova funcionalidade)
+    // Segunda validação: domínio via DNS
     const isDomainValid = await validateEmailDomain(email);
     if (!isDomainValid) {
       setEmailError('O domínio do email não existe ou não está configurado para receber emails');
       setIsEmailValid(false);
       return;
     }
+
+    // Terceira validação: verifica no backend se email já existe
+    const emailCheck = await checkEmailExists(email);
     
-    const emailExists = await checkEmailExists(email);
-    if (emailExists === true) {
+    if (emailCheck === true) {
       setEmailError('Esse email já está sendo usado');
       setIsEmailValid(false);
-    } else if (typeof emailExists === 'string') {
-      setEmailError(emailExists);
+    } else if (typeof emailCheck === 'string') {
+      setEmailError(emailCheck);
       setIsEmailValid(false);
     } else {
       setEmailError('');
@@ -215,7 +225,6 @@ const Register = () => {
               </span>
             </div>
 
-            {/* Campo Confirmação de Senha */}
             <div className="password-input">
               <input
                 type={showConfirmacaoSenha ? 'text' : 'password'}

@@ -35,6 +35,8 @@ REDIS_DB=0
 REDIS_PASSWORD=
 
 REACT_APP_API_URL=http://localhost:8000/api
+
+REACT_APP_DNS_API_URL=https://cloudflare-dns.com/dns-query
 EOF
 
 sudo apt install -y npm

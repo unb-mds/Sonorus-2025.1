@@ -36,7 +36,7 @@ const Login = () => {
 
         try {
             const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-            const response = await fetch(`${API_URL}/api/login`, {
+            const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 body: formData,
                 credentials: 'include', // ESSENCIAL para cookies HttpOnly

@@ -17,6 +17,9 @@ librosa
 pytest
 pytest-cov
 pydub
-scipy
 webrtcvad
 noisereduce
+httpx
+pydub
+webrtcvad
+sounddevice

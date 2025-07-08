@@ -101,7 +101,13 @@ def hash_senha(senha: str) -> str:
     return pwd_context.hash(senha)
 
 def get_jwt_from_cookie(request: Request):
+    # Primeiro tenta pegar do cookie
     token = request.cookies.get("access_token")
+    # Se não achar, tenta pegar do header Authorization
     if not token:
-        raise HTTPException(status_code=401, detail="Token não encontrado")
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ", 1)[1]
+    if not token:
+        return None
     return token

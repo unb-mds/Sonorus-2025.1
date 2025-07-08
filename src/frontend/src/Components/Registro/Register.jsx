@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './Register.css';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 const API_URL = (process.env.REACT_APP_API_URL || "http://localhost:8000/api").replace(/\/$/, "");
 
@@ -13,17 +14,35 @@ const Register = () => {
     confirmacaoSenha: ''
   });
 
+  const [showSenha, setShowSenha] = useState(false);
+  const [showConfirmacaoSenha, setShowConfirmacaoSenha] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
+// Validação do formato do email (vinda da Alteração de Entrada)
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
+// Verifica se o domínio do email existe e é válido (vinda da sua Alteração Atual)
+  const validateEmailDomain = async (email) => {
+    try {
+      const domain = email.split('@')[1];
+      const DNS_API_URL = process.env.REACT_APP_DNS_API_URL;
+      const response = await fetch(`${DNS_API_URL}?name=${domain}&type=MX`);
+      const data = await response.json();
+      return data.Answer && data.Answer.length > 0;
+    } catch (error) {
+      console.error('Erro ao verificar domínio:', error);
+      return false;
+    }
+  };
+
+// verifica se o email já existe na API
   const checkEmailExists = async (email) => {
     try {
       const response = await fetch(`${API_URL}/check-email`, {
@@ -33,18 +52,15 @@ const Register = () => {
         },
         body: JSON.stringify({ email }),
       });
-      if (response.ok) {
-        // E-mail disponível
+      if (!response.ok) {
+        console.error('Erro ao verificar email:', response.status);
         return false;
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Erro ao verificar email');
       }
+      const data = await response.json();
+      return data.exists;
     } catch (error) {
-      if (error.message === 'E-mail já cadastrado no sistema') {
-        return true;
-      }
-      return error.message;
+      console.error('Erro na requisição checkEmailExists:', error);
+      return false;
     }
   };
 
@@ -54,11 +70,22 @@ const Register = () => {
       setIsEmailValid(false);
       return;
     }
+
+    // Primeiro, valida o formato do email
     if (!validateEmail(email)) {
       setEmailError('Insira um endereço de email válido');
       setIsEmailValid(false);
       return;
     }
+
+// Se o formato for válido, verifica o domínio (sua nova funcionalidade)
+    const isDomainValid = await validateEmailDomain(email);
+    if (!isDomainValid) {
+      setEmailError('O domínio do email não existe ou não está configurado para receber emails');
+      setIsEmailValid(false);
+      return;
+    }
+    
     const emailExists = await checkEmailExists(email);
     if (emailExists === true) {
       setEmailError('Esse email já está sendo usado');
@@ -74,14 +101,8 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    if (name === 'email') {
-      handleEmailValidation(value);
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'email') handleEmailValidation(value);
   };
 
   const handleSubmit = async (e) => {
@@ -116,9 +137,7 @@ const Register = () => {
         throw new Error(errorData.detail || 'Erro no cadastro');
       }
 
-      navigate('/cadastro-voz', { 
-        state: { email: formData.email }
-      });
+      navigate('/cadastro-voz', { state: { email: formData.email } });
     } catch (error) {
       console.error('Erro no cadastro:', error);
       navigate('/erroCadastro');
@@ -135,6 +154,7 @@ const Register = () => {
     <div className="register-container">
       <div className="container">
         <div className="left-panel">
+          <img src="/sonorus_ed.png" alt="Logo Sonorus" className="left-panel-icon" />
           <h2>Olá!</h2>
           <p>Já tem cadastro? Entre agora!</p>
           <button className="btn-outline" onClick={handleLoginClick}>
@@ -175,23 +195,44 @@ const Register = () => {
               />
               {emailError && <span className="error-message">{emailError}</span>}
             </div>
-            <input
-              type="password"
-              name="senha"
-              placeholder="Senha"
-              value={formData.senha}
-              onChange={handleChange}
-              required
-              minLength="6"
-            />
-            <input
-              type="password"
-              name="confirmacaoSenha"
-              placeholder="Confirme a senha"
-              value={formData.confirmacaoSenha}
-              onChange={handleChange}
-              required
-            />
+
+            {/* Campo Senha */}
+            <div className="password-input">
+              <input
+                type={showSenha ? 'text' : 'password'}
+                name="senha"
+                placeholder="Senha"
+                value={formData.senha}
+                onChange={handleChange}
+                required
+                minLength="6"
+              />
+              <span
+                className="password-toggle"
+                onClick={() => setShowSenha(!showSenha)}
+              >
+                {showSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+              </span>
+            </div>
+
+            {/* Campo Confirmação de Senha */}
+            <div className="password-input">
+              <input
+                type={showConfirmacaoSenha ? 'text' : 'password'}
+                name="confirmacaoSenha"
+                placeholder="Confirme a senha"
+                value={formData.confirmacaoSenha}
+                onChange={handleChange}
+                required
+              />
+              <span
+                className="password-toggle"
+                onClick={() => setShowConfirmacaoSenha(!showConfirmacaoSenha)}
+              >
+                {showConfirmacaoSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+              </span>
+            </div>
+
             <button
               type="submit"
               className="btn-solid"

@@ -59,7 +59,7 @@
   <main class="max-w-6xl mx-auto px-4 md:px-6 mt-4 md:mt-6">
 
     <section id="descricao" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
-      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">Sobre o projeto</h2>
+      <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">Sobre o produto</h2>
       <p class="text-sm md:text-base">
         Este projeto consiste na implementação de uma API de reconhecimento biométrico por voz que se integra a um sistema de login já existente. Utilizando tecnologias modernas como <strong>SpeechBrain</strong> para o processamento de voz e <strong>FastAPI</strong> para a criação de endpoints rápidos e seguros, a solução permite que usuários cadastrem sua própria voz como uma forma única de identificação.</p>
     </section>
@@ -67,9 +67,11 @@
     <section id="tecnologias" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
       <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">Tecnologias Utilizadas</h2>
       <ul class="list-disc list-inside text-sm md:text-base">
-        <li><strong>Frontend:</strong> HTML, CSS, TailwindCSS, JavaScript, ReactJs</li>
-        <li><strong>Backend:</strong> Python, SpeechBrain, FastAPI</li>
-        <li><strong>Banco de dados:</strong> Oracle Database</li>
+        <li><strong>Backend:</strong> Python, SpeechBrain, FastAPI, SQLAlchemy, Redis, JWT, bcrypt</li>
+        <li><strong>Frontend:</strong> CSS, ReactJs</li>
+        <li><strong>Banco de dados:</strong> PostgreSQL</li>
+        <li><strong>Cache:</strong> Redis</li>
+        <li><strong>DevOps:</strong> Docker, Docker Compose</li>
       </ul>
     </section>
 
@@ -82,7 +84,34 @@
 
     <section id="ambiente" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">
         <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">Para Subir o Ambiente</h2>
-        <p class="text-sm md:text-base">(Instruções a serem adicionadas futuramente)</p>
+        <p class="text-sm md:text-base">
+          <h2>🚀 Como Executar Localmente</h2>
+
+          <h3>1. Clone o repositório</h3>
+          <pre><code>git clone github.com/unb-mds/Sonorus-2025.1
+          cd Sonorus-2025.1
+          </code></pre>
+
+          <h3>2. Instale as dependências</h3>
+          <pre><code>chmod +x Build.sh
+          ./Build.sh
+          </code></pre>
+
+          <h3>3. Inicie o projeto</h3>
+          <pre><code>chmod +x Main.sh
+          ./Main.sh
+          </code></pre>
+
+          <h3>4. (Opcional) Suba o Redis</h3>
+          <pre><code>redis-server
+          </code></pre>
+
+          <h3>5. Acesse a aplicação</h3>
+          <ul>
+            <li><strong>Frontend:</strong> http://localhost:3000</li>
+            <li><strong>Backend (Swagger):</strong> http://localhost:8000/docs</li>
+          </ul>
+        </p>
     </section>
     
     <section id="arquitetura" class="max-w-6xl bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6 fade-in">

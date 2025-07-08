@@ -119,7 +119,6 @@ const LeituraVoz = () => {
       // Lógica de timeout da 'main'
       timeoutRef.current = setTimeout(() => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-          timeoutAtingidoRef.current = true;
           mediaRecorderRef.current.stop();
         }
       }, 30000); // Timeout de 30 segundos

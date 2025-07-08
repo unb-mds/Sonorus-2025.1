@@ -2,27 +2,24 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './VozLogin.css';
 
-const LeituraVoz = () => {
-  // --- Estados e Refs combinados de ambas as branches ---
+const VozLogin = () => {
   const [gravando, setGravando] = useState(false);
   const [waveHeights, setWaveHeights] = useState(Array(7).fill(10));
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const timeoutRef = useRef(null);
-  
-  // Refs para a Web Audio API da 'melhorias-na-UI'
+
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameIdRef = useRef(null);
   const streamRef = useRef(null);
-  
+
+  const timeoutAtingidoRef = useRef(false);
+
   const navigate = useNavigate();
-  // Usando a definição mais robusta de API_URL que remove a barra final
   const API_URL = (process.env.REACT_APP_API_URL || "http://localhost:8000/api").replace(/\/$/, "");
 
-  // --- Função de Limpeza Centralizada ---
-  // Combina a lógica de limpeza das duas branches para evitar repetição
   const limparRecursos = () => {
     if (animationFrameIdRef.current) {
       cancelAnimationFrame(animationFrameIdRef.current);
@@ -36,8 +33,6 @@ const LeituraVoz = () => {
     setWaveHeights(Array(7).fill(10));
   };
 
-  // --- Funções de Controle da Gravação ---
-
   const iniciarGravacao = async () => {
     setGravando(true);
     audioChunksRef.current = [];
@@ -46,11 +41,10 @@ const LeituraVoz = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      // Início da lógica de visualização de áudio ('melhorias-na-UI')
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       analyserRef.current = audioContextRef.current.createAnalyser();
       const source = audioContextRef.current.createMediaStreamSource(stream);
-      
+
       source.connect(analyserRef.current);
       analyserRef.current.fftSize = 256;
       const bufferLength = analyserRef.current.frequencyBinCount;
@@ -59,7 +53,7 @@ const LeituraVoz = () => {
       const animateWaves = () => {
         if (!analyserRef.current) return;
         analyserRef.current.getByteFrequencyData(dataArray);
-        
+
         const newWaveHeights = [];
         const step = Math.floor(bufferLength / 7);
         for (let i = 0; i < 7; i++) {
@@ -71,9 +65,7 @@ const LeituraVoz = () => {
         animationFrameIdRef.current = requestAnimationFrame(animateWaves);
       };
       animateWaves();
-      // Fim da lógica de visualização
 
-      // Lógica do MediaRecorder
       mediaRecorderRef.current = new MediaRecorder(stream);
 
       mediaRecorderRef.current.ondataavailable = (event) => {
@@ -85,7 +77,7 @@ const LeituraVoz = () => {
       mediaRecorderRef.current.onstop = async () => {
         clearTimeout(timeoutRef.current);
         setGravando(false);
-        limparRecursos(); // Usa a função de limpeza
+        limparRecursos();
 
         if (audioChunksRef.current.length === 0) {
           navigate('/erroLeitura');
@@ -94,7 +86,6 @@ const LeituraVoz = () => {
 
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         const formData = new FormData();
-        // Lógica de envio da 'main', que é mais robusta
         formData.append('arquivo', audioBlob, 'voz.webm');
 
         try {
@@ -116,17 +107,17 @@ const LeituraVoz = () => {
 
       mediaRecorderRef.current.start();
 
-      // Lógica de timeout da 'main'
       timeoutRef.current = setTimeout(() => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+          timeoutAtingidoRef.current = true;
           mediaRecorderRef.current.stop();
         }
-      }, 30000); // Timeout de 30 segundos
+      }, 30000);
 
     } catch (err) {
       setGravando(false);
-      limparRecursos(); // Garantir que recursos sejam limpos antes de navegar
-      navigate('/erroLeitura'); // Tratamento de erro da 'main'
+      limparRecursos();
+      navigate('/erroLeitura');
     }
   };
 
@@ -144,7 +135,6 @@ const LeituraVoz = () => {
     }
   };
 
-  // Efeito para limpar tudo caso o componente seja desmontado
   useEffect(() => {
     return () => {
       limparRecursos();
@@ -196,10 +186,10 @@ const LeituraVoz = () => {
           )}
         </div>
 
-        <p className="instrucao2">Diga seu nome completo</p>
+        <p className="instrucao2">Diga "Esta é a minha voz"</p>
       </div>
     </div>
   );
 };
 
-export default LeituraVoz;
+export default VozLogin;

@@ -89,11 +89,12 @@ const Login = () => {
                         <span
                             className="password-toggle"
                             onClick={() => setShowSenha(!showSenha)}
+                            aria-label="toggle password visibility"
                         >
                             {showSenha ? <EyeOff size={18} /> : <Eye size={18} />}
                         </span>
                     </div>
-                    
+
                     {mensagemErro && <div className="erro">{mensagemErro}</div>}
                     <button type="submit" className='btn' disabled={loading}>
                         {loading ? 'Entrando...' : 'LOGIN'}

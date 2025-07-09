@@ -6,7 +6,9 @@ python3 -m venv SonorusVenv
 
 source SonorusVenv/bin/activate
 
-pip install -r requirements.txt
+mkdir -p ~/pip_temp
+
+TMPDIR=~/pip_temp pip install -r requirements.txt
 
 sudo mkdir -p pretrained_models/ecapa
 sudo chown $USER:$USER pretrained_models/ecapa

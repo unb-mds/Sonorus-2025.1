@@ -1,5 +1,10 @@
 # Script de automação para instalação do Sonorus no Linux
 # Certifique-se de que você tem permissões de administrador para executar este script (chmod +x Build.sh)
+
+apt-get update && apt-get install -y build-essential
+
+sudo apt-get install -y python3-dev
+
 apt install python3-venv
 
 python3 -m venv SonorusVenv

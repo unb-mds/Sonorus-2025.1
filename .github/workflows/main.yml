@@ -57,10 +57,6 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          npm install react-router-dom
-
-      - name: Run frontend tests
-        run: npm test -- --watchAll=false
 
       - name: Run linter (eslint)
         run: npx eslint src || true

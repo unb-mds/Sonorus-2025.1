@@ -25,10 +25,16 @@ jobs:
           pip install -r requirements.txt
           pip install flake8
 
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
+
       - name: Run tests (pytest)
         run: |
           source venv/bin/activate
           pytest tests/backend/ --maxfail=1 --disable-warnings -v
+        env: 
+          JWT_CHAVE_SECRETA: "your_secret_key"
+          JWT_ALGORITMO: "HS256"
 
       - name: Run linter (flake8)
         run: |
@@ -46,10 +52,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm install react-router-dom
 
       - name: Run frontend tests
         run: npm test -- --watchAll=false

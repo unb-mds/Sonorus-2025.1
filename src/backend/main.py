@@ -8,7 +8,7 @@ from src.backend.api.endpoints_banco import roteador_banco
 
 app = FastAPI()
 
-IP_DO_DROPLET = "129.212.188.212" 
+IP_DO_DROPLET = "134.199.193.60" 
 
 origins = [
     "http://localhost:3000",

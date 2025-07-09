@@ -46,6 +46,9 @@ const Login = () => {
 
             if (response.ok) {
                 navigate('/login-voz');
+            } else if (response.status === 403 && data.detail === "Finalize o cadastro de voz para acessar o sistema") {
+                // Redireciona para o cadastro de voz se o cadastro estiver incompleto
+                navigate('/cadastro-voz');
             } else if (data.detail) {
                 setMensagemErro(data.detail);
             } else {

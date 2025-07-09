@@ -23,9 +23,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(autenticacao_router, prefix="/api")
-app.include_router(wav_router, prefix="/api")
-app.include_router(roteador_banco, prefix="/api")
+app.include_router(autenticacao_router)
+app.include_router(wav_router)
+app.include_router(roteador_banco)
 
 def get_db():
     db = SessionLocal()

@@ -1,5 +1,6 @@
 # Script de automação para instalação do Sonorus no Linux
 # Certifique-se de que você tem permissões de administrador para executar este script (chmod +x Build.sh)
+pip install python3-venv
 
 python3 -m venv SonorusVenv
 

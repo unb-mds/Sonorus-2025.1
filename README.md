@@ -77,6 +77,7 @@ REDIS_PASSWORD=
 
 # Frontend
 REACT_APP_API_URL=http://localhost:8000/api
+REACT_APP_DNS_API_URL=https://cloudflare-dns.com/dns-query
 ```
 
 ---
@@ -139,7 +140,7 @@ docker-compose down
 
 ---
 
-## 🔊 Como Usar
+## 🔊 Funcionalidades disponíveis
 
 ### ▶️ Registro de Usuário
 
@@ -164,13 +165,6 @@ docker-compose down
 
 ---
 
-## 🛠️ Scripts Úteis
-
-- **Gravação de áudio:**  
-  Use o script `src/backend/utils/gravar_wav.py` para gravar áudios compatíveis com o modelo.
-
----
-
 ## 📚 Documentação Complementar
 
 - [docs/arquitetura_software/Fluxo-Login.md](docs/arquitetura_software/Fluxo-Login.md): Detalha o fluxo de autenticação biométrica.
@@ -190,7 +184,6 @@ Veja o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para saber como contribuir.
 
 - Senhas são armazenadas com hash (bcrypt).
 - Dados biométricos são protegidos e nunca expostos diretamente.
-- Políticas de bloqueio após múltiplas tentativas de autenticação falha.
 
 ---
 

@@ -34,7 +34,7 @@
   line-height: 1;
 }
 
-.botao-voltar-login1 {
+.botao-voltar-Register {
   margin-top: 25px;
   background-color: #0066ff;
   color: white;
@@ -48,7 +48,7 @@
   padding: 11px 20px;
 }
 
-.botao-voltar-login1:hover {
+.botao-voltar-Register:hover {
   background-color: #005bb7;
 }
 
@@ -83,7 +83,7 @@
     margin-bottom: 20px;
   }
 
-  .botao-voltar-login1 {
+  .botao-voltar-Register {
     margin-top: 35px;
   }
 }

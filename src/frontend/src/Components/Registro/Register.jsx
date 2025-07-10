@@ -1,3 +1,4 @@
+// src/Components/Registro/Register.jsx
 import { useState } from 'react';
 import './Register.css';
 import { useNavigate } from 'react-router-dom';
@@ -23,85 +24,63 @@ const Register = () => {
   const navigate = useNavigate();
 
   // Validação do formato do email
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
+  const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   // Validação de domínio usando Cloudflare DNS (com CORS habilitado)
-  const validateEmailDomain = async (email) => {
+  const validateEmailDomain = async email => {
     try {
       const domain = email.split('@')[1];
       const DNS_API_URL = process.env.REACT_APP_DNS_API_URL;
       const response = await fetch(`${DNS_API_URL}?name=${domain}&type=MX`, {
-        headers: {
-          'Accept': 'application/dns-json'
-        }
+        headers: { 'Accept': 'application/dns-json' }
       });
       const data = await response.json();
       return data.Answer && data.Answer.length > 0;
-    } catch (error) {
-      console.error('Erro ao verificar domínio:', error);
-      // Em caso de erro na validação DNS, permite o email passar
-      // para que seja validado pelo backend
+    } catch (err) {
+      console.error('Erro ao verificar domínio:', err);
+      // Em caso de erro na validação DNS, permite passar para validação backend
       return true;
     }
   };
 
   // Verifica se o email já existe na API
-  const checkEmailExists = async (email) => {
+  const checkEmailExists = async email => {
     try {
-      const response = await fetch(`${API_URL}/check-email`, {
+      const res = await fetch(`${API_URL}/check-email`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        return data.exists || false;
-      } else {
-        const errorData = await response.json();
-        return errorData.detail || 'Erro ao verificar email';
-      }
-    } catch (error) {
-      console.error('Erro na requisição checkEmailExists:', error);
+      const data = await res.json();
+      return res.ok ? (data.exists || false) : data.detail;
+    } catch (err) {
+      console.error('Erro na requisição checkEmailExists:', err);
       return 'Erro de conexão ao verificar email';
     }
   };
 
-  const handleEmailValidation = async (email) => {
-    if (email === '') {
-      setEmailError('');
-      setIsEmailValid(false);
+  const handleEmailValidation = async email => {
+    if (!email) {
+      setEmailError(''); setIsEmailValid(false);
       return;
     }
-
-    // Primeiro, valida o formato do email
     if (!validateEmail(email)) {
       setEmailError('Insira um endereço de email válido');
       setIsEmailValid(false);
       return;
     }
-
-    // Segunda validação: domínio via DNS
-    const isDomainValid = await validateEmailDomain(email);
-    if (!isDomainValid) {
+    const domainOk = await validateEmailDomain(email);
+    if (!domainOk) {
       setEmailError('O domínio do email não existe ou não está configurado para receber emails');
       setIsEmailValid(false);
       return;
     }
-
-    // Terceira validação: verifica no backend se email já existe
-    const emailCheck = await checkEmailExists(email);
-    
-    if (emailCheck === true) {
+    const existsCheck = await checkEmailExists(email);
+    if (existsCheck === true) {
       setEmailError('Esse email já está sendo usado');
       setIsEmailValid(false);
-    } else if (typeof emailCheck === 'string') {
-      setEmailError(emailCheck);
+    } else if (typeof existsCheck === 'string') {
+      setEmailError(existsCheck);
       setIsEmailValid(false);
     } else {
       setEmailError('');
@@ -109,13 +88,13 @@ const Register = () => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(f => ({ ...f, [name]: value }));
     if (name === 'email') handleEmailValidation(value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setSubmitError('');
     if (formData.senha !== formData.confirmacaoSenha) {
@@ -128,36 +107,28 @@ const Register = () => {
     }
     setIsSubmitting(true);
     try {
-      const response = await fetch(`${API_URL}/registrar`, {
+      const res = await fetch(`${API_URL}/registrar`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           nome: formData.nome,
           sobrenome: formData.sobrenome,
           email: formData.email,
           senha: formData.senha
-        }),
-        credentials: 'include'
+        })
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Erro no cadastro');
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || 'Erro no cadastro');
       }
-
       navigate('/cadastro-voz', { state: { email: formData.email } });
-    } catch (error) {
-      console.error('Erro no cadastro:', error);
+    } catch (err) {
+      console.error('Erro no cadastro:', err);
       navigate('/erroCadastro');
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleLoginClick = () => {
-    navigate('/login');
   };
 
   return (
@@ -167,7 +138,7 @@ const Register = () => {
           <img src="/sonorus_ed.png" alt="Logo Sonorus" className="left-panel-icon" />
           <h2>Olá!</h2>
           <p>Já tem cadastro? Entre agora!</p>
-          <button className="btn-outline" onClick={handleLoginClick}>
+          <button className="btn-outline" onClick={() => navigate('/login')}>
             FAÇA LOGIN
           </button>
         </div>
@@ -177,71 +148,67 @@ const Register = () => {
           <form onSubmit={handleSubmit}>
             <div className="input-row">
               <input
-                type="text"
                 name="nome"
                 placeholder="Nome"
+                required
                 value={formData.nome}
                 onChange={handleChange}
-                required
               />
               <input
-                type="text"
                 name="sobrenome"
                 placeholder="Sobrenome"
+                required
                 value={formData.sobrenome}
                 onChange={handleChange}
-                required
               />
             </div>
             <div className="input-with-error">
               <input
-                type="email"
                 name="email"
+                type="email"
                 placeholder="Seu melhor e-mail"
+                required
                 value={formData.email}
                 onChange={handleChange}
                 className={emailError ? 'input-error' : ''}
-                required
               />
               {emailError && <span className="error-message">{emailError}</span>}
             </div>
-
-            {/* Campo Senha */}
             <div className="password-input">
               <input
-                type={showSenha ? 'text' : 'password'}
                 name="senha"
+                type={showSenha ? 'text' : 'password'}
                 placeholder="Senha"
-                value={formData.senha}
-                onChange={handleChange}
                 required
                 minLength="6"
+                value={formData.senha}
+                onChange={handleChange}
               />
               <span
                 className="password-toggle"
+                aria-label="toggle password visibility"
                 onClick={() => setShowSenha(!showSenha)}
               >
                 {showSenha ? <EyeOff size={18} /> : <Eye size={18} />}
               </span>
             </div>
-
             <div className="password-input">
               <input
-                type={showConfirmacaoSenha ? 'text' : 'password'}
                 name="confirmacaoSenha"
+                type={showConfirmacaoSenha ? 'text' : 'password'}
                 placeholder="Confirme a senha"
+                required
                 value={formData.confirmacaoSenha}
                 onChange={handleChange}
-                required
               />
               <span
                 className="password-toggle"
+                aria-label="toggle password visibility"
                 onClick={() => setShowConfirmacaoSenha(!showConfirmacaoSenha)}
               >
                 {showConfirmacaoSenha ? <EyeOff size={18} /> : <Eye size={18} />}
               </span>
             </div>
-
             <button
               type="submit"
               className="btn-solid"

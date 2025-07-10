@@ -1,3 +1,7 @@
+// src/Components/Registro/Register.test.js
+// força a mesma URL de DNS que os mocks abaixo esperam:
+process.env.REACT_APP_DNS_API_URL = 'https://dns.example.com/api/lookup';
+
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -13,7 +17,7 @@ jest.mock('react-router-dom', () => ({
 global.fetch = jest.fn();
 
 const BASE_API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000/api').replace(/\/$/, '');
-const DNS_API_BASE_URL = process.env.REACT_APP_DNS_API_URL || 'https://dns.example.com/api/lookup';
+const DNS_API_BASE_URL = process.env.REACT_APP_DNS_API_URL;
 const CHECK_EMAIL_URL = `${BASE_API_URL}/check-email`;
 const REGISTER_URL = `${BASE_API_URL}/registrar`;
 
@@ -22,7 +26,7 @@ describe('Register Component', () => {
     jest.clearAllMocks();
     global.fetch.mockImplementation(url => {
       if (url.startsWith(DNS_API_BASE_URL)) {
-        return Promise.resolve({ ok: true, json: () => Promise.resolve({ Answer: [{ type: 'MX', data: 'mx1' }] }) });
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({ Answer: [{ type: 'MX' }] }) });
       }
       if (url.startsWith(CHECK_EMAIL_URL)) {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({ exists: false }) });
@@ -60,6 +64,7 @@ describe('Register Component', () => {
   });
 
   test('invalid email shows domain error and blocks submit', async () => {
+    // override DNS lookup para retornar vazio
     global.fetch.mockImplementationOnce(url => {
       if (url.startsWith(DNS_API_BASE_URL)) {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({ Answer: [] }) });
@@ -68,18 +73,16 @@ describe('Register Component', () => {
     });
 
     const { container } = render(<Register />, { wrapper: MemoryRouter });
-
     const emailInput = screen.getByPlaceholderText('Seu melhor e-mail');
     fireEvent.change(emailInput, { target: { value: 'test@invalido.com' } });
 
     await waitFor(() =>
-      expect(screen.getByText('O domínio do email não existe ou não está configurado para receber emails')).toBeInTheDocument()
+      expect(screen.getByText('O domínio do email não existe ou não está configurado para receber emails'))
+        .toBeInTheDocument()
     );
 
-    // simula submit do form diretamente, em vez de clique no botão disabled
-    const form = container.querySelector('form');
-    fireEvent.submit(form);
-
+    // simula submit direto
+    fireEvent.submit(container.querySelector('form'));
     await waitFor(() =>
       expect(screen.getByText('Por favor, corrija os erros no formulário')).toBeInTheDocument()
     );
@@ -87,15 +90,15 @@ describe('Register Component', () => {
 
   test('password mismatch error', async () => {
     render(<Register />, { wrapper: MemoryRouter });
-    fireEvent.change(screen.getByPlaceholderText('Nome'),{target:{value:'A'}});
-    fireEvent.change(screen.getByPlaceholderText('Sobrenome'),{target:{value:'B'}});
-    fireEvent.change(screen.getByPlaceholderText('Seu melhor e-mail'),{target:{value:'a@b.com'}});
+    fireEvent.change(screen.getByPlaceholderText('Nome'),{ target:{ value:'A' } });
+    fireEvent.change(screen.getByPlaceholderText('Sobrenome'),{ target:{ value:'B' } });
+    fireEvent.change(screen.getByPlaceholderText('Seu melhor e-mail'),{ target:{ value:'a@b.com' } });
     await waitFor(() =>
-      expect(screen.getByRole('button',{name:/continuar/i})).not.toBeDisabled()
+      expect(screen.getByRole('button',{ name:/continuar/i })).not.toBeDisabled()
     );
-    fireEvent.change(screen.getByPlaceholderText('Senha'),{target:{value:'123456'}});
-    fireEvent.change(screen.getByPlaceholderText('Confirme a senha'),{target:{value:'654321'}});
-    fireEvent.click(screen.getByRole('button',{name:/continuar/i}));
+    fireEvent.change(screen.getByPlaceholderText('Senha'),{ target:{ value:'123456' } });
+    fireEvent.change(screen.getByPlaceholderText('Confirme a senha'),{ target:{ value:'654321' } });
+    fireEvent.click(screen.getByRole('button',{ name:/continuar/i }));
     await waitFor(() =>
       expect(screen.getByText('As senhas não coincidem')).toBeInTheDocument()
     );
@@ -103,15 +106,15 @@ describe('Register Component', () => {
 
   test('successful registration navigates', async () => {
     render(<Register />, { wrapper: MemoryRouter });
-    fireEvent.change(screen.getByPlaceholderText('Nome'),{target:{value:'New'}});
-    fireEvent.change(screen.getByPlaceholderText('Sobrenome'),{target:{value:'User'}});
-    fireEvent.change(screen.getByPlaceholderText('Seu melhor e-mail'),{target:{value:'new@ex.com'}});
+    fireEvent.change(screen.getByPlaceholderText('Nome'),{ target:{ value:'New' } });
+    fireEvent.change(screen.getByPlaceholderText('Sobrenome'),{ target:{ value:'User' } });
+    fireEvent.change(screen.getByPlaceholderText('Seu melhor e-mail'),{ target:{ value:'new@ex.com' } });
     await waitFor(() =>
-      expect(screen.getByRole('button',{name:/continuar/i})).not.toBeDisabled()
+      expect(screen.getByRole('button',{ name:/continuar/i })).not.toBeDisabled()
     );
-    fireEvent.change(screen.getByPlaceholderText('Senha'),{target:{value:'123456'}});
-    fireEvent.change(screen.getByPlaceholderText('Confirme a senha'),{target:{value:'123456'}});
-    fireEvent.click(screen.getByRole('button',{name:/continuar/i}));
+    fireEvent.change(screen.getByPlaceholderText('Senha'),{ target:{ value:'123456' } });
+    fireEvent.change(screen.getByPlaceholderText('Confirme a senha'),{ target:{ value:'123456' } });
+    fireEvent.click(screen.getByRole('button',{ name:/continuar/i }));
     await waitFor(() =>
       expect(mockedUsedNavigate).toHaveBeenCalledWith('/cadastro-voz', expect.any(Object))
     );
@@ -132,15 +135,15 @@ describe('Register Component', () => {
     });
 
     render(<Register />, { wrapper: MemoryRouter });
-    fireEvent.change(screen.getByPlaceholderText('Nome'),{target:{value:'X'}});
-    fireEvent.change(screen.getByPlaceholderText('Sobrenome'),{target:{value:'Y'}});
-    fireEvent.change(screen.getByPlaceholderText('Seu melhor e-mail'),{target:{value:'fail@ex.com'}});
+    fireEvent.change(screen.getByPlaceholderText('Nome'),{ target:{ value:'X' } });
+    fireEvent.change(screen.getByPlaceholderText('Sobrenome'),{ target:{ value:'Y' } });
+    fireEvent.change(screen.getByPlaceholderText('Seu melhor e-mail'),{ target:{ value:'fail@ex.com' } });
     await waitFor(() =>
-      expect(screen.getByRole('button',{name:/continuar/i})).not.toBeDisabled()
+      expect(screen.getByRole('button',{ name:/continuar/i })).not.toBeDisabled()
     );
-    fireEvent.change(screen.getByPlaceholderText('Senha'),{target:{value:'abcdef'}});
-    fireEvent.change(screen.getByPlaceholderText('Confirme a senha'),{target:{value:'abcdef'}});
-    fireEvent.click(screen.getByRole('button',{name:/continuar/i}));
+    fireEvent.change(screen.getByPlaceholderText('Senha'),{ target:{ value:'abcdef' } });
+    fireEvent.change(screen.getByPlaceholderText('Confirme a senha'),{ target:{ value:'abcdef' } });
+    fireEvent.click(screen.getByRole('button',{ name:/continuar/i }));
     await waitFor(() =>
       expect(mockedUsedNavigate).toHaveBeenCalledWith('/erroCadastro')
     );
@@ -148,7 +151,7 @@ describe('Register Component', () => {
 
   test('“FAÇA LOGIN” navigates to /login', () => {
     render(<Register />, { wrapper: MemoryRouter });
-    fireEvent.click(screen.getByRole('button',{name:/faça login/i}));
+    fireEvent.click(screen.getByRole('button',{ name:/faça login/i }));
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/login');
   });
 });

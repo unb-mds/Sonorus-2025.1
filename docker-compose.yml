@@ -1,50 +1,62 @@
-version: '3.8'
+    version: '3.8'
 
-networks:
-  sonorus-net:
-    driver: bridge
+    networks:
+      sonorus-net:
+        driver: bridge
 
-services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: sonorus_backend
-    depends_on:
-      - db
-    env_file:
-      - .env
+    services:
+      backend:
+        build:
+          context: .
+          dockerfile: Dockerfile
+        container_name: sonorus_backend
+        depends_on:
+          - db
+        env_file:
+          - .env
+        volumes:
+          - ./audios:/app/audios
+          - ./pretrained_models:/app/pretrained_models
+        restart: unless-stopped
+        networks:
+          - sonorus-net
+
+      frontend:
+        build:
+          context: ./src/frontend
+          dockerfile: Dockerfile
+        container_name: sonorus_frontend
+        ports:
+          - "80:80"
+          - "443:443"
+        depends_on:
+          - backend
+        restart: unless-stopped
+        networks:
+          - sonorus-net
+        volumes:
+          - /etc/letsencrypt:/etc/letsencrypt:ro
+          - ./certbot/www:/var/www/certbot:ro
+          - ./src/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+      redis:
+        image: redis:7-alpine
+        container_name: sonorus-redis
+        restart: unless-stopped
+        networks:
+          - sonorus-net
+
+      db:
+        image: postgres:15-alpine
+        container_name: sonorus-db
+        env_file:
+          - .env
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+          - ./src/backend/database/scripts:/docker-entrypoint-initdb.d
+        restart: unless-stopped
+        networks:
+          - sonorus-net
+
     volumes:
-      - ./audios:/app/audios
-      - ./pretrained_models:/app/pretrained_models
-    restart: unless-stopped
-    networks:
-      - sonorus-net
-
-  frontend:
-    build:
-      context: ./src/frontend
-      dockerfile: Dockerfile
-    container_name: sonorus_frontend
-    ports:
-      - "80:80" # Expõe o Nginx na porta 80 do host
-    depends_on:
-      - backend
-    restart: unless-stopped
-    networks:
-      - sonorus-net
-
-  db:
-    image: postgres:15-alpine
-    container_name: sonorus-db
-    env_file:
-      - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./src/backend/database/scripts:/docker-entrypoint-initdb.d
-    restart: unless-stopped
-    networks:
-      - sonorus-net
-
-volumes:
-  postgres_data:
+      postgres_data:

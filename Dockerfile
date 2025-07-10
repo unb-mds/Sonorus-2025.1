@@ -1,7 +1,7 @@
 FROM python:3.10-slim as builder
 
 # Instala as ferramentas de build necessárias
-RUN apt-get update && apt-get install -y build-essential
+RUN apt-get update && apt-get install -y build-essential ffmpeg
 
 WORKDIR /app
 
@@ -14,14 +14,14 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # --- Estágio Final ---
 FROM python:3.10-slim
 
+# Instala ffmpeg também no estágio final
+RUN apt-get update && apt-get install -y ffmpeg
+
 WORKDIR /app
 
-# Copia as dependências instaladas do estágio de build
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
-# ADICIONE ESTA LINHA para copiar os executáveis
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-# Copia o código da aplicação
 COPY . .
 
 EXPOSE 8000

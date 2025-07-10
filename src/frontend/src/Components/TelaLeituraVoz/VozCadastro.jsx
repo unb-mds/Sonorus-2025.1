@@ -207,7 +207,7 @@ const LeituraVoz = () => {
           )}
         </div>
 
-        <p className="instrucao">Diga "Esta é a minha voz"</p>
+        <p className="instrucao">Diga seu nome completo pausadamente</p>
         {mensagem && <p style={{ marginTop: 30, fontWeight: 600 }}>{mensagem}</p>}
       </div>
     </div>

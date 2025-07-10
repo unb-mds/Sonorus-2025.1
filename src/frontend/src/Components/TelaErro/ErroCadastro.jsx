@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const ErroCadastro = () => {
   const navigate = useNavigate();
 
-  const handleVoltarLogin = () => {
-    navigate('/login');
+  const handleVoltarRegister = () => {
+    navigate('/Register');
   };
 
   return (
@@ -17,10 +17,10 @@ const ErroCadastro = () => {
         </div>
       </div>
       <button
-        className="botao-voltar-login1"
-        onClick={handleVoltarLogin}
+        className="botao-voltar-Register"
+        onClick={handleVoltarRegister}
       >
-        Voltar para o Login
+        Voltar para o Cadastro
       </button>
     </div>
   );

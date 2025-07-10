@@ -120,23 +120,68 @@ redis-server
 
 ## 🐳 Como Executar com Docker
 
-### 1. Build e up dos containers
+### 1. Configure o arquivo `.env`
 
-```bash
-docker-compose up --build
+Crie (ou edite) um arquivo `.env` na raiz do projeto com o seguinte conteúdo (ajuste a senha se desejar):
+
+```
+DATABASE_URL=postgresql://postgres:MDS@db:5432/sonorus
+JWT_CHAVE_SECRETA=sua_chave_secreta_super_segura
+JWT_ALGORITMO=HS256
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_PASSWORD=
+
+REACT_APP_API_URL=http://localhost:8000/api
+REACT_APP_DNS_API_URL=https://cloudflare-dns.com/dns-query
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=MDS
+POSTGRES_DB=sonorus
 ```
 
-### 2. Serviços disponíveis
+> **Importante:**  
+> O valor de `DATABASE_URL` deve usar `db` como host (não `localhost`), pois é o nome do serviço do banco no Docker Compose.  
+> O valor de `REDIS_HOST` deve ser `redis` (nome do serviço Redis).
 
-- **Backend:** http://localhost:8000
-- **Frontend:** http://localhost:3000
+---
+
+### 2. Suba os containers
+
+No diretório raiz do projeto, execute:
+
+```bash
+docker compose up --build
+```
+
+- O parâmetro `--build` garante que as imagens serão reconstruídas com as dependências corretas.
+- Se for a primeira vez, o processo pode demorar um pouco para baixar as imagens e instalar dependências.
+
+---
+
+### 3. Acesse os serviços
+
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
+- **Backend (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
 - **PostgreSQL:** localhost:5432 (usuário/senha conforme `.env`)
 - **Redis:** localhost:6379
 
-### 3. Parar os containers
+---
+
+### 4. Parar e remover os containers
+
+Para parar todos os serviços:
 
 ```bash
-docker-compose down
+docker compose down
+```
+
+Para parar e remover também os volumes (dados do banco):
+
+```bash
+docker compose down -v
 ```
 
 ---

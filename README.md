@@ -13,6 +13,7 @@ Sonorus é uma **API de reconhecimento biométrico por voz** integrada a um sist
 - [GitHub Page](https://unb-mds.github.io/Sonorus-2025.1/)
 - [Arquitetura](./docs/arquitetura_software/)
 - [Requisitos](./docs/requisitos.md)
+- [Site em Nuvem](https://sonorus.systems/)
 
 ---
 

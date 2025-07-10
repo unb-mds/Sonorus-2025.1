@@ -2,7 +2,7 @@ import logging
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Request
 from sqlalchemy.orm import Session
 from src.backend.database.db_connection import get_db
-from src.backend.services.voz_service import registrar_embedding_voz, autenticar_por_voz
+from src.backend.services.voz_service import registrar_embedding_voz, autenticar_por_voz, remover_usuario_sem_voz
 from src.backend.services.business_logic import get_jwt_from_cookie 
 from src.backend.services.business_logic import validar_token_temporario, criar_token_acesso
 
@@ -29,9 +29,11 @@ async def registrar_voz(
         return {"mensagem": "Voz registrada com sucesso!", "embedding": embedding.tolist()}
     except ValueError as e:
         logger.info(f"Áudio inválido para usuário {usuario.email}: {e}")
+        remover_usuario_sem_voz(usuario.id, db)
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.exception(f"Erro ao registrar voz para usuário {usuario.email}: {e}")
+        remover_usuario_sem_voz(usuario.id, db)
         raise HTTPException(status_code=500, detail=f"Erro ao registrar voz: {e}")
 
 @roteador_autenticacao.post("/autenticar-voz")

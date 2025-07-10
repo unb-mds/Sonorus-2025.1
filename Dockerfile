@@ -3,7 +3,7 @@ FROM python:3.11-slim-bookworm
 
 # Atualiza os pacotes do sistema para corrigir vulnerabilidades
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends gcc libc6-dev && \
+    apt-get install -y --no-install-recommends gcc libc6-dev ffmpeg && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -27,5 +27,5 @@ EXPOSE 8000
 ENV PYTHONPATH=/app/src
 
 # Comando para iniciar a aplicação FastAPI usando Uvicorn
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
 

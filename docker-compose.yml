@@ -8,6 +8,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
     env_file:
       - .env
     volumes:
@@ -25,6 +26,30 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./src/backend/database/scripts:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./src/frontend
+    container_name: sonorus-frontend
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src/frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: ["npm", "start"]
+    restart: unless-stopped
+    depends_on:
+      - app
+
+  redis:
+    image: redis:7-alpine
+    container_name: sonorus-redis
+    ports:
+      - "6379:6379"
     restart: unless-stopped
 
 volumes:

@@ -115,7 +115,7 @@ redis-server
 
 - **Frontend:** [http://localhost:3000](http://localhost:3000)
 - **Backend (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
-- **Aplicação na nuvem:** (src/frontend/public/qr_code.png)
+- **Aplicação na nuvem:** https://sonorus.systems
 
 ---
 

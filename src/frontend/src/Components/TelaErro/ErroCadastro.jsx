@@ -10,7 +10,7 @@ const ErroCadastro = () => {
 
   return (
     <div className="erro-card1">
-      <h1 className="erro-title1">Houve um erro no cadastro!</h1>
+      <h1 className="erro-title1">Erro no cadastro de voz!</h1>
       <div className="erro-icon1">
         <div className="circle1">
           <span className="cruz1">×</span>

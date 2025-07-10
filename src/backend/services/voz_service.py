@@ -207,3 +207,14 @@ def autenticar_por_voz(usuario_id: int, arquivo: UploadFile, db: Session):
             os.remove(temp_webm_path)
         if os.path.exists(temp_wav_path):
             os.remove(temp_wav_path)
+
+def remover_usuario_sem_voz(usuario_id: int, db: Session):
+    """
+    Remove o usuário do banco caso ocorra erro no registro de voz.
+    Só remove se o cadastro não estiver completo.
+    """
+    usuario = db.query(Usuario).filter_by(id=usuario_id).first()
+    if usuario and not usuario.cadastro_completo:
+        db.delete(usuario)
+        db.commit()
+        logger.info(f"Usuário {usuario.email} removido por erro no registro de voz.")

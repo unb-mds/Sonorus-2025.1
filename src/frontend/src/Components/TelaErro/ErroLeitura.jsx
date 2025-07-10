@@ -10,7 +10,7 @@ const ErroLeitura = () => {
 
   return (
     <div className="erro-card2">
-      <h1 className="erro-title2">Algo deu errado.</h1>
+      <h1 className="erro-title2">Autenticação falhou.</h1>
       <div className="erro-icon2">
         <div className="circle2">
           <span className="cruz2">×</span>

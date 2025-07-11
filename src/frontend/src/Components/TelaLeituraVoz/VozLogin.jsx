@@ -3,50 +3,37 @@ import { useNavigate } from 'react-router-dom';
 import './VozLogin.css';
 
 const LeituraVoz = () => {
-  // --- Estados e Refs combinados de ambas as branches ---
   const [gravando, setGravando] = useState(false);
   const [waveHeights, setWaveHeights] = useState(Array(7).fill(10));
+  const [instrucaoBotao, setInstrucaoBotao] = useState('Clique no botão para gravar sua voz');
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const timeoutRef = useRef(null);
-  
-  // Refs para a Web Audio API da 'melhorias-na-UI'
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameIdRef = useRef(null);
   const streamRef = useRef(null);
   
   const navigate = useNavigate();
-  // Usando a definição mais robusta de API_URL que remove a barra final
   const API_URL = (process.env.REACT_APP_API_URL || "http://localhost:8000/api").replace(/\/$/, "");
 
-  // --- Função de Limpeza Centralizada ---
-  // Combina a lógica de limpeza das duas branches para evitar repetição
   const limparRecursos = () => {
-    if (animationFrameIdRef.current) {
-      cancelAnimationFrame(animationFrameIdRef.current);
-    }
-    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-      audioContextRef.current.close();
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-    }
+    if (animationFrameIdRef.current) cancelAnimationFrame(animationFrameIdRef.current);
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') audioContextRef.current.close();
+    if (streamRef.current) streamRef.current.getTracks().forEach(track => track.stop());
     setWaveHeights(Array(7).fill(10));
   };
 
-  // --- Funções de Controle da Gravação ---
-
   const iniciarGravacao = async () => {
     setGravando(true);
+    setInstrucaoBotao('Após falar a frase, clique novamente no botão para concluir');
     audioChunksRef.current = [];
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      // Início da lógica de visualização de áudio ('melhorias-na-UI')
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       analyserRef.current = audioContextRef.current.createAnalyser();
       const source = audioContextRef.current.createMediaStreamSource(stream);
@@ -60,32 +47,24 @@ const LeituraVoz = () => {
         if (!analyserRef.current) return;
         analyserRef.current.getByteFrequencyData(dataArray);
         
-        const newWaveHeights = [];
-        const step = Math.floor(bufferLength / 7);
-        for (let i = 0; i < 7; i++) {
+        const newWaveHeights = Array.from({ length: 7 }, (_, i) => {
+          const step = Math.floor(bufferLength / 7);
           const value = dataArray[i * step];
-          const height = 10 + (value / 255) * 50;
-          newWaveHeights.push(height);
-        }
+          return 10 + (value / 255) * 50;
+        });
         setWaveHeights(newWaveHeights);
         animationFrameIdRef.current = requestAnimationFrame(animateWaves);
       };
       animateWaves();
-      // Fim da lógica de visualização
 
-      // Lógica do MediaRecorder
       mediaRecorderRef.current = new MediaRecorder(stream);
-
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
+      mediaRecorderRef.current.ondataavailable = (event) => audioChunksRef.current.push(event.data);
 
       mediaRecorderRef.current.onstop = async () => {
         clearTimeout(timeoutRef.current);
         setGravando(false);
-        limparRecursos(); // Usa a função de limpeza
+        limparRecursos();
+        setInstrucaoBotao('Clique no botão para gravar sua voz');
 
         if (audioChunksRef.current.length === 0) {
           navigate('/erroLeitura');
@@ -94,7 +73,6 @@ const LeituraVoz = () => {
 
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         const formData = new FormData();
-        // Lógica de envio da 'main', que é mais robusta
         formData.append('arquivo', audioBlob, 'voz.webm');
 
         try {
@@ -116,41 +94,34 @@ const LeituraVoz = () => {
 
       mediaRecorderRef.current.start();
 
-      // Lógica de timeout da 'main'
       timeoutRef.current = setTimeout(() => {
-        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        if (mediaRecorderRef.current?.state === 'recording') {
           mediaRecorderRef.current.stop();
         }
-      }, 30000); // Timeout de 30 segundos
+      }, 30000);
 
     } catch (err) {
       setGravando(false);
-      limparRecursos(); // Garantir que recursos sejam limpos antes de navegar
-      navigate('/erroLeitura'); // Tratamento de erro da 'main'
+      limparRecursos();
+      setInstrucaoBotao('Clique no botão para gravar sua voz');
+      navigate('/erroLeitura');
     }
   };
 
   const pararGravacao = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+    if (mediaRecorderRef.current?.state === 'recording') {
       mediaRecorderRef.current.stop();
     }
   };
 
   const handleMicClick = () => {
-    if (!gravando) {
-      iniciarGravacao();
-    } else {
-      pararGravacao();
-    }
+    gravando ? pararGravacao() : iniciarGravacao();
   };
 
-  // Efeito para limpar tudo caso o componente seja desmontado
   useEffect(() => {
     return () => {
       limparRecursos();
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
 
@@ -162,41 +133,33 @@ const LeituraVoz = () => {
         <div className="mic-wrapper2">
           {gravando && (
             <div className="ondas2 lado-esquerdo2">
-              {waveHeights.map((height, i) => (
-                <div
-                  key={`left-${i}`}
-                  className="onda2"
-                  style={{ height: `${height}px` }}
-                />
-              ))}
+              {waveHeights.map((height, i) => <div key={`left-${i}`} className="onda2" style={{ height: `${height}px` }} />)}
             </div>
           )}
 
-          <button
-            onClick={handleMicClick}
-            className={`mic-button2 ${gravando ? 'gravando' : ''}`}
-            aria-label={gravando ? "Parar gravação" : "Iniciar gravação"}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="mic-icon2" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 16a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v6a4 4 0 0 0 4 4z"/>
-              <path d="M19 12a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.83V21a1 1 0 1 0 2 0v-2.17A7 7 0 0 0 19 12z"/>
-            </svg>
-          </button>
+          {/* Container que agrupa a instrução e o botão para garantir a centralização */}
+          <div className="mic-action-area2">
+            <p className="instrucao-botao2">{instrucaoBotao}</p>
+            <button
+              onClick={handleMicClick}
+              className={`mic-button2 ${gravando ? 'gravando' : ''}`}
+              aria-label={gravando ? "Parar gravação" : "Iniciar gravação"}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="mic-icon2" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 16a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v6a4 4 0 0 0 4 4z"/>
+                <path d="M19 12a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.83V21a1 1 0 1 0 2 0v-2.17A7 7 0 0 0 19 12z"/>
+              </svg>
+            </button>
+          </div>
 
           {gravando && (
             <div className="ondas2 lado-direito2">
-              {waveHeights.map((height, i) => (
-                <div
-                  key={`right-${i}`}
-                  className="onda2"
-                  style={{ height: `${height}px` }}
-                />
-              ))}
+              {waveHeights.map((height, i) => <div key={`right-${i}`} className="onda2" style={{ height: `${height}px` }} />)}
             </div>
           )}
         </div>
 
-        <p className="instrucao2">Diga seu nome completo pausadamente</p>
+        <p className="instrucao2">Diga seu nome completo</p>
       </div>
     </div>
   );
